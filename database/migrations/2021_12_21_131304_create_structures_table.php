@@ -16,9 +16,10 @@ class CreateStructuresTable extends Migration
         Schema::create('structures', function (Blueprint $table) {
             $table->id();
             $table->string('libelle');
+            $table->string('cigle');
             $table->text('description');
             $table->foreignId('type')->constrained('type_structures')->onUpdate('restrict')->onDelete('restrict');
-            $table->foreignId('parent')->constrained('structures')->onUpdate('restrict')->onDelete('restrict');
+            $table->foreignId('parent')->nullable()->constrained('structures')->onUpdate('restrict')->onDelete('restrict');
             $table->foreignId('inscription')->constrained('inscription')->onUpdate('restrict')->onDelete('restrict');
             $table->timestamps();
             $table->softDeletes();
