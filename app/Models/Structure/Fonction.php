@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Fonction extends Model
 {
     use SoftDeletes;
-    protected $table = 'fonction';
+    protected $table = 'fonctions';
     protected $guarded = [];
 
     public function inscription()
