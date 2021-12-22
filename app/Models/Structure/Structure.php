@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Structure extends Model
 {
     use SoftDeletes;
-    protected $table = 'structure';
+    protected $table = 'structures';
     protected $guarded = [];
 
     public function type()
