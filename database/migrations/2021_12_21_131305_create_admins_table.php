@@ -17,7 +17,7 @@ class CreateAdminsTable extends Migration
             $table->id();
             $table->foreignId('user')->constrained('inscription')->onUpdate('restrict')->onDelete('restrict');
             $table->foreignId('type')->constrained('type_admins')->onUpdate('restrict')->onDelete('restrict');
-            $table->foreignId('structure')->constrained('structures')->onUpdate('restrict')->onDelete('restrict');
+            $table->foreignId('structure')->nullable()->constrained('structures')->onUpdate('restrict')->onDelete('restrict');
             $table->foreignId('inscription')->constrained('inscription')->onUpdate('restrict')->onDelete('restrict');
             $table->timestamps();
             $table->softDeletes();
