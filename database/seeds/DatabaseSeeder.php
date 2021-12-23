@@ -20,5 +20,6 @@ class DatabaseSeeder extends Seeder
         $this->call(AdminSeeder::class);
         $this->call(DroitAccesSeeder::class);
         $this->call(AffectationStructureSeeder::class);
+        $this->call(PosteSeeder::class);
     }
 }
