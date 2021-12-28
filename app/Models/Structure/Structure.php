@@ -25,4 +25,9 @@ class Structure extends Model
     {
         return $this->belongsTo(Inscription::class, 'inscription');
     }
+
+    public function sous_structures()
+    {
+        return $this->hasMany(Structure::class, 'parent');
+    }
 }
