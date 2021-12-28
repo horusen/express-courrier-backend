@@ -17,13 +17,8 @@ class CreateDossierTable extends Migration
             $table->id();
             $table->string('libelle');
             $table->string('description');
-            $table->boolean('actif')->default(1);
-            $table->boolean('cacher')->default(0);
-            $table->boolean('bloquer')->default(0);
-            $table->string('password')->nullable();
-            $table->foreignId('conservation')->constrained('conservation_rule')->onUpdate('restrict')->onDelete('restrict')->nullable();
+            $table->foreignId('conservation')->constrained('ged_conservation_rule')->onUpdate('restrict')->onDelete('restrict')->nullable();
             $table->foreignId('inscription')->constrained('inscription')->onUpdate('restrict')->onDelete('restrict');
-            $table->dateTime('archivated_at');
             $table->timestamps();
             $table->softDeletes();
         });

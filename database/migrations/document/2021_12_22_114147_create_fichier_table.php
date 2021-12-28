@@ -19,11 +19,7 @@ class CreateFichierTable extends Migration
             $table->foreignId('type')->constrained('type_fichier')->onUpdate('restrict')->onDelete('restrict');
             $table->text('libelle');
             $table->text('fichier');
-            $table->boolean('cacher')->default(0);
-            $table->boolean('bloquer')->default(0);
-            $table->string('password')->nullable();
             $table->foreignId('inscription')->constrained('inscription')->onUpdate('restrict')->onDelete('restrict');
-            $table->dateTime('archivated_at');
             $table->timestamps();
             $table->softDeletes();
         });

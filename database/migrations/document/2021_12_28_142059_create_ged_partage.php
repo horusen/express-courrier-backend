@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateFichierFavoriTable extends Migration
+class CreateGedPartage extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,10 @@ class CreateFichierFavoriTable extends Migration
      */
     public function up()
     {
-        Schema::create('fichier_favori', function (Blueprint $table) {
+        Schema::create('ged_partage', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('fichier')->constrained('fichier')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('personne')->constrained('inscription')->onUpdate('restrict')->onDelete('restrict');
+            $table->foreignId('element')->constrained('ged_element')->onUpdate('restrict')->onDelete('restrict');
             $table->foreignId('inscription')->constrained('inscription')->onUpdate('restrict')->onDelete('restrict');
             $table->timestamps();
             $table->softDeletes();
@@ -29,6 +30,6 @@ class CreateFichierFavoriTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('fichier_favori');
+        Schema::dropIfExists('ged_partage');
     }
 }

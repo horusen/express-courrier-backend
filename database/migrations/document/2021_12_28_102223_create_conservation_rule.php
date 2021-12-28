@@ -13,7 +13,7 @@ class CreateConservationRule extends Migration
      */
     public function up()
     {
-        Schema::create('conservation_rule', function (Blueprint $table) {
+        Schema::create('ged_conservation_rule', function (Blueprint $table) {
             $table->id();
             $table->string('libelle');
             $table->integer('duree_annee');
@@ -22,7 +22,6 @@ class CreateConservationRule extends Migration
             $table->timestamps();
             $table->softDeletes();
         });
-        Schema::enableForeignKeyConstraints();
     }
 
     /**

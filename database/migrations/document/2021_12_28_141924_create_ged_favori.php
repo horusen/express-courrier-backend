@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateDossierStructure extends Migration
+class CreateGedFavori extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,9 @@ class CreateDossierStructure extends Migration
      */
     public function up()
     {
-        Schema::create('dossier_structure', function (Blueprint $table) {
+        Schema::create('ged_favori', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('structure')->constrained('structures')->onUpdate('restrict')->onDelete('restrict');
-            $table->foreignId('dossier')->constrained('dossier')->onUpdate('restrict')->onDelete('restrict');
+            $table->foreignId('element')->constrained('ged_element')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignId('inscription')->constrained('inscription')->onUpdate('restrict')->onDelete('restrict');
             $table->timestamps();
             $table->softDeletes();
@@ -30,6 +29,6 @@ class CreateDossierStructure extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('dossier_structure');
+        Schema::dropIfExists('ged_favori');
     }
 }

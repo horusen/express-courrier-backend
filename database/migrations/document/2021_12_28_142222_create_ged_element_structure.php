@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateFichierStructure extends Migration
+class CreateGedElementStructure extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,15 @@ class CreateFichierStructure extends Migration
      */
     public function up()
     {
-        Schema::create('fichier_structure', function (Blueprint $table) {
+        Schema::create('ged_element_structure', function (Blueprint $table) {
             $table->id();
             $table->foreignId('structure')->constrained('structures')->onUpdate('restrict')->onDelete('restrict');
-            $table->foreignId('fichier')->constrained('fichier')->onUpdate('restrict')->onDelete('restrict');
+            $table->foreignId('element')->constrained('ged_element')->onUpdate('restrict')->onDelete('restrict');
             $table->foreignId('inscription')->constrained('inscription')->onUpdate('restrict')->onDelete('restrict');
             $table->timestamps();
             $table->softDeletes();
         });
+        Schema::enableForeignKeyConstraints();
     }
 
     /**
@@ -30,6 +31,6 @@ class CreateFichierStructure extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('fichier_structure');
+        Schema::dropIfExists('ged_element_structure');
     }
 }
