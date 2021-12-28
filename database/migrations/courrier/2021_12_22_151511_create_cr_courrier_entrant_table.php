@@ -22,7 +22,7 @@ class CreateCrCourrierEntrantTable extends Migration
             $table->softDeletes();
 
             $table->foreignId('courrier')->constrained('cr_courrier')->onDelete('restrict')->onUpdate('restrict');
-            $table->foreignId('expediteur')->constrained('cr_coordonne')->onDelete('restrict')->onUpdate('restrict');
+            $table->foreignId('expediteur')->constrained('cr_coordonnee')->onDelete('restrict')->onUpdate('restrict');
             $table->foreignId('responsable')->constrained('inscription')->onDelete('restrict')->onUpdate('restrict');
             $table->foreignId('inscription')->constrained('inscription')->onDelete('restrict')->onUpdate('restrict');
         });
