@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCrSuiviTable extends Migration
+class CreateConservationRule extends Migration
 {
     /**
      * Run the migrations.
@@ -13,17 +13,16 @@ class CreateCrSuiviTable extends Migration
      */
     public function up()
     {
-        Schema::create('cr_suivi', function (Blueprint $table) {
+        Schema::create('conservation_rule', function (Blueprint $table) {
             $table->id();
             $table->string('libelle');
-            $table->date('date');
-            $table->string('moyen');
-            $table->string('resultat');
-
-            $table->foreignId('inscription')->constrained('inscription')->onDelete('restrict')->onUpdate('restrict');
+            $table->integer('duree_annee');
+            $table->text('description');
+            $table->foreignId('inscription')->constrained('inscription')->onUpdate('restrict')->onDelete('restrict');
             $table->timestamps();
             $table->softDeletes();
         });
+        Schema::enableForeignKeyConstraints();
     }
 
     /**
@@ -33,6 +32,6 @@ class CreateCrSuiviTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('cr_suivi');
+        Schema::dropIfExists('conservation_rule');
     }
 }

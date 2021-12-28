@@ -13,17 +13,19 @@ class CreateCrCourrierTable extends Migration
      */
     public function up()
     {
+        Schema::disableForeignKeyConstraints();
         Schema::create('cr_courrier', function (Blueprint $table) {
             $table->id();
             $table->string('libelle');
             $table->string('objet');
             $table->date('date_redaction');
             $table->text('commentaire')->nullable();
+            $table->boolean('valider')->default(0);
 
             // Debut Champ(nature): facture
             $table->string('numero_facture')->nullable();
             $table->string('devise')->nullable();
-            $table->int('montant')->nullable();
+            $table->integer('montant')->nullable();
             // Fin Champ(nature): facture
 
             $table->timestamps();

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCrCourrierInterneTable extends Migration
+class CreateLogActivity extends Migration
 {
     /**
      * Run the migrations.
@@ -13,16 +13,18 @@ class CreateCrCourrierInterneTable extends Migration
      */
     public function up()
     {
-        Schema::create('cr_courrier_interne', function (Blueprint $table) {
+        Schema::disableForeignKeyConstraints();
+        Schema::create('log_activity', function (Blueprint $table) {
             $table->id();
+            $table->text('libelle');
+            $table->string('objet_type');
+            $table->unsignedBigInteger('objet_id');
+            $table->foreignId('inscription')->constrained('inscription')->onUpdate('restrict')->onDelete('restrict');
             $table->timestamps();
             $table->softDeletes();
-
-            $table->foreignId('courrier')->constrained('cr_courrier')->onDelete('restrict')->onUpdate('restrict');
-            $table->foreignId('inscription')->constrained('inscription')->onDelete('restrict')->onUpdate('restrict');
-
         });
         Schema::enableForeignKeyConstraints();
+
     }
 
     /**
@@ -32,6 +34,6 @@ class CreateCrCourrierInterneTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('cr_courrier_interne');
+        Schema::dropIfExists('log_activity');
     }
 }

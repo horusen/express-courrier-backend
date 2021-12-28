@@ -16,6 +16,7 @@ class CreateCrReaffectationTable extends Migration
         Schema::create('cr_reaffectation', function (Blueprint $table) {
             $table->id();
             $table->string('libelle');
+            $table->foreignId('courrier')->constrained('cr_courrier')->onUpdate('restrict')->onDelete('restrict');
             $table->foreignId('structure')->constrained('structures')->onDelete('restrict')->onUpdate('restrict');
             $table->foreignId('suivi_par')->constrained('inscription')->onDelete('restrict')->onUpdate('restrict');
             $table->foreignId('inscription')->constrained('inscription')->onDelete('restrict')->onUpdate('restrict');
