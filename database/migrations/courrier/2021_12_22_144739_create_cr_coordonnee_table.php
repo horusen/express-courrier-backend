@@ -21,7 +21,7 @@ class CreateCrCoordonneeTable extends Migration
             $table->string('adresse');
             $table->text('condition_suivi');
             $table->text('commentaire');
-            $table->foreignId('inscription')->constrained('inscription')->onDelete('restrict')->onUpdate('restrict');
+            $table->foreignId('inscription_id')->constrained('inscription')->onDelete('restrict')->onUpdate('restrict');
             $table->timestamps();
             $table->softDeletes();
         });

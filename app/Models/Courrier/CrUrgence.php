@@ -31,18 +31,18 @@ class CrUrgence extends Eloquent
 
 	protected $casts = [
 		'niveau' => 'int',
-		'inscription' => 'int'
+		'inscription_id' => 'int'
 	];
 
 	protected $fillable = [
 		'libelle',
 		'couleur',
 		'niveau',
-		'inscription'
+		'inscription_id'
 	];
 
 	public function inscription()
 	{
-		return $this->belongsTo(\App\Models\Inscription::class, 'inscription');
+		return $this->belongsTo(\App\Models\Inscription::class, 'inscription_id');
 	}
 }

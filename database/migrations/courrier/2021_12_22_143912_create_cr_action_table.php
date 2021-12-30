@@ -17,7 +17,7 @@ class CreateCrActionTable extends Migration
             $table->id();
             $table->string('libelle');
             $table->enum('masque',['affectation', 'depot','traitement', 'validation', 'a_effectuer']);
-            $table->foreignId('inscription')->constrained('inscription')->onDelete('restrict')->onUpdate('restrict');
+            $table->foreignId('inscription_id')->constrained('inscription')->onDelete('restrict')->onUpdate('restrict');
             $table->timestamps();
             $table->softDeletes();
         });

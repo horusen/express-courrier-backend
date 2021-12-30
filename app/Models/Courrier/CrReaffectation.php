@@ -32,32 +32,37 @@ class CrReaffectation extends Eloquent
 	protected $table = 'cr_reaffectation';
 
 	protected $casts = [
-		'courrier' => 'int',
-		'structure' => 'int',
+		'courrier_id' => 'int',
+		'structure_id' => 'int',
 		'suivi_par' => 'int',
-		'inscription' => 'int'
+		'inscription_id' => 'int'
 	];
 
 	protected $fillable = [
 		'libelle',
-		'courrier',
-		'structure',
+		'courrier_id',
+		'structure_id',
 		'suivi_par',
-		'inscription'
+		'inscription_id'
 	];
 
 	public function cr_courrier()
 	{
-		return $this->belongsTo(\App\Models\Courrier\CrCourrier::class, 'courrier');
+		return $this->belongsTo(\App\Models\Courrier\CrCourrier::class, 'courrier_id');
 	}
 
 	public function inscription()
+	{
+		return $this->belongsTo(\App\Models\Inscription::class, 'inscription_id');
+	}
+
+    public function suivi_par_inscription()
 	{
 		return $this->belongsTo(\App\Models\Inscription::class, 'suivi_par');
 	}
 
 	public function structure()
 	{
-		return $this->belongsTo(\App\Models\Courrier\Structure::class, 'structure');
+		return $this->belongsTo(\App\Models\Courrier\Structure::class, 'structure_id');
 	}
 }

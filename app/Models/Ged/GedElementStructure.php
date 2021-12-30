@@ -32,13 +32,13 @@ class GedElementStructure extends Eloquent
 	protected $casts = [
 		'structure' => 'int',
 		'element' => 'int',
-		'inscription' => 'int'
+		'inscription_id' => 'int'
 	];
 
 	protected $fillable = [
 		'structure',
 		'element',
-		'inscription'
+		'inscription_id'
 	];
 
 	public function ged_element()
@@ -48,7 +48,7 @@ class GedElementStructure extends Eloquent
 
 	public function inscription()
 	{
-		return $this->belongsTo(\App\Models\Inscription::class, 'inscription');
+		return $this->belongsTo(\App\Models\Inscription::class, 'inscription_id');
 	}
 
 	public function structure()

@@ -49,11 +49,11 @@ class CrCourrier extends Eloquent
 	protected $casts = [
 		'valider' => 'bool',
 		'montant' => 'int',
-		'type' => 'int',
-		'nature' => 'int',
-		'structure' => 'int',
+		'type_id' => 'int',
+		'nature_id' => 'int',
+		'structure_id' => 'int',
 		'suivi_par' => 'int',
-		'inscription' => 'int'
+		'inscription_id' => 'int'
 	];
 
 	protected $dates = [
@@ -69,60 +69,65 @@ class CrCourrier extends Eloquent
 		'numero_facture',
 		'devise',
 		'montant',
-		'type',
-		'nature',
-		'structure',
+		'type_id',
+		'nature_id',
+		'structure_id',
 		'suivi_par',
-		'inscription'
+		'inscription_id'
 	];
 
-	public function inscription()
+    public function suivi_par_inscription()
 	{
 		return $this->belongsTo(\App\Models\Inscription::class, 'suivi_par');
 	}
 
+	public function inscription()
+	{
+		return $this->belongsTo(\App\Models\Inscription::class, 'inscription_id');
+	}
+
 	public function cr_nature()
 	{
-		return $this->belongsTo(\App\Models\Courrier\CrNature::class, 'nature');
+		return $this->belongsTo(\App\Models\Courrier\CrNature::class, 'nature_id');
 	}
 
 	public function structure()
 	{
-		return $this->belongsTo(\App\Models\Structure::class, 'structure');
+		return $this->belongsTo(\App\Models\Structure::class, 'structure_id');
 	}
 
 	public function cr_type()
 	{
-		return $this->belongsTo(\App\Models\Courrier\CrType::class, 'type');
+		return $this->belongsTo(\App\Models\Courrier\CrType::class, 'type_id');
 	}
 
 	public function cr_courrier_entrants()
 	{
-		return $this->hasMany(\App\Models\Courrier\CrCourrierEntrant::class, 'courrier');
+		return $this->hasMany(\App\Models\Courrier\CrCourrierEntrant::class, 'courrier_id');
 	}
 
 	public function cr_courrier_internes()
 	{
-		return $this->hasMany(\App\Models\Courrier\CrCourrierInterne::class, 'courrier');
+		return $this->hasMany(\App\Models\Courrier\CrCourrierInterne::class, 'courrier_id');
 	}
 
 	public function cr_courrier_sortants()
 	{
-		return $this->hasMany(\App\Models\Courrier\CrCourrierSortant::class, 'courrier');
+		return $this->hasMany(\App\Models\Courrier\CrCourrierSortant::class, 'courrier_id');
 	}
 
 	public function cr_fichiers()
 	{
-		return $this->hasMany(\App\Models\Courrier\CrFichier::class, 'courrier');
+		return $this->hasMany(\App\Models\Courrier\CrFichier::class, 'courrier_id');
 	}
 
 	public function cr_reaffectations()
 	{
-		return $this->hasMany(\App\Models\Courrier\CrReaffectation::class, 'courrier');
+		return $this->hasMany(\App\Models\Courrier\CrReaffectation::class, 'courrier_id');
 	}
 
 	public function cr_traitements()
 	{
-		return $this->hasMany(\App\Models\Courrier\CrTraitement::class, 'courrier');
+		return $this->hasMany(\App\Models\Courrier\CrTraitement::class, 'courrier_id');
 	}
 }

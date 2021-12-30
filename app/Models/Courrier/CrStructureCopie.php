@@ -32,24 +32,24 @@ class CrStructureCopie extends Eloquent
 	protected $casts = [
 		'info' => 'bool',
 		'traitement' => 'bool',
-		'structure' => 'int',
-		'inscription' => 'int'
+		'structure_id' => 'int',
+		'inscription_id' => 'int'
 	];
 
 	protected $fillable = [
 		'info',
 		'traitement',
-		'structure',
-		'inscription'
+		'structure_id',
+		'inscription_id'
 	];
 
 	public function inscription()
 	{
-		return $this->belongsTo(\App\Models\Inscription::class, 'inscription');
+		return $this->belongsTo(\App\Models\Inscription::class, 'inscription_id');
 	}
 
 	public function structure()
 	{
-		return $this->belongsTo(\App\Models\Structure::class, 'structure');
+		return $this->belongsTo(\App\Models\Structure::class, 'structure_id');
 	}
 }

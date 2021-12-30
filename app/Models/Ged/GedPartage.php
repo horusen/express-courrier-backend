@@ -32,13 +32,13 @@ class GedPartage extends Eloquent
 	protected $casts = [
 		'personne' => 'int',
 		'element' => 'int',
-		'inscription' => 'int'
+		'inscription_id' => 'int'
 	];
 
 	protected $fillable = [
 		'personne',
 		'element',
-		'inscription'
+		'inscription_id'
 	];
 
 	public function ged_element()
@@ -46,8 +46,13 @@ class GedPartage extends Eloquent
 		return $this->belongsTo(\App\Models\Ged\GedElement::class, 'element');
 	}
 
-	public function inscription()
+    public function personne_inscription()
 	{
 		return $this->belongsTo(\App\Models\Inscription::class, 'personne');
+	}
+
+	public function inscription()
+	{
+		return $this->belongsTo(\App\Models\Inscription::class, 'inscription_id');
 	}
 }

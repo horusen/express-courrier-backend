@@ -20,7 +20,7 @@ class CreateCrSuiviTable extends Migration
             $table->string('moyen');
             $table->string('resultat');
 
-            $table->foreignId('inscription')->constrained('inscription')->onDelete('restrict')->onUpdate('restrict');
+            $table->foreignId('inscription_id')->constrained('inscription')->onDelete('restrict')->onUpdate('restrict');
             $table->timestamps();
             $table->softDeletes();
         });

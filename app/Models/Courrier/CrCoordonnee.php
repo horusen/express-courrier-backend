@@ -46,17 +46,17 @@ class CrCoordonnee extends Eloquent
 		'adresse',
 		'condition_suivi',
 		'commentaire',
-		'inscription'
+		'inscription_id'
 	];
 
 	public function inscription()
 	{
-		return $this->belongsTo(\App\Models\Inscription::class, 'inscription');
+		return $this->belongsTo(\App\Models\Inscription::class, 'inscription_id');
 	}
 
 	public function cr_ampiliations()
 	{
-		return $this->hasMany(\App\Models\Courrier\CrAmpiliation::class, 'coordonnee');
+		return $this->hasMany(\App\Models\Courrier\CrAmpiliation::class, 'coordonnee_id');
 	}
 
 	public function cr_courrier_entrants()
@@ -66,6 +66,6 @@ class CrCoordonnee extends Eloquent
 
 	public function cr_destinataires()
 	{
-		return $this->hasMany(\App\Models\Courrier\CrDestinataire::class, 'coordonnee');
+		return $this->hasMany(\App\Models\Courrier\CrDestinataire::class, 'coordonnee_id');
 	}
 }

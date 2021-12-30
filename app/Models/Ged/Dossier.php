@@ -8,6 +8,7 @@
 namespace App\Models\Ged;
 
 use Illuminate\Database\Eloquent\Model as Eloquent;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * Class Dossier
@@ -32,23 +33,72 @@ class Dossier extends Eloquent
 
 	protected $casts = [
 		'conservation' => 'int',
-		'inscription' => 'int'
+		'dossier' => 'int',
+		'inscription_id' => 'int'
 	];
 
 	protected $fillable = [
 		'libelle',
 		'description',
 		'conservation',
-		'inscription'
+        'dossier',
+		'inscription_id'
 	];
+
+	protected $appends = ['nb_element', 'size', 'is_user'];
+
+    public function getSizeAttribute()
+	{
+        $sum = 0; //This specific models count
+        foreach($this->fichiers as $child){
+            $sum += $child->size; //Sum up the count
+        }
+		return $sum;
+    }
+
+    public function getIsUserAttribute()
+	{
+		if(Auth::check() && $this->attributes['inscription_id'] === 1)
+		{
+			return true;
+		}
+		return false;
+	}
+
+    public function getNbElementAttribute()
+	{
+     return $this->dossiers()->count() + $this->fichiers()->count();
+    }
+
 
 	public function ged_conservation_rule()
 	{
-		return $this->belongsTo(\App\Models\Ged\GedConservationRule::class, 'conservation');
+		return $this->belongsTo(\App\Models\Ged\GedConservationRule::class, 'conservation_id');
 	}
 
 	public function inscription()
 	{
-		return $this->belongsTo(\App\Models\Inscription::class, 'inscription');
+		return $this->belongsTo(\App\Models\Inscription::class, 'inscription_id');
+	}
+
+    public function ged_element()
+    {
+        return $this->morphOne(\App\Models\Ged\GedElement::class, 'objet');
+    }
+
+    public function dossier()
+	{
+		return $this->belongsTo(\App\Models\Ged\Dossier::class, 'dossier_id')->with('dossier_parent.ged_element');
+	}
+
+	public function dossiers()
+	{
+		// return $this->hasMany(\App\Models\Ged\Dossier::class, 'dossier_id');
+		return $this->hasMany(\App\Models\Ged\Dossier::class, 'dossier_id')->with('dossiers.ged_element');
+	}
+
+    public function fichiers()
+	{
+		return $this->belongsToMany(\App\Models\Ged\Fichier::class, 'fichier_dossier', 'dossier_id', 'fichier_id');
 	}
 }

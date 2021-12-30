@@ -29,13 +29,13 @@ class CrAction extends Eloquent
 	protected $table = 'cr_action';
 
 	protected $casts = [
-		'inscription' => 'int'
+		'inscription_id' => 'int'
 	];
 
 	protected $fillable = [
 		'libelle',
 		'masque',
-		'inscription'
+		'inscription_id'
 	];
 
 	public function inscription()

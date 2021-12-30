@@ -16,7 +16,7 @@ class CreateGedFavori extends Migration
         Schema::create('ged_favori', function (Blueprint $table) {
             $table->id();
             $table->foreignId('element')->constrained('ged_element')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreignId('inscription')->constrained('inscription')->onUpdate('restrict')->onDelete('restrict');
+            $table->foreignId('inscription_id')->constrained('inscription')->onUpdate('restrict')->onDelete('restrict');
             $table->timestamps();
             $table->softDeletes();
         });

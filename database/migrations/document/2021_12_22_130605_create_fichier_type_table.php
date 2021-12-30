@@ -18,7 +18,7 @@ class CreateFichierTypeTable extends Migration
             $table->enum('libelle', ['archive', 'audio', 'document', 'excel', 'image', 'video', 'word', 'text', 'pdf', 'presentation'])->default('document');
             $table->string('icon');
             $table->string('extension');
-            $table->foreignId('inscription')->constrained('inscription')->onUpdate('restrict')->onDelete('restrict');
+            $table->foreignId('inscription_id')->constrained('inscription')->onUpdate('restrict')->onDelete('restrict');
             $table->timestamps();
             $table->softDeletes();
         });

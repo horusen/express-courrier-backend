@@ -33,10 +33,10 @@ class CrCourrierEntrant extends Eloquent
 	protected $table = 'cr_courrier_entrant';
 
 	protected $casts = [
-		'courrier' => 'int',
+		'courrier_id' => 'int',
 		'expediteur' => 'int',
 		'responsable' => 'int',
-		'inscription' => 'int'
+		'inscription_id' => 'int'
 	];
 
 	protected $dates = [
@@ -45,15 +45,15 @@ class CrCourrierEntrant extends Eloquent
 
 	protected $fillable = [
 		'date_arrive',
-		'courrier',
+		'courrier_id',
 		'expediteur',
 		'responsable',
-		'inscription'
+		'inscription_id'
 	];
 
 	public function cr_courrier()
 	{
-		return $this->belongsTo(\App\Models\Courrier\CrCourrier::class, 'courrier');
+		return $this->belongsTo(\App\Models\Courrier\CrCourrier::class, 'courrier_id');
 	}
 
 	public function cr_coordonnee()
@@ -61,8 +61,13 @@ class CrCourrierEntrant extends Eloquent
 		return $this->belongsTo(\App\Models\Courrier\CrCoordonnee::class, 'expediteur');
 	}
 
-	public function inscription()
+    public function responsable_inscription()
 	{
 		return $this->belongsTo(\App\Models\Inscription::class, 'responsable');
+	}
+
+	public function inscription()
+	{
+		return $this->belongsTo(\App\Models\Inscription::class, 'inscription_id');
 	}
 }

@@ -32,19 +32,19 @@ class GedConservationRule extends Eloquent
 
 	protected $casts = [
 		'duree_annee' => 'int',
-		'inscription' => 'int'
+		'inscription_id' => 'int'
 	];
 
 	protected $fillable = [
 		'libelle',
 		'duree_annee',
 		'description',
-		'inscription'
+		'inscription_id'
 	];
 
 	public function inscription()
 	{
-		return $this->belongsTo(\App\Models\Inscription::class, 'inscription');
+		return $this->belongsTo(\App\Models\Inscription::class, 'inscription_id');
 	}
 
 	public function dossiers()

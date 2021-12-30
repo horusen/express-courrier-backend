@@ -32,13 +32,13 @@ class GedElementPersonne extends Eloquent
 	protected $casts = [
 		'personne' => 'int',
 		'element' => 'int',
-		'inscription' => 'int'
+		'inscription_id' => 'int'
 	];
 
 	protected $fillable = [
 		'personne',
 		'element',
-		'inscription'
+		'inscription_id'
 	];
 
 	public function ged_element()

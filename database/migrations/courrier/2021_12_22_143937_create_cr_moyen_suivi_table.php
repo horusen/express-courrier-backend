@@ -16,7 +16,7 @@ class CreateCrMoyenSuiviTable extends Migration
         Schema::create('cr_moyen_suivi', function (Blueprint $table) {
             $table->id();
             $table->string('libelle');
-            $table->foreignId('inscription')->constrained('inscription')->onDelete('restrict')->onUpdate('restrict');
+            $table->foreignId('inscription_id')->constrained('inscription')->onDelete('restrict')->onUpdate('restrict');
             $table->timestamps();
             $table->softDeletes();
         });

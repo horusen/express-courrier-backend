@@ -15,9 +15,9 @@ class CreateCrFichierTable extends Migration
     {
         Schema::create('cr_fichier', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('fichier')->constrained('fichier')->onDelete('restrict')->onUpdate('restrict');
-            $table->foreignId('courrier')->constrained('cr_courrier')->onDelete('restrict')->onUpdate('restrict');
-            $table->foreignId('inscription')->constrained('inscription')->onDelete('restrict')->onUpdate('restrict');
+            $table->foreignId('fichier_id')->constrained('fichier')->onDelete('restrict')->onUpdate('restrict');
+            $table->foreignId('courrier_id')->constrained('cr_courrier')->onDelete('restrict')->onUpdate('restrict');
+            $table->foreignId('inscription_id')->constrained('inscription')->onDelete('restrict')->onUpdate('restrict');
             $table->timestamps();
             $table->softDeletes();
         });

@@ -8,6 +8,7 @@
 namespace App\Models\Ged;
 
 use Illuminate\Database\Eloquent\Model as Eloquent;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * Class GedElement
@@ -61,6 +62,18 @@ class GedElement extends Eloquent
 		'archivated_at'
 	];
 
+	protected $appends = ['user_favoris'];
+    protected $classified = ['password'];
+
+    public function getUserFavorisAttribute()
+	{
+		if(Auth::check())
+		{
+			return $this->favoris()->where('id', 1)->count();
+		}
+		return false;
+    }
+
 	public function ged_element_personnes()
 	{
 		return $this->hasMany(\App\Models\Ged\GedElementPersonne::class, 'element');
@@ -82,4 +95,14 @@ class GedElement extends Eloquent
 	{
 		return $this->hasMany(\App\Models\Ged\GedPartage::class, 'element');
 	}
+
+    public function partage_a_personnes()
+	{
+		return $this->belongsToMany(\App\Models\Inscription::class, 'ged_partage', 'element', 'personne');
+	}
+
+    public function objet()
+    {
+        return $this->morphTo();
+    }
 }

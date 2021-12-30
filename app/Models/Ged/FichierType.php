@@ -31,19 +31,19 @@ class FichierType extends Eloquent
 	protected $table = 'fichier_type';
 
 	protected $casts = [
-		'inscription' => 'int'
+		'inscription_id' => 'int'
 	];
 
 	protected $fillable = [
 		'libelle',
 		'icon',
 		'extension',
-		'inscription'
+		'inscription_id'
 	];
 
 	public function inscription()
 	{
-		return $this->belongsTo(\App\Models\Inscription::class, 'inscription');
+		return $this->belongsTo(\App\Models\Inscription::class, 'inscription_id');
 	}
 
 	public function fichiers()

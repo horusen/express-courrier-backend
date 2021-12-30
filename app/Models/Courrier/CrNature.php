@@ -29,17 +29,17 @@ class CrNature extends Eloquent
 	protected $table = 'cr_nature';
 
 	protected $casts = [
-		'inscription' => 'int'
+		'inscription_id' => 'int'
 	];
 
 	protected $fillable = [
 		'libelle',
-		'inscription'
+		'inscription_id'
 	];
 
 	public function inscription()
 	{
-		return $this->belongsTo(\App\Models\Inscription::class, 'inscription');
+		return $this->belongsTo(\App\Models\Inscription::class, 'inscription_id');
 	}
 
 	public function cr_courriers()

@@ -30,12 +30,12 @@ class GedFavori extends Eloquent
 
 	protected $casts = [
 		'element' => 'int',
-		'inscription' => 'int'
+		'inscription_id' => 'int'
 	];
 
 	protected $fillable = [
 		'element',
-		'inscription'
+		'inscription_id'
 	];
 
 	public function ged_element()
@@ -45,6 +45,6 @@ class GedFavori extends Eloquent
 
 	public function inscription()
 	{
-		return $this->belongsTo(\App\Models\Inscription::class, 'inscription');
+		return $this->belongsTo(\App\Models\Inscription::class, 'inscription_id');
 	}
 }

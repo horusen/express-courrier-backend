@@ -31,7 +31,7 @@ class CrSuivi extends Eloquent
 	protected $table = 'cr_suivi';
 
 	protected $casts = [
-		'inscription' => 'int'
+		'inscription_id' => 'int'
 	];
 
 	protected $dates = [
@@ -43,11 +43,11 @@ class CrSuivi extends Eloquent
 		'date',
 		'moyen',
 		'resultat',
-		'inscription'
+		'inscription_id'
 	];
 
 	public function inscription()
 	{
-		return $this->belongsTo(\App\Models\Inscription::class, 'inscription');
+		return $this->belongsTo(\App\Models\Inscription::class, 'inscription_id');
 	}
 }

@@ -21,7 +21,7 @@ class CreateGedElement extends Migration
             $table->string('password')->nullable();
             $table->string('objet_type');
             $table->unsignedBigInteger('objet_id');
-            $table->dateTime('archivated_at');
+            $table->dateTime('archivated_at')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

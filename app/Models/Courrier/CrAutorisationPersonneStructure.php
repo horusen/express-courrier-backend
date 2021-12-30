@@ -41,9 +41,9 @@ class CrAutorisationPersonneStructure extends Eloquent
 		'ajouter_personne' => 'bool',
 		'retirer_personne' => 'bool',
 		'affecter_courrier' => 'bool',
-		'structure' => 'int',
+		'structure_id' => 'int',
 		'personne' => 'int',
-		'inscription' => 'int'
+		'inscription_id' => 'int'
 	];
 
 	protected $fillable = [
@@ -53,18 +53,23 @@ class CrAutorisationPersonneStructure extends Eloquent
 		'ajouter_personne',
 		'retirer_personne',
 		'affecter_courrier',
-		'structure',
+		'structure_id',
 		'personne',
-		'inscription'
+		'inscription_id'
 	];
 
 	public function inscription()
+	{
+		return $this->belongsTo(\App\Models\Inscription::class, 'inscription_id');
+	}
+
+    public function personne_inscription()
 	{
 		return $this->belongsTo(\App\Models\Inscription::class, 'personne');
 	}
 
 	public function structure()
 	{
-		return $this->belongsTo(\App\Models\Structure::class, 'structure');
+		return $this->belongsTo(\App\Models\Structure::class, 'structure_id');
 	}
 }

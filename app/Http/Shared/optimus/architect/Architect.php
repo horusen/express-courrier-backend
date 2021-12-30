@@ -152,7 +152,7 @@ class Architect
      */
     private function createModeResolver($mode)
     {
-        $class = 'Optimus\Architect\ModeResolver\\';
+        $class = 'App\Http\Shared\Optimus\Architect\ModeResolver\\';
         switch ($mode) {
             default:
             case 'embed':

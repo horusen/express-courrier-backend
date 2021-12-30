@@ -18,8 +18,8 @@ class CreateCrCourrierInterneTable extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->foreignId('courrier')->constrained('cr_courrier')->onDelete('restrict')->onUpdate('restrict');
-            $table->foreignId('inscription')->constrained('inscription')->onDelete('restrict')->onUpdate('restrict');
+            $table->foreignId('courrier_id')->constrained('cr_courrier')->onDelete('restrict')->onUpdate('restrict');
+            $table->foreignId('inscription_id')->constrained('inscription')->onDelete('restrict')->onUpdate('restrict');
 
         });
         Schema::enableForeignKeyConstraints();

@@ -18,7 +18,7 @@ class CreateCrUrgenceTable extends Migration
             $table->string('libelle');
             $table->string('couleur');
             $table->tinyInteger('niveau')->unique();
-            $table->foreignId('inscription')->constrained('inscription')->onDelete('restrict')->onUpdate('restrict');
+            $table->foreignId('inscription_id')->constrained('inscription')->onDelete('restrict')->onUpdate('restrict');
             $table->timestamps();
             $table->softDeletes();
         });

@@ -21,9 +21,9 @@ class CreateCrCourrierSortantTable extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->foreignId('courrier')->constrained('cr_courrier')->onDelete('restrict')->onUpdate('restrict');
-            $table->foreignId('courrier_entrant')->constrained('cr_courrier')->onDelete('restrict')->onUpdate('restrict');
-            $table->foreignId('inscription')->constrained('inscription')->onDelete('restrict')->onUpdate('restrict');
+            $table->foreignId('courrier_id')->constrained('cr_courrier')->onDelete('restrict')->onUpdate('restrict');
+            $table->foreignId('courrier_entrant_id')->constrained('cr_courrier_entrant')->onDelete('restrict')->onUpdate('restrict');
+            $table->foreignId('inscription_id')->constrained('inscription')->onDelete('restrict')->onUpdate('restrict');
         });
     }
 

@@ -17,8 +17,8 @@ class CreateCrStructureCopieTable extends Migration
             $table->id();
             $table->boolean('info')->default(1);
             $table->boolean('traitement')->default(0);
-            $table->foreignId('structure')->constrained('structures')->onDelete('restrict')->onUpdate('restrict');
-            $table->foreignId('inscription')->constrained('inscription')->onDelete('restrict')->onUpdate('restrict');
+            $table->foreignId('structure_id')->constrained('structures')->onDelete('restrict')->onUpdate('restrict');
+            $table->foreignId('inscription_id')->constrained('inscription')->onDelete('restrict')->onUpdate('restrict');
             $table->timestamps();
             $table->softDeletes();
         });

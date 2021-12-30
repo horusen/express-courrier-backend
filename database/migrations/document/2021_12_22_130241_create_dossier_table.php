@@ -17,8 +17,9 @@ class CreateDossierTable extends Migration
             $table->id();
             $table->string('libelle');
             $table->string('description');
-            $table->foreignId('conservation')->constrained('ged_conservation_rule')->onUpdate('restrict')->onDelete('restrict')->nullable();
-            $table->foreignId('inscription')->constrained('inscription')->onUpdate('restrict')->onDelete('restrict');
+            $table->foreignId('conservation_id')->nullable()->constrained('ged_conservation_rule')->onUpdate('restrict')->onDelete('restrict');
+            $table->foreignId('dossier_id')->nullable()->constrained('dossier')->onUpdate('restrict')->onDelete('restrict');
+            $table->foreignId('inscription_id')->constrained('inscription')->onUpdate('restrict')->onDelete('restrict');
             $table->timestamps();
             $table->softDeletes();
         });

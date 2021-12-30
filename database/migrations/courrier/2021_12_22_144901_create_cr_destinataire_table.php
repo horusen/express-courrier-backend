@@ -15,8 +15,9 @@ class CreateCrDestinataireTable extends Migration
     {
         Schema::create('cr_destinataire', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('coordonnee')->constrained('cr_coordonnee')->onDelete('restrict')->onUpdate('restrict');
-            $table->foreignId('inscription')->constrained('inscription')->onDelete('restrict')->onUpdate('restrict');
+            $table->foreignId('coordonnee_id')->constrained('cr_coordonnee')->onDelete('restrict')->onUpdate('restrict');
+            $table->foreignId('inscription_id')->constrained('inscription')->onDelete('restrict')->onUpdate('restrict');
+            $table->foreignId('courrier_id')->constrained('cr_courrier_sortant')->onDelete('restrict')->onUpdate('restrict');
             $table->timestamps();
             $table->softDeletes();
         });

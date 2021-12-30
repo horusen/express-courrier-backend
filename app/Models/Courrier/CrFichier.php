@@ -30,29 +30,29 @@ class CrFichier extends Eloquent
 	protected $table = 'cr_fichier';
 
 	protected $casts = [
-		'fichier' => 'int',
-		'courrier' => 'int',
-		'inscription' => 'int'
+		'fichier_id' => 'int',
+		'courrier_id' => 'int',
+		'inscription_id' => 'int'
 	];
 
 	protected $fillable = [
-		'fichier',
-		'courrier',
-		'inscription'
+		'fichier_id',
+		'courrier_id',
+		'inscription_id'
 	];
 
 	public function cr_courrier()
 	{
-		return $this->belongsTo(\App\Models\Courrier\CrCourrier::class, 'courrier');
+		return $this->belongsTo(\App\Models\Courrier\CrCourrier::class, 'courrier_id');
 	}
 
 	public function fichier()
 	{
-		return $this->belongsTo(\App\Models\Fichier::class, 'fichier');
+		return $this->belongsTo(\App\Models\Fichier::class, 'fichier_id');
 	}
 
 	public function inscription()
 	{
-		return $this->belongsTo(\App\Models\Inscription::class, 'inscription');
+		return $this->belongsTo(\App\Models\Inscription::class, 'inscription_id');
 	}
 }

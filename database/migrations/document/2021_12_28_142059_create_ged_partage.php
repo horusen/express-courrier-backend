@@ -17,7 +17,7 @@ class CreateGedPartage extends Migration
             $table->id();
             $table->foreignId('personne')->constrained('inscription')->onUpdate('restrict')->onDelete('restrict');
             $table->foreignId('element')->constrained('ged_element')->onUpdate('restrict')->onDelete('restrict');
-            $table->foreignId('inscription')->constrained('inscription')->onUpdate('restrict')->onDelete('restrict');
+            $table->foreignId('inscription_id')->constrained('inscription')->onUpdate('restrict')->onDelete('restrict');
             $table->timestamps();
             $table->softDeletes();
         });

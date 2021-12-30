@@ -2,7 +2,7 @@
 
 namespace App\Http\Shared\Optimus\Architect\ModeResolver;
 
-use Optimus\Architect\ModeResolver\ModeResolverInterface;
+use App\Http\Shared\Optimus\Architect\ModeResolver\ModeResolverInterface;
 
 class EmbedModeResolver implements ModeResolverInterface
 {

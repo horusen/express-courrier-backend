@@ -29,22 +29,22 @@ class CrCourrierInterne extends Eloquent
 	protected $table = 'cr_courrier_interne';
 
 	protected $casts = [
-		'courrier' => 'int',
-		'inscription' => 'int'
+		'courrier_id' => 'int',
+		'inscription_id' => 'int'
 	];
 
 	protected $fillable = [
-		'courrier',
-		'inscription'
+		'courrier_id',
+		'inscription_id'
 	];
 
 	public function cr_courrier()
 	{
-		return $this->belongsTo(\App\Models\Courrier\CrCourrier::class, 'courrier');
+		return $this->belongsTo(\App\Models\Courrier\CrCourrier::class, 'courrier_id');
 	}
 
 	public function inscription()
 	{
-		return $this->belongsTo(\App\Models\Inscription::class, 'inscription');
+		return $this->belongsTo(\App\Models\Inscription::class, 'inscription_id');
 	}
 }

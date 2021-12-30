@@ -18,7 +18,7 @@ class CreateConservationRule extends Migration
             $table->string('libelle');
             $table->integer('duree_annee');
             $table->text('description');
-            $table->foreignId('inscription')->constrained('inscription')->onUpdate('restrict')->onDelete('restrict');
+            $table->foreignId('inscription_id')->constrained('inscription')->onUpdate('restrict')->onDelete('restrict');
             $table->timestamps();
             $table->softDeletes();
         });

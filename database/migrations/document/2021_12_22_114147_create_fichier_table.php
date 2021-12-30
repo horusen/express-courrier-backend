@@ -16,10 +16,10 @@ class CreateFichierTable extends Migration
         Schema::disableForeignKeyConstraints();
         Schema::create('fichier', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('type')->constrained('fichier_type')->onUpdate('restrict')->onDelete('restrict');
+            $table->foreignId('type_id')->constrained('fichier_type')->onUpdate('restrict')->onDelete('restrict');
             $table->text('libelle');
             $table->text('fichier');
-            $table->foreignId('inscription')->constrained('inscription')->onUpdate('restrict')->onDelete('restrict');
+            $table->foreignId('inscription_id')->constrained('inscription')->onUpdate('restrict')->onDelete('restrict');
             $table->timestamps();
             $table->softDeletes();
         });
