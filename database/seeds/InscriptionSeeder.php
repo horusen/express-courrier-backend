@@ -12,6 +12,9 @@ class InscriptionSeeder extends Seeder
      */
     public function run()
     {
+
+        $baseURL = 'http://localhost:8000';
+
         Inscription::create([
             'prenom' => 'Babacar',
             'nom' => 'Kane',
@@ -19,9 +22,10 @@ class InscriptionSeeder extends Seeder
             'date_naissance' => '1997-03-16',
             'lieu_naissance' => 'Dakar',
             'telephone' => '772884035',
-            'sexe' => 'HOMME'
+            'sexe' => 'HOMME',
+            'photo' => $baseURL . '/storage/images/a0.jpg',
         ]);
 
-        factory(Inscription::class, 20)->create();
+        factory(Inscription::class, 50)->create();
     }
 }

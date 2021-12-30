@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Messagerie\IntervenantDiscussion;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -12,6 +13,8 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         // $this->call(UserSeeder::class);
+
+        // Structure
         $this->call(InscriptionSeeder::class);
         $this->call(TypeStructureSeeder::class);
         $this->call(StructureSeeder::class);
@@ -19,6 +22,16 @@ class DatabaseSeeder extends Seeder
         $this->call(FonctionSeeder::class);
         $this->call(AdminSeeder::class);
         $this->call(DroitAccesSeeder::class);
+        $this->call(PosteSeeder::class);
         $this->call(AffectationStructureSeeder::class);
+
+
+        // Messagerie
+        $this->call(TypeFichierSeeder::class);
+        $this->call(ExtensionFichierSeeder::class);
+        $this->call(FichierSeeder::class);
+        $this->call(DiscussionSeeder::class);
+        $this->call(ReactionSeeder::class);
+        $this->call(IntervenantDiscussionSeeder::class);
     }
 }

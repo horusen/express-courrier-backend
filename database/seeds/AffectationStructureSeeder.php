@@ -12,6 +12,16 @@ class AffectationStructureSeeder extends Seeder
      */
     public function run()
     {
-        factory(AffectationStructure::class, 20)->create();
+        AffectationStructure::create([
+            'user' => 1,
+            'structure' => 1,
+            'poste' => 1,
+            'fonction' => 1,
+            'is_responsable' => 1,
+            'droit_acces' => 1,
+            'inscription' => 1
+        ]);
+
+        factory(AffectationStructure::class, 50)->create();
     }
 }

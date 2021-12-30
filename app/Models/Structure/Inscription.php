@@ -10,9 +10,21 @@ class Inscription extends Model
     use SoftDeletes;
     protected $table = 'inscription';
     protected $guarded = [];
+    protected $appends = ['nom_complet'];
 
     public function inscription()
     {
         return $this->belongsTo(Inscription::class, 'inscription');
+    }
+
+    public function structures()
+    {
+        return $this->belongsToMany(Structure::class, AffectationStructure::class, 'user', 'structure');
+    }
+
+
+    public function getNomCompletAttribute()
+    {
+        return $this->prenom . ' ' . $this->nom;
     }
 }
