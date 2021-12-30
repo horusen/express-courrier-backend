@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Structure\Admin;
 use App\Models\Structure\Structure;
 use App\Shared\Controllers\BaseController;
+use App\Traits\FileHandlerTrait;
+use App\Traits\Structure\AdminTrait;
 use App\Traits\Structure\StructureTrait;
 use Illuminate\Http\Request;
 
@@ -13,6 +15,8 @@ use Illuminate\Http\Request;
 class StructureController extends BaseController
 {
     use StructureTrait;
+    use AdminTrait;
+    // use FileHandlerTrait;
     protected $model = Structure::class;
     protected $validation = [
         'libelle' => 'required',
@@ -37,12 +41,26 @@ class StructureController extends BaseController
     {
         $this->isValid($request);
 
+        $imagePath = null;
+
         // On verifie si le user connécté a les droits pour cree
         if ($request->has('parent') && $this->isAdmin($this->inscription, $request->parent)) {
             return $this->responseError("Non autorisé", 401);
         }
 
-        $structure = $this->model::create($request->all() + ['inscription' => $this->inscription]);
+        if ($request->has('image')) {
+            $file = $request->image;
+            // Create a unique name for the file
+            $file_new_name = time() . str_replace(' ', '_', $file->getClientOriginalName());
+
+            // Create a path for the file
+            $imagePath =  'uploads' . '/' . 'structures/' . $request->libelle . '/' . $file->getClientOriginalExtension();
+
+            // Move the renamed file in the new path
+            $file->move($imagePath, $file_new_name);
+        }
+
+        $structure = $this->model::create($request->all() + ['inscription' => $this->inscription + $imagePath]);
 
         // On definit le nouveau membre comme administrateur
         Admin::create([
@@ -57,7 +75,7 @@ class StructureController extends BaseController
 
     public function show(Structure $structure)
     {
-        return $structure->with('sous_structures')->first();
+        return $structure->with(['sous_structures'])->first();
     }
 
     public function getSousStructures(Structure $structure)

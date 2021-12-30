@@ -12,6 +12,7 @@ $factory->define(Structure::class, function (Faker $faker) {
         'libelle' =>  "Service " . $faker->citySuffix(),
         'description' =>  $faker->text(),
         'cigle' => "SERVICE",
+        'image' => 'http://localhost:8000/storage/images/service' . $faker->numberBetween(1, 5) . '.jpg',
         'type' =>  3,
         'parent' => $faker->numberBetween(2, 5),
         'inscription' =>  1,

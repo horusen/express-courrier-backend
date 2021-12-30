@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class IntervenantDiscussion extends Model
 {
     use SoftDeletes;
-    protected $table = 'intervenants_discussion';
+    protected $table = 'intervenant_discussions';
     protected $primaryKey = 'id';
     protected $fillable = ['user1', 'user2', 'discussion', 'inscription'];
 

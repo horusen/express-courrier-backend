@@ -16,6 +16,6 @@ $factory->define(Inscription::class, function (Faker $faker) {
         'telephone' => $faker->unique()->phoneNumber(),
         'sexe' => $faker->randomElement(['HOMME', 'FEMME']),
         'inscription' => 1,
-
+        'photo' => 'http://localhost:8000/storage/images/a' . $faker->numberBetween(1, 10) . '.jpg',
     ];
 });
