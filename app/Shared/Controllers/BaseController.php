@@ -3,10 +3,8 @@
 namespace App\Shared\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Shared\Models\Fichier\ExtensionFichier;
-use App\Shared\Models\Fichier\Fichier;
+
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
 class BaseController extends Controller
 {
@@ -34,31 +32,27 @@ class BaseController extends Controller
         return $this->validate($request, $this->validation);
     }
 
-    public function checkValidation(Request $request)
-    {
-        return Validator::make($request->all(), $this->validation);
-    }
 
 
 
 
 
-    public function download($file)
-    {
-        $file = Fichier::find($file);
-        $contentType = null;
+    // public function download($file)
+    // {
+    //     $file = Fichier::find($file);
+    //     $contentType = null;
 
-        if (preg_match(ExtensionFichier::getImageRegex(), $file->extension()->get()->first()->libelle)) {
-            $contentType = 'image/' . $file->extension()->get()->first()->libelle;
-        } elseif (preg_match(ExtensionFichier::getDocumentRegex(), $file->extension()->get()->first()->libelle)) {
-            $contentType = 'application/' . $file->extension()->get()->first()->libelle;
-        }
-        $headers = [
-            'Content-Type' => $contentType
-        ];
-        $fileDownload = str_replace($this->baseURL, public_path() . '/', $file->path);
-        return response()->download($fileDownload, $file->name, $headers, 'inline');
-    }
+    //     if (preg_match(ExtensionFichier::getImageRegex(), $file->extension()->get()->first()->libelle)) {
+    //         $contentType = 'image/' . $file->extension()->get()->first()->libelle;
+    //     } elseif (preg_match(ExtensionFichier::getDocumentRegex(), $file->extension()->get()->first()->libelle)) {
+    //         $contentType = 'application/' . $file->extension()->get()->first()->libelle;
+    //     }
+    //     $headers = [
+    //         'Content-Type' => $contentType
+    //     ];
+    //     $fileDownload = str_replace($this->baseURL, public_path() . '/', $file->path);
+    //     return response()->download($fileDownload, $file->name, $headers, 'inline');
+    // }
 
 
 

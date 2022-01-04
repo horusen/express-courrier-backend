@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Messagerie\IntervenantDiscussion;
+
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -24,6 +24,8 @@ class DatabaseSeeder extends Seeder
         $this->call(DroitAccesSeeder::class);
         $this->call(PosteSeeder::class);
         $this->call(AffectationStructureSeeder::class);
+        $this->call(ResponsableStructureSeeder::class);
+
 
 
         // Messagerie

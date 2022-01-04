@@ -9,7 +9,9 @@ class AffectationStructure extends Model
 {
     use SoftDeletes;
     protected $table = 'affectation_structures';
-    protected $guarded = [];
+    protected $fillable = [
+        'user', 'structure', 'fonction', 'poste', 'droit_acces', 'inscription'
+    ];
 
 
     public function user()

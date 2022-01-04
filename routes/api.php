@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Structure\EmployeController;
 use App\Http\Controllers\Structure\StructureController;
+use App\Http\Controllers\Structure\TypeStructureController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -21,6 +22,9 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 
+Route::get('structures/types/all', [TypeStructureController::class, 'all']);
+
+Route::get('structures/all', [StructureController::class, 'all']);
 Route::apiResource('structures', 'Structure\StructureController');
 Route::get('structures/{structure}/sous-structures', [StructureController::class, 'getSousStructures']);
 

@@ -37,36 +37,35 @@ class StructureController extends BaseController
     }
 
 
+    public function all()
+    {
+        return $this->model::all();
+    }
+
+
     public function store(Request $request)
     {
         $this->isValid($request);
 
-        $imagePath = null;
 
         // On verifie si le user connécté a les droits pour cree
         if ($request->has('parent') && $this->isAdmin($this->inscription, $request->parent)) {
             return $this->responseError("Non autorisé", 401);
         }
 
-        if ($request->has('image')) {
-            $file = $request->image;
-            // Create a unique name for the file
-            $file_new_name = time() . str_replace(' ', '_', $file->getClientOriginalName());
 
-            // Create a path for the file
-            $imagePath =  'uploads' . '/' . 'structures/' . $request->libelle . '/' . $file->getClientOriginalExtension();
+        $structure = $this->model::create($request->all() + ['inscription' => $this->inscription]);
 
-            // Move the renamed file in the new path
-            $file->move($imagePath, $file_new_name);
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $structure->update(['image' => $file->storeAs('structure/' . $structure->id . '/image', $file->getClientOriginalName(), 'public')]);
         }
-
-        $structure = $this->model::create($request->all() + ['inscription' => $this->inscription + $imagePath]);
 
         // On definit le nouveau membre comme administrateur
         Admin::create([
             'user' => $this->inscription,
-            'structure' => $request->structure,
-            'type' => 1,
+            'structure' => $structure->id,
+            'type' => 2,
             'inscription' => $this->inscription
         ]);
 
@@ -75,7 +74,7 @@ class StructureController extends BaseController
 
     public function show(Structure $structure)
     {
-        return $structure->with(['sous_structures'])->first();
+        return $structure->load(['sous_structures', 'parent']);
     }
 
     public function getSousStructures(Structure $structure)
@@ -91,7 +90,7 @@ class StructureController extends BaseController
             return $this->responseError("Non autorisé", 401);
         }
 
-        $structure->update($request->all());
+        $structure->update($request->except('image'));
         return $structure->refresh();
     }
 
