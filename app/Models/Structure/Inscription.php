@@ -27,4 +27,10 @@ class Inscription extends Model
     {
         return $this->prenom . ' ' . $this->nom;
     }
+
+
+    public function isResponsableStructure()
+    {
+        return $this->belongsToMany(Structure::class, ResponsableStructure::class, 'responsable', 'structure');
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Models\Structure;
 
+use App\Models\Courrier\CrAutorisationPersonneStructure;
 use Dotenv\Dotenv;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -14,7 +15,7 @@ class Structure extends Model
     // protected $hidden = ['image'];
     protected $with = ['type', 'employes'];
 
-    protected $appends = ['responsable'];
+    protected $appends = ['responsable', 'charge_courriers'];
 
     public function type()
     {
@@ -42,9 +43,21 @@ class Structure extends Model
         return $this->belongsToMany(Inscription::class, AffectationStructure::class, 'structure', 'user');
     }
 
-    public function responsables()
+    private function responsables()
     {
         return $this->belongsToMany(Inscription::class, ResponsableStructure::class, 'structure', 'responsable');
+    }
+
+    public  function charger_courriers()
+    {
+        return $this->belongsToMany(Inscription::class, CrAutorisationPersonneStructure::class, 'structure_id', 'personne_id');
+    }
+
+    public function getChargeCourriersAttribute()
+    {
+        return $this->charger_courriers()->whereDoesntHave('isResponsableStructure', function ($q) {
+            $q->where('structures.id', $this->id);
+        })->get();
     }
 
     public function getResponsableAttribute()
