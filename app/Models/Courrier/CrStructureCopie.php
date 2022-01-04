@@ -33,6 +33,7 @@ class CrStructureCopie extends Eloquent
 		'info' => 'bool',
 		'traitement' => 'bool',
 		'structure_id' => 'int',
+		'courrier_id' => 'int',
 		'inscription_id' => 'int'
 	];
 
@@ -40,6 +41,7 @@ class CrStructureCopie extends Eloquent
 		'info',
 		'traitement',
 		'structure_id',
+		'courrier_id',
 		'inscription_id'
 	];
 
@@ -51,5 +53,10 @@ class CrStructureCopie extends Eloquent
 	public function structure()
 	{
 		return $this->belongsTo(\App\Models\Structure::class, 'structure_id');
+	}
+
+    public function cr_courrier_courant()
+	{
+		return $this->belongsTo(\App\Models\Structure::class, 'courrier_id');
 	}
 }

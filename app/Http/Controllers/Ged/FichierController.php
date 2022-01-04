@@ -120,7 +120,7 @@ class FichierController extends LaravelController
         $item->ged_element()->save($element);
 
         return response()
-        ->json($item);
+        ->json($item->load('ged_element'));
 
     }
 
@@ -173,7 +173,7 @@ class FichierController extends LaravelController
         $item->fill($data)->save();
 
         return response()
-        ->json($item);
+        ->json($item->load('ged_element'));
     }
 
     public function destroy($id)
