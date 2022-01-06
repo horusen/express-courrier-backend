@@ -25,9 +25,10 @@ class StructureController extends BaseController
         'cigle' => 'required'
     ];
 
+    // TODO: COrriger la recuperation de la structure à partir des informations de l'utilisateur connécté
     public function index()
     {
-        return $this->model::all();
+        return [Structure::find(1)->load('sous_structures')];
     }
 
 
@@ -72,9 +73,11 @@ class StructureController extends BaseController
         return $structure;
     }
 
-    public function show(Structure $structure)
+    public function show(int $structure)
     {
-        return $structure->load(['sous_structures', 'parent']);
+        return Structure::withDepth()->findOrFail($structure)->load(['sous_structures' => function ($q) {
+            $q->withDepth();
+        }])->append(['charge_courriers', 'employes', 'responsable']);
     }
 
     public function getSousStructures(Structure $structure)

@@ -14,7 +14,7 @@ $factory->define(Structure::class, function (Faker $faker) {
         'cigle' => "SERVICE",
         'image' => 'images/service' . $faker->numberBetween(1, 5) . '.jpg',
         'type' =>  3,
-        'parent' => $faker->numberBetween(2, 5),
+        'parent_id' => $faker->numberBetween(2, 5),
         'inscription' =>  1,
     ];
 });

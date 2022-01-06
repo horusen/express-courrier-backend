@@ -31,7 +31,7 @@ class StructureSeeder extends Seeder
             'image' => 'images/DH.png',
             'description' => $faker->text(),
             'type' => 2,
-            'parent' => 1,
+            'parent_id' => 1,
             'inscription' => 1
         ]);
 
@@ -41,6 +41,7 @@ class StructureSeeder extends Seeder
             'image' => 'images/DA.png',
             'description' => $faker->text(),
             'type' => 2,
+            'parent_id' => 1,
             'inscription' => 1
         ]);
 
@@ -50,7 +51,7 @@ class StructureSeeder extends Seeder
             'image' => 'images/1.png',
             'description' => $faker->text(),
             'type' => 2,
-            'parent' => 1,
+            'parent_id' => 1,
             'inscription' => 1
         ]);
 
@@ -60,7 +61,7 @@ class StructureSeeder extends Seeder
             'description' => $faker->text(),
             'image' => 'images/2.jpg',
             'type' => 2,
-            'parent' => 1,
+            'parent_id' => 1,
             'inscription' => 1
         ]);
 

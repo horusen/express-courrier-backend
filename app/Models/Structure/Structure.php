@@ -6,16 +6,17 @@ use App\Models\Courrier\CrAutorisationPersonneStructure;
 use Dotenv\Dotenv;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Kalnoy\Nestedset\NodeTrait;
 
 class Structure extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, NodeTrait;
     protected $table = 'structures';
     protected $guarded = [];
     // protected $hidden = ['image'];
-    protected $with = ['type', 'employes'];
+    protected $with = ['type'];
 
-    protected $appends = ['responsable', 'charge_courriers'];
+    protected $appends = ['has_sous_structures'];
 
     public function type()
     {
@@ -34,16 +35,33 @@ class Structure extends Model
 
     public function sous_structures()
     {
-        return $this->hasMany(Structure::class, 'parent');
+        return $this->children();
     }
 
 
-    public function employes()
+    public function _employes()
     {
         return $this->belongsToMany(Inscription::class, AffectationStructure::class, 'structure', 'user');
     }
 
-    private function responsables()
+    protected function getHasSousStructuresAttribute()
+    {
+        $sous_structure = $this->sous_structures()->first();
+        return isset($sous_structure);
+    }
+
+    public function getEmployesAttribute()
+    {
+        if (($this->descendants()->count())) {
+            return $this->descendants()->has('_employes')->with(['_employes'])->get()->flatMap(function ($structure) {
+                return $structure->employes;
+            });
+        }
+
+        return $this->_employes()->get();
+    }
+
+    public function responsables()
     {
         return $this->belongsToMany(Inscription::class, ResponsableStructure::class, 'structure', 'responsable');
     }
