@@ -17,4 +17,11 @@ trait AdminTrait
 
         return isset($admin);
     }
+
+
+    protected function isSuperAdmin($user)
+    {
+        $admin = Admin::where('user', $user)->where('type', 1)->first();
+        return isset($admin);
+    }
 }

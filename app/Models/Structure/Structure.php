@@ -13,10 +13,10 @@ class Structure extends Model
     use SoftDeletes, NodeTrait;
     protected $table = 'structures';
     protected $guarded = [];
-    // protected $hidden = ['image'];
-    protected $with = ['type'];
+    // protected $hidden = ['parent_id'];
+    protected $with = ['type', 'parent'];
 
-    protected $appends = ['has_sous_structures'];
+    protected $appends = ['has_sous_structures', 'responsable'];
 
     public function type()
     {
@@ -25,7 +25,7 @@ class Structure extends Model
 
     public function parent()
     {
-        return $this->belongsTo(Structure::class, 'parent');
+        return $this->belongsTo(Structure::class, 'parent_id');
     }
 
     public function inscription()
@@ -50,6 +50,14 @@ class Structure extends Model
         return isset($sous_structure);
     }
 
+
+    public function affectation_structures()
+    {
+        return $this->hasMany(AffectationStructure::class, 'structure');
+    }
+
+
+    // TODO: recuperer de maniere plus efficiente les employes
     public function getEmployesAttribute()
     {
         if (($this->descendants()->count())) {

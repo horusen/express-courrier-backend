@@ -27,6 +27,11 @@ Route::get('structures/types/all', [TypeStructureController::class, 'all']);
 Route::get('structures/all', [StructureController::class, 'all']);
 Route::apiResource('structures', 'Structure\StructureController');
 Route::get('structures/{structure}/sous-structures', [StructureController::class, 'getSousStructures']);
+Route::get('structures/{structure}/sous-structures/all', [StructureController::class, 'getAllSousStructures']);
+
+
+
+Route::get('structures/{structure}/structure-et-sous-structures', [StructureController::class, 'getStructureEtSousStructures']);
 
 Route::apiResource('affectation-structures', 'Structures\AffectationStructureController')->except(['index', 'show']);
 

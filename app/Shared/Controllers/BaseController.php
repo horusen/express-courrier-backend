@@ -134,7 +134,7 @@ class BaseController extends Controller
 
     protected function responseError($error_message, $status_code)
     {
-        return response()->json(['error' => $error_message], $status_code);
+        return response()->json(['message' => $error_message], $status_code);
     }
 
 

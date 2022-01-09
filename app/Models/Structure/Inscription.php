@@ -19,7 +19,7 @@ class Inscription extends Model
 
     public function structures()
     {
-        return $this->belongsToMany(Structure::class, AffectationStructure::class, 'user', 'structure');
+        return $this->hasMany(Structure::class, 'inscription');
     }
 
 
@@ -32,5 +32,10 @@ class Inscription extends Model
     public function isResponsableStructure()
     {
         return $this->belongsToMany(Structure::class, ResponsableStructure::class, 'responsable', 'structure');
+    }
+
+    public function isEmployeStructures()
+    {
+        return $this->belongsToMany(Structure::class, AffectationStructure::class, 'user', 'structure');
     }
 }

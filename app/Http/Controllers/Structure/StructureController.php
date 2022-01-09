@@ -20,8 +20,8 @@ class StructureController extends BaseController
     protected $model = Structure::class;
     protected $validation = [
         'libelle' => 'required',
-        'type' => 'nullable|integer|exists:type_structures,id',
-        'parent' => 'required|integer|exists:structures,id',
+        'type' => 'required|integer|exists:type_structures,id',
+        'parent_id' => 'nullable|integer|exists:structures,id',
         'cigle' => 'required'
     ];
 
@@ -50,8 +50,8 @@ class StructureController extends BaseController
 
 
         // On verifie si le user connécté a les droits pour cree
-        if ($request->has('parent') && $this->isAdmin($this->inscription, $request->parent)) {
-            return $this->responseError("Non autorisé", 401);
+        if (!$this->isSuperAdmin($this->inscription) || !($request->has('parent_id') && $this->isAdmin($this->inscription, $request->parent_id))) {
+            return $this->responseError("Vous devez être administrateur pour pouvoir effectué cette action", 401);
         }
 
 
@@ -83,6 +83,18 @@ class StructureController extends BaseController
     public function getSousStructures(Structure $structure)
     {
         return $structure->sous_structures()->get();
+    }
+
+
+    public function getAllSousStructures(Structure $structure)
+    {
+        return $structure->descendants()->get();
+    }
+
+
+    public function getStructureEtSousStructures(int $structure)
+    {
+        return Structure::descendantsAndSelf($structure);
     }
 
     public function update(Request $request, Structure $structure)

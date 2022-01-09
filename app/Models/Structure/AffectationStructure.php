@@ -29,6 +29,12 @@ class AffectationStructure extends Model
         return $this->belongsTo(Fonction::class, 'fonction');
     }
 
+
+    public function poste()
+    {
+        return $this->belongsTo(Poste::class, 'poste');
+    }
+
     public function droit()
     {
         return $this->belongsTo(DroitAcces::class, 'droit_acces');
