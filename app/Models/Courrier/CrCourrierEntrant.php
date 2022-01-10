@@ -2,7 +2,7 @@
 
 /**
  * Created by Reliese Model.
- * Date: Tue, 28 Dec 2021 16:27:03 +0000.
+ * Date: Fri, 07 Jan 2022 03:13:45 +0000.
  */
 
 namespace App\Models\Courrier;
@@ -11,19 +11,22 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
 
 /**
  * Class CrCourrierEntrant
- *
+ * 
  * @property int $id
  * @property \Carbon\Carbon $date_arrive
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property string $deleted_at
- * @property int $courrier
- * @property int $expediteur
- * @property int $responsable
- * @property int $inscription
- *
- * @property \App\Models\CrCourrier $cr_courrier
- * @property \App\Models\CrCoordonnee $cr_coordonnee
+ * @property int $courrier_id
+ * @property int $expediteur_id
+ * @property int $responsable_id
+ * @property int $inscription_id
+ * 
+ * @property \App\Models\Courrier\CrCourrier $cr_courrier
+ * @property \App\Models\Courrier\CrCoordonnee $cr_coordonnee
+ * @property \App\Models\Inscription $inscription
+ * @property \Illuminate\Database\Eloquent\Collection $cr_courrier_sortants
+ * @property \Illuminate\Database\Eloquent\Collection $cr_structure_copies
  *
  * @package App\Models
  */
@@ -34,8 +37,8 @@ class CrCourrierEntrant extends Eloquent
 
 	protected $casts = [
 		'courrier_id' => 'int',
-		'expediteur' => 'int',
-		'responsable' => 'int',
+		'expediteur_id' => 'int',
+		'responsable_id' => 'int',
 		'inscription_id' => 'int'
 	];
 
@@ -46,8 +49,8 @@ class CrCourrierEntrant extends Eloquent
 	protected $fillable = [
 		'date_arrive',
 		'courrier_id',
-		'expediteur',
-		'responsable',
+		'expediteur_id',
+		'responsable_id',
 		'inscription_id'
 	];
 
@@ -58,16 +61,21 @@ class CrCourrierEntrant extends Eloquent
 
 	public function cr_coordonnee()
 	{
-		return $this->belongsTo(\App\Models\Courrier\CrCoordonnee::class, 'expediteur');
-	}
-
-    public function responsable_inscription()
-	{
-		return $this->belongsTo(\App\Models\Inscription::class, 'responsable');
+		return $this->belongsTo(\App\Models\Courrier\CrCoordonnee::class, 'expediteur_id');
 	}
 
 	public function inscription()
 	{
-		return $this->belongsTo(\App\Models\Inscription::class, 'inscription_id');
+		return $this->belongsTo(\App\Models\Inscription::class, 'responsable_id');
+	}
+
+	public function cr_courrier_sortants()
+	{
+		return $this->hasMany(\App\Models\Courrier\CrCourrierSortant::class, 'courrier_entrant_id');
+	}
+
+	public function cr_structure_copies()
+	{
+		return $this->hasMany(\App\Models\Courrier\CrStructureCopie::class, 'courrier_id');
 	}
 }

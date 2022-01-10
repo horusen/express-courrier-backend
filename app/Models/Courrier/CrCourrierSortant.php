@@ -2,7 +2,7 @@
 
 /**
  * Created by Reliese Model.
- * Date: Tue, 28 Dec 2021 16:27:03 +0000.
+ * Date: Fri, 07 Jan 2022 03:13:45 +0000.
  */
 
 namespace App\Models\Courrier;
@@ -11,18 +11,22 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
 
 /**
  * Class CrCourrierSortant
- *
+ * 
  * @property int $id
  * @property \Carbon\Carbon $date_envoie
  * @property string $action_depot
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property string $deleted_at
- * @property int $courrier
- * @property int $courrier_entrant
- * @property int $inscription
- *
- * @property \App\Models\CrCourrier $cr_courrier
+ * @property int $courrier_id
+ * @property int $courrier_entrant_id
+ * @property int $inscription_id
+ * 
+ * @property \App\Models\Courrier\CrCourrierEntrant $cr_courrier_entrant
+ * @property \App\Models\Courrier\CrCourrier $cr_courrier
+ * @property \App\Models\Inscription $inscription
+ * @property \Illuminate\Database\Eloquent\Collection $cr_ampiliations
+ * @property \Illuminate\Database\Eloquent\Collection $cr_destinataires
  *
  * @package App\Models
  */
@@ -33,7 +37,7 @@ class CrCourrierSortant extends Eloquent
 
 	protected $casts = [
 		'courrier_id' => 'int',
-		'courrier_entrant' => 'int',
+		'courrier_entrant_id' => 'int',
 		'inscription_id' => 'int'
 	];
 
@@ -45,22 +49,32 @@ class CrCourrierSortant extends Eloquent
 		'date_envoie',
 		'action_depot',
 		'courrier_id',
-		'courrier_entrant',
+		'courrier_entrant_id',
 		'inscription_id'
 	];
+
+	public function cr_courrier_entrant()
+	{
+		return $this->belongsTo(\App\Models\Courrier\CrCourrierEntrant::class, 'courrier_entrant_id');
+	}
 
 	public function cr_courrier()
 	{
 		return $this->belongsTo(\App\Models\Courrier\CrCourrier::class, 'courrier_id');
 	}
 
-    public function cr_courrier_entrant()
-	{
-		return $this->belongsTo(\App\Models\Courrier\CrCourrier::class, 'courrier_entrant');
-	}
-
 	public function inscription()
 	{
-		return $this->belongsTo(\App\Models\Inscription::class, 'inscription_id');
+		return $this->belongsTo(\App\Models\Inscription::class);
+	}
+
+	public function cr_ampiliations()
+	{
+		return $this->hasMany(\App\Models\Courrier\CrAmpiliation::class, 'courrier_id');
+	}
+
+	public function cr_destinataires()
+	{
+		return $this->hasMany(\App\Models\Courrier\CrDestinataire::class, 'courrier_id');
 	}
 }

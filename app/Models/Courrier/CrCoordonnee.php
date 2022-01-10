@@ -2,7 +2,7 @@
 
 /**
  * Created by Reliese Model.
- * Date: Tue, 28 Dec 2021 16:27:03 +0000.
+ * Date: Fri, 07 Jan 2022 03:13:45 +0000.
  */
 
 namespace App\Models\Courrier;
@@ -19,11 +19,12 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
  * @property string $adresse
  * @property string $condition_suivi
  * @property string $commentaire
- * @property int $inscription
+ * @property int $inscription_id
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property string $deleted_at
  *
+ * @property \App\Models\Inscription $inscription
  * @property \Illuminate\Database\Eloquent\Collection $cr_ampiliations
  * @property \Illuminate\Database\Eloquent\Collection $cr_courrier_entrants
  * @property \Illuminate\Database\Eloquent\Collection $cr_destinataires
@@ -36,7 +37,7 @@ class CrCoordonnee extends Eloquent
 	protected $table = 'cr_coordonnee';
 
 	protected $casts = [
-		'inscription' => 'int'
+		'inscription_id' => 'int'
 	];
 
 	protected $fillable = [
@@ -51,7 +52,7 @@ class CrCoordonnee extends Eloquent
 
 	public function inscription()
 	{
-		return $this->belongsTo(\App\Models\Inscription::class, 'inscription_id');
+		return $this->belongsTo(\App\Models\Inscription::class);
 	}
 
 	public function cr_ampiliations()
@@ -61,7 +62,7 @@ class CrCoordonnee extends Eloquent
 
 	public function cr_courrier_entrants()
 	{
-		return $this->hasMany(\App\Models\Courrier\CrCourrierEntrant::class, 'expediteur');
+		return $this->hasMany(\App\Models\Courrier\CrCourrierEntrant::class, 'expediteur_id');
 	}
 
 	public function cr_destinataires()

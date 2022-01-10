@@ -2,7 +2,7 @@
 
 /**
  * Created by Reliese Model.
- * Date: Tue, 28 Dec 2021 16:27:03 +0000.
+ * Date: Fri, 07 Jan 2022 03:13:45 +0000.
  */
 
 namespace App\Models\Courrier;
@@ -11,18 +11,20 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
 
 /**
  * Class CrReaffectation
- *
+ * 
  * @property int $id
  * @property string $libelle
- * @property int $courrier
- * @property int $structure
+ * @property int $courrier_id
+ * @property int $structure_id
  * @property int $suivi_par
- * @property int $inscription
+ * @property int $inscription_id
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property string $deleted_at
- *
- * @property \App\Models\CrCourrier $cr_courrier
+ * 
+ * @property \App\Models\Courrier\CrCourrier $cr_courrier
+ * @property \App\Models\Inscription $inscription
+ * @property \App\Models\Structure $structure
  *
  * @package App\Models
  */
@@ -53,16 +55,11 @@ class CrReaffectation extends Eloquent
 
 	public function inscription()
 	{
-		return $this->belongsTo(\App\Models\Inscription::class, 'inscription_id');
-	}
-
-    public function suivi_par_inscription()
-	{
 		return $this->belongsTo(\App\Models\Inscription::class, 'suivi_par');
 	}
 
 	public function structure()
 	{
-		return $this->belongsTo(\App\Models\Courrier\Structure::class, 'structure_id');
+		return $this->belongsTo(\App\Models\Structure::class);
 	}
 }

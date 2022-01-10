@@ -17,7 +17,10 @@ class CreateCrUrgenceTable extends Migration
             $table->id();
             $table->string('libelle');
             $table->string('couleur');
-            $table->tinyInteger('niveau')->unique();
+            $table->string('description');
+            $table->Integer('delai');
+            $table->Integer('delai_relance1');
+            $table->Integer('delai_relance2');
             $table->foreignId('inscription_id')->constrained('inscription')->onDelete('restrict')->onUpdate('restrict');
             $table->timestamps();
             $table->softDeletes();
