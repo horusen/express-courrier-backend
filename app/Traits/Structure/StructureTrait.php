@@ -4,6 +4,7 @@ namespace App\Traits\Structure;
 
 use App\Models\Structure\Admin;
 use App\Models\Structure\AffectationStructure;
+use App\Models\Structure\Inscription;
 use App\Models\Structure\Structure;
 
 trait StructureTrait

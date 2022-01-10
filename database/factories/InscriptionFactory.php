@@ -4,6 +4,7 @@
 
 use App\Model;
 use App\Models\Structure\Inscription;
+use Carbon\Carbon;
 use Faker\Generator as Faker;
 
 $factory->define(Inscription::class, function (Faker $faker) {
@@ -17,5 +18,8 @@ $factory->define(Inscription::class, function (Faker $faker) {
         'sexe' => $faker->randomElement(['HOMME', 'FEMME']),
         'inscription' => 1,
         'photo' => 'http://localhost:8000/storage/images/a' . $faker->numberBetween(1, 10) . '.jpg',
+        'email' => $faker->email(),
+        'email_verified_at' => Carbon::now(),
+        'password' => 'password'
     ];
 });

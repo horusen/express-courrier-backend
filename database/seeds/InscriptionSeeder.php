@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Structure\Inscription;
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 
 class InscriptionSeeder extends Seeder
@@ -24,6 +25,9 @@ class InscriptionSeeder extends Seeder
             'telephone' => '772884035',
             'sexe' => 'HOMME',
             'photo' => $baseURL . '/storage/images/a0.jpg',
+            'email' => 'babacar@gmail.com',
+            'email_verified_at' => Carbon::now(),
+            'password' => 'password'
         ]);
 
         factory(Inscription::class, 50)->create();

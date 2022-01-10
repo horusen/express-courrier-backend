@@ -24,6 +24,10 @@ class CreateInscriptionTable extends Migration
             $table->string('photo')->nullable();
             $table->enum('sexe', ['HOMME', 'FEMME']);
             $table->foreignId('inscription')->nullable()->constrained('inscription')->onDelete('restrict')->onUpdate('restrict');
+            $table->string('email')->unique();
+            $table->timestamp('email_verified_at')->nullable();
+            $table->string('password');
+            $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();
         });
