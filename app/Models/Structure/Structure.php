@@ -2,16 +2,21 @@
 
 namespace App\Models\Structure;
 
+use App\Models\Courrier\CrAutorisationPersonneStructure;
+use Dotenv\Dotenv;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Kalnoy\Nestedset\NodeTrait;
 
 class Structure extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, NodeTrait;
     protected $table = 'structures';
     protected $guarded = [];
-    protected $with = ['type', 'sous_structures', 'employes', 'responsables'];
-    // protected $appends = ['employes'];
+    // protected $hidden = ['parent_id'];
+    protected $with = ['type', 'parent'];
+
+    protected $appends = ['has_sous_structures', 'responsable'];
 
     public function type()
     {
@@ -20,7 +25,7 @@ class Structure extends Model
 
     public function parent()
     {
-        return $this->belongsTo(Structure::class, 'parent');
+        return $this->belongsTo(Structure::class, 'parent_id');
     }
 
     public function inscription()
@@ -30,27 +35,64 @@ class Structure extends Model
 
     public function sous_structures()
     {
-        return $this->hasMany(Structure::class, 'parent');
+        return $this->children();
     }
 
-    // public function getEmployesAttribute()
-    // {
 
-    //     // if($this->has('sous_structures')) {
-    //     //     return $this->sous_structures()->get
-    //     // }
-
-
-    //     // return $this->employes()->limit(5)->get();
-    // }
-
-    public function employes()
+    public function _employes()
     {
-        return $this->belongsToMany(Inscription::class, AffectationStructure::class, 'structure', 'user')->where('affectation_structures.is_responsable', false);
+        return $this->belongsToMany(Inscription::class, AffectationStructure::class, 'structure', 'user');
+    }
+
+    protected function getHasSousStructuresAttribute()
+    {
+        $sous_structure = $this->sous_structures()->first();
+        return isset($sous_structure);
+    }
+
+
+    public function affectation_structures()
+    {
+        return $this->hasMany(AffectationStructure::class, 'structure');
+    }
+
+
+    // TODO: recuperer de maniere plus efficiente les employes
+    public function getEmployesAttribute()
+    {
+        if (($this->descendants()->count())) {
+            return $this->descendants()->has('_employes')->with(['_employes'])->get()->flatMap(function ($structure) {
+                return $structure->employes;
+            });
+        }
+
+        return $this->_employes()->get();
     }
 
     public function responsables()
     {
-        return $this->belongsToMany(Inscription::class, AffectationStructure::class, 'structure', 'user')->where('affectation_structures.is_responsable', true);
+        return $this->belongsToMany(Inscription::class, ResponsableStructure::class, 'structure', 'responsable');
+    }
+
+    public  function charger_courriers()
+    {
+        return $this->belongsToMany(Inscription::class, CrAutorisationPersonneStructure::class, 'structure_id', 'personne_id');
+    }
+
+    public function getChargeCourriersAttribute()
+    {
+        return $this->charger_courriers()->whereDoesntHave('isResponsableStructure', function ($q) {
+            $q->where('structures.id', $this->id);
+        })->get();
+    }
+
+    public function getResponsableAttribute()
+    {
+        return $this->responsables()->first();
+    }
+
+    protected function getImageAttribute($value)
+    {
+        return env('IMAGE_PREFIX_URL') . '/storage/' . $value;
     }
 }

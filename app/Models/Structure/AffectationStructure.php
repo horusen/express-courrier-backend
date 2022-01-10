@@ -9,7 +9,9 @@ class AffectationStructure extends Model
 {
     use SoftDeletes;
     protected $table = 'affectation_structures';
-    protected $guarded = [];
+    protected $fillable = [
+        'user', 'structure', 'fonction', 'poste', 'droit_acces', 'inscription'
+    ];
 
 
     public function user()
@@ -25,6 +27,12 @@ class AffectationStructure extends Model
     public function fonction()
     {
         return $this->belongsTo(Fonction::class, 'fonction');
+    }
+
+
+    public function poste()
+    {
+        return $this->belongsTo(Poste::class, 'poste');
     }
 
     public function droit()

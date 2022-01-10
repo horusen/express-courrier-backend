@@ -15,6 +15,5 @@ $factory->define(AffectationStructure::class, function (Faker $faker) {
         'poste' => $faker->numberBetween(1, 10),
         'droit_acces' => $faker->numberBetween(1, 4),
         'inscription' => 1,
-        'is_responsable' => $faker->optional($weight = 0.2, $default = false)->boolean()
     ];
 });
