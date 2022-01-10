@@ -23,7 +23,7 @@ class Inscription extends Authenticatable
 
     public function structures()
     {
-        return $this->belongsToMany(Structure::class, AffectationStructure::class, 'user', 'structure');
+        return $this->hasMany(Structure::class, 'inscription');
     }
 
 
@@ -35,5 +35,15 @@ class Inscription extends Authenticatable
     public function setPasswordAttribute($value)
     {
         $this->attributes['password'] = bcrypt($value);
+    }
+
+    public function isResponsableStructure()
+    {
+        return $this->belongsToMany(Structure::class, ResponsableStructure::class, 'responsable', 'structure');
+    }
+
+    public function isEmployeStructures()
+    {
+        return $this->belongsToMany(Structure::class, AffectationStructure::class, 'user', 'structure');
     }
 }

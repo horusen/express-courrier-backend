@@ -41,6 +41,10 @@ $app->singleton(
     App\Exceptions\Handler::class
 );
 
+$app->singleton('router', function ($app) {
+    return new \App\Overrides\Router($app['events'], $app);
+});
+
 /*
 |--------------------------------------------------------------------------
 | Return The Application

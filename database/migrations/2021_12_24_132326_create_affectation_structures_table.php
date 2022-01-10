@@ -20,7 +20,6 @@ class CreateAffectationStructuresTable extends Migration
             $table->foreignId('fonction')->constrained('fonctions')->onUpdate('restrict')->onDelete('restrict');
             $table->foreignId('poste')->constrained('postes')->onUpdate('restrict')->onDelete('restrict');
             $table->foreignId('droit_acces')->constrained('droit_acces')->onUpdate('restrict')->onDelete('restrict');
-            $table->boolean('is_responsable')->default(false);
             $table->foreignId('inscription')->constrained('inscription')->onUpdate('restrict')->onDelete('restrict');
             $table->timestamps();
             $table->softDeletes();

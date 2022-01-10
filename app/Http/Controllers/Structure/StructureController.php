@@ -20,14 +20,15 @@ class StructureController extends BaseController
     protected $model = Structure::class;
     protected $validation = [
         'libelle' => 'required',
-        'type' => 'nullable|integer|exists:type_structures,id',
-        'parent' => 'required|integer|exists:structures,id',
+        'type' => 'required|integer|exists:type_structures,id',
+        'parent_id' => 'nullable|integer|exists:structures,id',
         'cigle' => 'required'
     ];
 
+    // TODO: COrriger la recuperation de la structure à partir des informations de l'utilisateur connécté
     public function index()
     {
-        return $this->model::all();
+        return [Structure::find(1)->load('sous_structures')];
     }
 
 
@@ -37,50 +38,63 @@ class StructureController extends BaseController
     }
 
 
+    public function all()
+    {
+        return $this->model::all();
+    }
+
+
     public function store(Request $request)
     {
         $this->isValid($request);
 
-        $imagePath = null;
 
         // On verifie si le user connécté a les droits pour cree
-        if ($request->has('parent') && $this->isAdmin($this->inscription, $request->parent)) {
-            return $this->responseError("Non autorisé", 401);
+        if (!$this->isSuperAdmin($this->inscription) || !($request->has('parent_id') && $this->isAdmin($this->inscription, $request->parent_id))) {
+            return $this->responseError("Vous devez être administrateur pour pouvoir effectué cette action", 401);
         }
 
-        if ($request->has('image')) {
-            $file = $request->image;
-            // Create a unique name for the file
-            $file_new_name = time() . str_replace(' ', '_', $file->getClientOriginalName());
 
-            // Create a path for the file
-            $imagePath =  'uploads' . '/' . 'structures/' . $request->libelle . '/' . $file->getClientOriginalExtension();
+        $structure = $this->model::create($request->all() + ['inscription' => $this->inscription]);
 
-            // Move the renamed file in the new path
-            $file->move($imagePath, $file_new_name);
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $structure->update(['image' => $file->storeAs('structure/' . $structure->id . '/image', $file->getClientOriginalName(), 'public')]);
         }
-
-        $structure = $this->model::create($request->all() + ['inscription' => $this->inscription + $imagePath]);
 
         // On definit le nouveau membre comme administrateur
         Admin::create([
             'user' => $this->inscription,
-            'structure' => $request->structure,
-            'type' => 1,
+            'structure' => $structure->id,
+            'type' => 2,
             'inscription' => $this->inscription
         ]);
 
         return $structure;
     }
 
-    public function show(Structure $structure)
+    public function show(int $structure)
     {
-        return $structure->with(['sous_structures'])->first();
+        return Structure::withDepth()->findOrFail($structure)->load(['sous_structures' => function ($q) {
+            $q->withDepth();
+        }])->append(['charge_courriers', 'employes', 'responsable']);
     }
 
     public function getSousStructures(Structure $structure)
     {
         return $structure->sous_structures()->get();
+    }
+
+
+    public function getAllSousStructures(Structure $structure)
+    {
+        return $structure->descendants()->get();
+    }
+
+
+    public function getStructureEtSousStructures(int $structure)
+    {
+        return Structure::descendantsAndSelf($structure);
     }
 
     public function update(Request $request, Structure $structure)
@@ -91,7 +105,7 @@ class StructureController extends BaseController
             return $this->responseError("Non autorisé", 401);
         }
 
-        $structure->update($request->all());
+        $structure->update($request->except('image'));
         return $structure->refresh();
     }
 

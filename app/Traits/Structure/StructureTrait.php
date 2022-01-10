@@ -17,6 +17,6 @@ trait StructureTrait
 
     protected function hasEquipe(Structure $structure)
     {
-        return $structure->has('affectation_structure');
+        return $structure->has('affectation_structures');
     }
 }

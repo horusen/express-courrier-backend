@@ -20,8 +20,8 @@ class CreateStructuresTable extends Migration
             $table->string('image')->nullable();
             $table->text('description');
             $table->foreignId('type')->constrained('type_structures')->onUpdate('restrict')->onDelete('restrict');
-            $table->foreignId('parent')->nullable()->constrained('structures')->onUpdate('restrict')->onDelete('restrict');
             $table->foreignId('inscription')->constrained('inscription')->onUpdate('restrict')->onDelete('restrict');
+            $table->nestedSet();
             $table->timestamps();
             $table->softDeletes();
         });
@@ -34,6 +34,9 @@ class CreateStructuresTable extends Migration
      */
     public function down()
     {
+        Schema::table('structures', function (Blueprint $table) {
+            $table->dropNestedSet();
+        });
         Schema::dropIfExists('structures');
     }
 }
