@@ -2,7 +2,7 @@
 
 /**
  * Created by Reliese Model.
- * Date: Tue, 28 Dec 2021 16:27:03 +0000.
+ * Date: Fri, 07 Jan 2022 03:13:45 +0000.
  */
 
 namespace App\Models\Courrier;
@@ -11,27 +11,26 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
 
 /**
  * Class CrCourrier
- *
+ * 
  * @property int $id
  * @property string $libelle
  * @property string $objet
  * @property \Carbon\Carbon $date_redaction
  * @property string $commentaire
  * @property bool $valider
- * @property string $numero_facture
- * @property string $devise
- * @property int $montant
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property string $deleted_at
- * @property int $type
- * @property int $nature
- * @property int $structure
+ * @property int $type_id
+ * @property int $urgence_id
+ * @property int $structure_id
  * @property int $suivi_par
- * @property int $inscription
- *
- * @property \App\Models\CrNature $cr_nature
- * @property \App\Models\CrType $cr_type
+ * @property int $inscription_id
+ * 
+ * @property \App\Models\Inscription $inscription
+ * @property \App\Models\Structure $structure
+ * @property \App\Models\Courrier\CrType $cr_type
+ * @property \App\Models\Courrier\CrUrgence $cr_urgence
  * @property \Illuminate\Database\Eloquent\Collection $cr_courrier_entrants
  * @property \Illuminate\Database\Eloquent\Collection $cr_courrier_internes
  * @property \Illuminate\Database\Eloquent\Collection $cr_courrier_sortants
@@ -48,9 +47,8 @@ class CrCourrier extends Eloquent
 
 	protected $casts = [
 		'valider' => 'bool',
-		'montant' => 'int',
 		'type_id' => 'int',
-		'nature_id' => 'int',
+		'urgence_id' => 'int',
 		'structure_id' => 'int',
 		'suivi_par' => 'int',
 		'inscription_id' => 'int'
@@ -66,39 +64,31 @@ class CrCourrier extends Eloquent
 		'date_redaction',
 		'commentaire',
 		'valider',
-		'numero_facture',
-		'devise',
-		'montant',
 		'type_id',
-		'nature_id',
+		'urgence_id',
 		'structure_id',
 		'suivi_par',
 		'inscription_id'
 	];
 
-    public function suivi_par_inscription()
+	public function inscription()
 	{
 		return $this->belongsTo(\App\Models\Inscription::class, 'suivi_par');
 	}
 
-	public function inscription()
-	{
-		return $this->belongsTo(\App\Models\Inscription::class, 'inscription_id');
-	}
-
-	public function cr_nature()
-	{
-		return $this->belongsTo(\App\Models\Courrier\CrNature::class, 'nature_id');
-	}
-
 	public function structure()
 	{
-		return $this->belongsTo(\App\Models\Structure::class, 'structure_id');
+		return $this->belongsTo(\App\Models\Structure::class);
 	}
 
 	public function cr_type()
 	{
 		return $this->belongsTo(\App\Models\Courrier\CrType::class, 'type_id');
+	}
+
+	public function cr_urgence()
+	{
+		return $this->belongsTo(\App\Models\Courrier\CrUrgence::class, 'urgence_id');
 	}
 
 	public function cr_courrier_entrants()

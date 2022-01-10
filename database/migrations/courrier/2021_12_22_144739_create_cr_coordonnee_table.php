@@ -19,8 +19,8 @@ class CreateCrCoordonneeTable extends Migration
             $table->string('email')->unique();
             $table->string('telephone');
             $table->string('adresse');
-            $table->text('condition_suivi');
-            $table->text('commentaire');
+            $table->text('condition_suivi')->nullable();
+            $table->text('commentaire')->nullable();
             $table->foreignId('inscription_id')->constrained('inscription')->onDelete('restrict')->onUpdate('restrict');
             $table->timestamps();
             $table->softDeletes();

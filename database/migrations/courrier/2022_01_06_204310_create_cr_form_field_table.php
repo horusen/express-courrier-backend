@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateConservationRule extends Migration
+class CreateCrFormFieldTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,13 @@ class CreateConservationRule extends Migration
      */
     public function up()
     {
-        Schema::create('ged_conservation_rule', function (Blueprint $table) {
+        Schema::create('cr_form_field', function (Blueprint $table) {
             $table->id();
             $table->string('libelle');
-            $table->integer('duree');
-            $table->text('description');
+            $table->string('label');
+            $table->string('value');
+            $table->string('type');
+            $table->boolean('required');
             $table->foreignId('inscription_id')->constrained('inscription')->onUpdate('restrict')->onDelete('restrict');
             $table->timestamps();
             $table->softDeletes();
@@ -31,6 +33,6 @@ class CreateConservationRule extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('conservation_rule');
+        Schema::dropIfExists('cr_form_field');
     }
 }
