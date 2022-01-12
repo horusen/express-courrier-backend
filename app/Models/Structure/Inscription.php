@@ -2,23 +2,35 @@
 
 namespace App\Models\Structure;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Notifications\ValidationInscription;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
-class Inscription extends Authenticatable
+
+class Inscription extends Authenticatable implements MustVerifyEmail
 {
     use SoftDeletes, Notifiable, \Laravel\Sanctum\HasApiTokens;
     protected $table = 'inscription';
-    protected $guarded = [];
+    protected $fillable = [
+        'prenom', 'nom', 'date_naissance', 'lieu_naissance',
+        'identifiant', 'telephone', 'photo', 'sexe',
+        'inscription', 'email', 'email_verified_at', 'password'
+    ];
     protected $appends = ['nom_complet'];
     protected $hidden = ['password'];
 
     public function inscription()
     {
+        $this->getKey();
         return $this->belongsTo(Inscription::class, 'inscription');
+    }
+
+    public function estDansStructures()
+    {
+        return $this->belongsToMany(Structure::class, AffectationStructure::class, 'user', 'structure');
     }
 
     public function structures()
@@ -45,5 +57,11 @@ class Inscription extends Authenticatable
     public function isEmployeStructures()
     {
         return $this->belongsToMany(Structure::class, AffectationStructure::class, 'user', 'structure');
+    }
+
+
+    public function sendEmailVerificationNotification()
+    {
+        $this->notify(new ValidationInscription(Auth::user()));
     }
 }

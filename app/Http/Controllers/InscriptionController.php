@@ -18,7 +18,7 @@ class InscriptionController extends Controller
             'telephone' => 'required',
             'identifiant' => 'required',
             'sexe' => 'required|in:HOMME,FEMME',
-            'email' => 'required|email|unique',
+            'email' => 'required|email|unique:inscription,email',
             'photo' => 'sometimes|image',
         ]);
 
@@ -32,6 +32,8 @@ class InscriptionController extends Controller
             $imagePath = $file->storeAs('inscription/' . $inscription->email . '/photo', $file->getClientOriginalName(), 'public');
             $inscription->update(['photo' => $imagePath]);
         }
+
+        $inscription->sendEmailVerificationNotification();
 
 
         return $inscription;

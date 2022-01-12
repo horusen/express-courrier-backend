@@ -2,10 +2,13 @@
 
 namespace App\Models\Structure;
 
+use App\Models\Admin;
 use App\Models\Courrier\CrAutorisationPersonneStructure;
+use App\Models\Structure\Admin as StructureAdmin;
 use Dotenv\Dotenv;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
 use Kalnoy\Nestedset\NodeTrait;
 
 class Structure extends Model
@@ -16,7 +19,7 @@ class Structure extends Model
     // protected $hidden = ['parent_id'];
     protected $with = ['type', 'parent'];
 
-    protected $appends = ['has_sous_structures', 'responsable'];
+    protected $appends = ['has_sous_structures', 'responsable', 'isUserAdmin'];
 
     public function type()
     {
@@ -50,6 +53,17 @@ class Structure extends Model
         return isset($sous_structure);
     }
 
+    protected function getIsUserAdminAttribute()
+    {
+        $admin = $this->admins()->where('user', Auth::id())->first();
+        return isset($admin);
+    }
+
+
+    public function admins()
+    {
+        return $this->hasMany(StructureAdmin::class, 'structure');
+    }
 
     public function affectation_structures()
     {

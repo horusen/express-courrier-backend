@@ -31,7 +31,7 @@ class AuthenticationController extends Controller
             return response()->json([
                 'access_token' => $token->plainTextToken,
                 'user' => $user,
-                'structures' => $user->structures()->get(),
+                'structures' => $user->estDansStructures()->without('type', 'parent')->pluck('structures.id'),
                 'token_type' => 'Bearer',
             ]);
         }

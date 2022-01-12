@@ -10,7 +10,7 @@ use App\Traits\FileHandlerTrait;
 use App\Traits\Structure\AdminTrait;
 use App\Traits\Structure\StructureTrait;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Auth;
 
 class StructureController extends BaseController
 {
@@ -25,17 +25,22 @@ class StructureController extends BaseController
         'cigle' => 'required'
     ];
 
-    // TODO: COrriger la recuperation de la structure à partir des informations de l'utilisateur connécté
-    public function index()
-    {
-        return [Structure::find(1)->load('sous_structures')];
-    }
-
-
     public function __construct()
     {
         parent::__construct($this->model, $this->validation);
     }
+
+    // recupere les structures où l'utilisateur est affecté
+    public function index()
+    {
+
+        return Structure::whereHas('affectation_structures', function ($q) {
+            $q->where('user', Auth::id());
+        })->get();
+    }
+
+
+
 
 
     public function all()
@@ -80,9 +85,22 @@ class StructureController extends BaseController
         }])->append(['charge_courriers', 'employes', 'responsable']);
     }
 
+    public function getOldestAncestor(int $structure)
+    {
+        return Structure::withDepth()->with('sous_structures')->having('depth', '=', 0)->ancestorsAndSelf($structure);
+    }
+
     public function getSousStructures(Structure $structure)
     {
         return $structure->sous_structures()->get();
+    }
+
+
+    public function getAutresStructures()
+    {
+        return Structure::whereDoesntHave('affectation_structures', function ($q) {
+            $q->where('user', Auth::id());
+        })->get();
     }
 
 

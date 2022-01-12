@@ -15,6 +15,7 @@ class AdminSeeder extends Seeder
         Admin::create([
             'type' => 1,
             'user' => 1,
+            'structure' => 1,
             'inscription' => 1
         ]);
 
