@@ -1,8 +1,11 @@
 <?php
 
 use App\Http\Controllers\AuthenticationController;
+use App\Http\Controllers\ConditionsUtilisationController;
 use App\Http\Controllers\InscriptionController;
 use App\Http\Controllers\Structure\EmployeController;
+use App\Http\Controllers\Structure\FonctionController;
+use App\Http\Controllers\Structure\PosteController;
 use App\Http\Controllers\Structure\StructureController;
 use App\Http\Controllers\Structure\TypeStructureController;
 use Illuminate\Http\Request;
@@ -19,22 +22,36 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('users/test', [InscriptionController::class, 'testNotification']);
+// Route::get('users/{id}', [InscriptionController::class, 'show']);
+Route::get('test', [InscriptionController::class, 'test']);
+
+
+Route::get('conditions-utilisations', [ConditionsUtilisationController::class, 'show']);
+
+Route::put('users/{id}', [InscriptionController::class, 'update']);
+
 Route::post('auth/login', [AuthenticationController::class, 'login']);
+
+// TODO: Changer le verb en PUT
+Route::post('auth/register/{id}', [AuthenticationController::class, 'register']);
 Route::get('auth/me', [AuthenticationController::class, 'me'])->middleware('auth:sanctum');
 
 
+Route::get('register/check', 'VerificationController@check')->name('register.check');
+Route::get('register/update', 'VerificationController@update')->name('register.update');
 Route::get('email/verify', 'VerificationController@verify')->name('email.verify');
 Route::get('user/{user}/email/resend', 'VerificationController@resend')->name('email.resend');
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('auth/logout', [AuthenticationController::class, 'logout']);
 
-
+    Route::get('postes/all', [PosteController::class, 'all']);
+    Route::get('fonctions/all', [FonctionController::class, 'all']);
 
 
     Route::apiResource('affectation-structures', 'Structures\AffectationStructureController')->except(['index', 'show']);
 
+    Route::post('employes', [EmployeController::class, 'store']);
     Route::get('structures/{structure}/employes', [EmployeController::class, 'getByStructure']);
     Route::get('structures/{structure}/responsables', [EmployeController::class, 'getResponsablesByStructure']);
 

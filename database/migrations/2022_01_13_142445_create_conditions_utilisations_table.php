@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePostesTable extends Migration
+class CreateConditionsUtilisationsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,12 @@ class CreatePostesTable extends Migration
      */
     public function up()
     {
-        Schema::create('postes', function (Blueprint $table) {
+        Schema::create('conditions_utilisations', function (Blueprint $table) {
             $table->id();
-            $table->string('libelle');
-            $table->text('description');
-            $table->foreignId('inscription')->constrained('inscription')->onUpdate('restrict')->onDelete('restrict');
-            $table->timestamps();
+            $table->text('conditions_utilisations');
+            $table->foreignId('inscription')->nullable()->constrained('inscription')->onUpdate('restrict')->onDelete('restrict');
             $table->softDeletes();
+            $table->timestamps();
         });
     }
 
@@ -30,6 +29,6 @@ class CreatePostesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('postes');
+        Schema::dropIfExists('conditions_utilisations');
     }
 }

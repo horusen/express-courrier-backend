@@ -18,6 +18,14 @@ class AuthenticationController extends Controller
     }
 
 
+    public function register(int $id, Request $request)
+    {
+        $request->validate(['conditions_utilisations' => 'required|accepted']);
+        $user =  (new InscriptionController())->update($request, $id);
+        $user->markEmailAsVerified();
+        return $this->login($request);
+    }
+
     public function login(Request $request)
     {
         $this->validateLoginRequest($request);

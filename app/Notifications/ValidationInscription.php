@@ -8,6 +8,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\URL;
 
 class ValidationInscription extends Notification
@@ -67,11 +68,11 @@ class ValidationInscription extends Notification
     private function _formatUrl($notifiable)
     {
         return URL::temporarySignedRoute(
-            'email.verify',
+            'register.update',
             Carbon::now()->addMinutes(60),
             [
                 'id' => $notifiable->getKey(),
-                'hash' => sha1($notifiable->getEmailForVerification()),
+                'hash' => Hash::make($notifiable->getEmailForVerification()),
             ]
         );
     }

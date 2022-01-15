@@ -14,7 +14,6 @@ class InscriptionSeeder extends Seeder
     public function run()
     {
 
-        $baseURL = 'http://localhost:8000';
 
         Inscription::create([
             'prenom' => 'Babacar',
@@ -24,7 +23,7 @@ class InscriptionSeeder extends Seeder
             'lieu_naissance' => 'Dakar',
             'telephone' => '772884035',
             'sexe' => 'HOMME',
-            'photo' => $baseURL . '/storage/images/a0.jpg',
+            'photo' => '/images/a0.jpg',
             'email' => 'babacar@gmail.com',
             'email_verified_at' => Carbon::now(),
             'password' => 'password'

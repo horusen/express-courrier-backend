@@ -14,12 +14,11 @@ class AffectationStructureController extends BaseController
     use AdminTrait;
     protected $model = AffectationStructure::class;
     protected $validation = [
-        'structure' => 'required|integer|exists:structures',
-        'poste' => 'required|integer|exists:postes',
-        'fonction' => 'required|integer|exists:fonctions',
-        'is_responsable' => 'required|boolean',
-        'droit_acces' => 'required|integer|exists:droit_acces',
-        'user' => 'required|integer|exists:inscription',
+        'structure' => 'required|integer|exists:structures,id',
+        'poste' => 'required|integer|exists:postes,id',
+        'fonction' => 'required|integer|exists:fonctions,id',
+        // 'is_responsable' => 'required|boolean',
+        'user' => 'required|integer|exists:inscription,id',
     ];
 
 

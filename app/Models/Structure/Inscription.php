@@ -24,8 +24,12 @@ class Inscription extends Authenticatable implements MustVerifyEmail
 
     public function inscription()
     {
-        $this->getKey();
         return $this->belongsTo(Inscription::class, 'inscription');
+    }
+
+    protected function getPhotoAttribute($value)
+    {
+        return env('IMAGE_PREFIX_URL') . '/storage/' . $value;
     }
 
     public function estDansStructures()
