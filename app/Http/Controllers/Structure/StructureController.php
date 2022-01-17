@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers\Structure;
 
-use App\Http\Controllers\Controller;
 use App\Models\Structure\Admin;
 use App\Models\Structure\Structure;
+use App\Services\StructureService;
 use App\Shared\Controllers\BaseController;
-use App\Traits\FileHandlerTrait;
 use App\Traits\Structure\AdminTrait;
 use App\Traits\Structure\StructureTrait;
 use Illuminate\Http\Request;
@@ -25,9 +24,12 @@ class StructureController extends BaseController
         'cigle' => 'required'
     ];
 
-    public function __construct()
+    private StructureService $service;
+
+    public function __construct(StructureService $service)
     {
         parent::__construct($this->model, $this->validation);
+        $this->service = $service;
     }
 
     // recupere les structures où l'utilisateur est affecté
@@ -54,18 +56,8 @@ class StructureController extends BaseController
         $this->isValid($request);
 
 
-        // On verifie si le user connécté a les droits pour cree
-        if (!$this->isSuperAdmin($this->inscription) || !($request->has('parent_id') && $this->isAdmin($this->inscription, $request->parent_id))) {
-            return $this->responseError("Vous devez être administrateur pour pouvoir effectué cette action", 401);
-        }
+        $structure = $this->service->store($request->all());
 
-
-        $structure = $this->model::create($request->all() + ['inscription' => $this->inscription]);
-
-        if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $structure->update(['image' => $file->storeAs('structure/' . $structure->id . '/image', $file->getClientOriginalName(), 'public')]);
-        }
 
         // On definit le nouveau membre comme moderateur
         Admin::create([
