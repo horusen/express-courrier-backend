@@ -10,9 +10,10 @@ class AffectationStructure extends Model
     use SoftDeletes;
     protected $table = 'affectation_structures';
     protected $fillable = [
-        'user', 'structure', 'fonction', 'poste', 'droit_acces', 'inscription'
+        'user', 'structure', 'fonction', 'poste', 'inscription', 'activated_at'
     ];
 
+    protected $appends = ['status'];
 
     public function user()
     {
@@ -43,5 +44,29 @@ class AffectationStructure extends Model
     public function inscription()
     {
         return $this->belongsTo(Inscription::class, 'inscription');
+    }
+
+
+    /**
+     * Permet de savoir le status de l'utilisateur
+     * Ce status est soit:
+     *  *   'unactivated' si le user a validé son mail mais qu'il a pas été validé par l admin
+     *  *   'unverified' si le user a été validé par l'admin mais quíl n'a pas encore validé son mail
+     *  *   'invalid' si le user n'a ni été validé par l'admin, ni validé son mail
+     *  *   'valid' si le user a validé son mail et est validé par l'admin
+     */
+
+    public function getStatusAttribute()
+    {
+        if ($this->user()->first()->email_verified_at && !$this->activated_at) {
+            return  'unactivated';
+        } else if (!$this->user()->first()->email_verified_at && $this->activated_at) {
+            return 'unverified';
+        } else if (!$this->user()->first()->email_verified_at && !$this->activated_at) {
+            return 'invalid';
+        }
+
+
+        return 'valid';
     }
 }
