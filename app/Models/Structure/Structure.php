@@ -2,6 +2,7 @@
 
 namespace App\Models\Structure;
 
+use App\Filters\Filterable;
 use App\Models\Admin;
 use App\Models\Courrier\CrAutorisationPersonneStructure;
 use App\Models\Structure\Admin as StructureAdmin;
@@ -13,7 +14,7 @@ use Kalnoy\Nestedset\NodeTrait;
 
 class Structure extends Model
 {
-    use SoftDeletes, NodeTrait;
+    use SoftDeletes, NodeTrait, Filterable;
     protected $table = 'structures';
     protected $guarded = [];
     // protected $hidden = ['parent_id'];

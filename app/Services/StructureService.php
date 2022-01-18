@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Exceptions\ActionNotAllowedException;
+use App\Filters\Structure\StructureFilter as StructureStructureFilter;
+use App\Filters\StructureFilter;
 use App\Models\Structure\Structure;
 use App\Traits\Structure\AdminTrait;
 use Exception;
@@ -14,6 +16,12 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 class StructureService
 {
     use AdminTrait;
+
+
+    public function all(StructureStructureFilter $filter)
+    {
+        return Structure::filter($filter)->paginate(5);
+    }
 
     public function store($data)
     {

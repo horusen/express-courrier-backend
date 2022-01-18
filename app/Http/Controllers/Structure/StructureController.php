@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Structure;
 
+use App\Filters\Structure\StructureFilter as StructureStructureFilter;
+use App\Filters\StructureFilter;
 use App\Models\Structure\Admin;
 use App\Models\Structure\Structure;
 use App\Services\StructureService;
@@ -32,6 +34,13 @@ class StructureController extends BaseController
         $this->service = $service;
     }
 
+
+    public function all(StructureStructureFilter $request)
+    {
+        // return ['test' => $request->query()];
+        return $this->service->all($request);
+    }
+
     // recupere les structures où l'utilisateur est affecté
     public function index()
     {
@@ -45,10 +54,10 @@ class StructureController extends BaseController
 
 
 
-    public function all()
-    {
-        return $this->model::all();
-    }
+    // public function all()
+    // {
+    //     return $this->model::all();
+    // }
 
 
     public function store(Request $request)

@@ -26,6 +26,7 @@ use Illuminate\Support\Facades\Route;
 
 // Route::get('users/{id}', [InscriptionController::class, 'show']);
 Route::get('test', [InscriptionController::class, 'test']);
+Route::get('structures/all', [StructureController::class, 'all']);
 
 
 Route::get('conditions-utilisations', [ConditionsUtilisationController::class, 'show']);
@@ -105,7 +106,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('structures/types/all', [TypeStructureController::class, 'all']);
 
-    Route::get('structures/all', [StructureController::class, 'all']);
+    // Route::get('structures/all', [StructureController::class, 'all']);
     Route::get('structures/autres', [StructureController::class, 'getAutresStructures']);
     Route::get('structures/{structure}/oldest', [StructureController::class, 'getOldestAncestor']);
     Route::apiResource('structures', 'Structure\StructureController');
