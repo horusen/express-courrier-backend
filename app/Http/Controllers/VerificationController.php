@@ -47,4 +47,16 @@ class VerificationController extends Controller
 
         return response()->json(['message' => 'URL invalide ou expiré'], 403);
     }
+
+
+    public function resend(Inscription $user)
+    {
+        if ($user->hasVerifiedEmail()) {
+            return response()->json(["msg" => "Email already verified."], 400);
+        }
+
+        $user->sendEmailVerificationNotification();
+
+        return response()->json(["msg" => "Email verification link sent on your email id"]);
+    }
 }

@@ -66,6 +66,6 @@ class Inscription extends Authenticatable implements MustVerifyEmail
 
     public function sendEmailVerificationNotification()
     {
-        $this->notify(new ValidationInscription(Auth::user()));
+        $this->notify(new ValidationInscription($this->inscription()->first()));
     }
 }

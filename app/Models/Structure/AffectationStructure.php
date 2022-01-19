@@ -2,6 +2,7 @@
 
 namespace App\Models\Structure;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -68,5 +69,25 @@ class AffectationStructure extends Model
 
 
         return 'valid';
+    }
+
+
+    public function scopeStatus(Builder $query, $status = 'valid')
+    {
+
+        if ($status == 'valid') {
+            return $query->whereNotNull('activated_at')->whereHas('user', function ($q) {
+                $q->whereNotNull('email_verified_at');
+            });
+        } else if ($status == 'unactivated') {
+            return $query->whereNull('activated_at');
+        } else if ($status == 'unverified') {
+            return $query->whereHas('user', function ($q) {
+                $q->whereNull('email_verified_at');
+            });
+        }
+
+
+        return $query;
     }
 }

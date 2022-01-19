@@ -15,11 +15,6 @@ class TypeAdminSeeder extends Seeder
     {
         $faker = Factory::create();
 
-        TypeAdmin::create([
-            'libelle' => 'SUPER ADMIN',
-            'description' => $faker->text,
-            'inscription' => 1
-        ]);
 
 
         TypeAdmin::create([
@@ -31,13 +26,6 @@ class TypeAdminSeeder extends Seeder
 
         TypeAdmin::create([
             'libelle' => 'MODERATEUR',
-            'description' => $faker->text,
-            'inscription' => 1
-        ]);
-
-
-        TypeAdmin::create([
-            'libelle' => 'SECRETAIRE GENERAL',
             'description' => $faker->text,
             'inscription' => 1
         ]);

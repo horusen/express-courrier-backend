@@ -67,7 +67,7 @@ class StructureController extends BaseController
             $structure->update(['image' => $file->storeAs('structure/' . $structure->id . '/image', $file->getClientOriginalName(), 'public')]);
         }
 
-        // On definit le nouveau membre comme administrateur
+        // On definit le nouveau membre comme moderateur
         Admin::create([
             'user' => $this->inscription,
             'structure' => $structure->id,

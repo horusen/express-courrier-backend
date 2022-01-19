@@ -52,6 +52,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('affectation-structures', 'Structures\AffectationStructureController')->except(['index', 'show']);
 
     Route::post('employes', [EmployeController::class, 'store']);
+    Route::put('employes/{employe}/validate', [EmployeController::class, 'validateEmploye']);
     Route::get('structures/{structure}/employes', [EmployeController::class, 'getByStructure']);
     Route::get('structures/{structure}/responsables', [EmployeController::class, 'getResponsablesByStructure']);
 

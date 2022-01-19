@@ -19,7 +19,7 @@ $factory->define(Inscription::class, function (Faker $faker) {
         'inscription' => 1,
         'photo' => 'images/a' . $faker->numberBetween(1, 10) . '.jpg',
         'email' => $faker->email(),
-        'email_verified_at' => Carbon::now(),
+        'email_verified_at' => $faker->optional()->dateTime(),
         'password' => 'password'
     ];
 });

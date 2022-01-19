@@ -4,6 +4,7 @@
 
 use App\Model;
 use App\Models\Structure\AffectationStructure;
+use Carbon\Carbon;
 use Faker\Generator as Faker;
 
 $factory->define(AffectationStructure::class, function (Faker $faker) {
@@ -13,7 +14,7 @@ $factory->define(AffectationStructure::class, function (Faker $faker) {
         'structure' => $faker->numberBetween(7, 15),
         'fonction' => $faker->numberBetween(1, 7),
         'poste' => $faker->numberBetween(1, 10),
-        // 'droit_acces' => $faker->numberBetween(1, 4),
         'inscription' => 1,
+        'activated_at' => $faker->optional(0.5)->dateTime()
     ];
 });

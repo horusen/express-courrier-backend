@@ -19,7 +19,7 @@ class Structure extends Model
     // protected $hidden = ['parent_id'];
     protected $with = ['type', 'parent'];
 
-    protected $appends = ['has_sous_structures', 'responsable', 'isUserAdmin'];
+    protected $appends = ['has_sous_structures', 'responsable', 'admin_type'];
 
     public function type()
     {
@@ -53,10 +53,14 @@ class Structure extends Model
         return isset($sous_structure);
     }
 
-    protected function getIsUserAdminAttribute()
+    protected function getAdminTypeAttribute()
     {
         $admin = $this->admins()->where('user', Auth::id())->first();
-        return isset($admin);
+        if (isset($admin)) {
+            return $admin->type;
+        }
+
+        return 0;
     }
 
 
