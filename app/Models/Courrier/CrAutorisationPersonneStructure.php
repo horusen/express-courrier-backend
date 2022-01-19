@@ -2,7 +2,7 @@
 
 /**
  * Created by Reliese Model.
- * Date: Tue, 28 Dec 2021 16:27:03 +0000.
+ * Date: Fri, 07 Jan 2022 03:13:45 +0000.
  */
 
 namespace App\Models\Courrier;
@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
 
 /**
  * Class CrAutorisationPersonneStructure
- *
+ * 
  * @property int $id
  * @property bool $envoyer_courrier
  * @property bool $consulter_entrant
@@ -19,13 +19,15 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
  * @property bool $ajouter_personne
  * @property bool $retirer_personne
  * @property bool $affecter_courrier
- * @property int $structure
- * @property int $personne
- * @property int $inscription
+ * @property int $structure_id
+ * @property int $personne_id
+ * @property int $inscription_id
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property string $deleted_at
- *
+ * 
+ * @property \App\Models\Inscription $inscription
+ * @property \App\Models\Structure $structure
  *
  * @package App\Models
  */
@@ -42,7 +44,7 @@ class CrAutorisationPersonneStructure extends Eloquent
 		'retirer_personne' => 'bool',
 		'affecter_courrier' => 'bool',
 		'structure_id' => 'int',
-		'personne' => 'int',
+		'personne_id' => 'int',
 		'inscription_id' => 'int'
 	];
 
@@ -54,22 +56,17 @@ class CrAutorisationPersonneStructure extends Eloquent
 		'retirer_personne',
 		'affecter_courrier',
 		'structure_id',
-		'personne',
+		'personne_id',
 		'inscription_id'
 	];
 
 	public function inscription()
 	{
-		return $this->belongsTo(\App\Models\Inscription::class, 'inscription_id');
-	}
-
-    public function personne_inscription()
-	{
-		return $this->belongsTo(\App\Models\Inscription::class, 'personne');
+		return $this->belongsTo(\App\Models\Inscription::class, 'personne_id');
 	}
 
 	public function structure()
 	{
-		return $this->belongsTo(\App\Models\Structure::class, 'structure_id');
+		return $this->belongsTo(\App\Models\Structure::class);
 	}
 }

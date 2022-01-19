@@ -16,7 +16,9 @@ class CreateCrTypeTable extends Migration
         Schema::create('cr_type', function (Blueprint $table) {
             $table->id();
             $table->string('libelle');//courrier, document,...
+            $table->text('description');
             $table->foreignId('inscription_id')->constrained('inscription')->onDelete('restrict')->onUpdate('restrict');
+            $table->foreignId('type_id')->nullable()->constrained('cr_type')->onDelete('restrict')->onUpdate('restrict');
             $table->timestamps();
             $table->softDeletes();
         });

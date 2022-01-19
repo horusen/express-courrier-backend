@@ -40,7 +40,7 @@ class CrSuiviController extends LaravelController
     public function filterIsIns(myBuilder $query, $method, $clauseOperator, $value, $in)
     {
         if ($value) {
-            $query->where('inscription', 1);
+            $query->where('inscription_id', 1);
         }
     }
 

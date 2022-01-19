@@ -27,7 +27,6 @@ class CreateCrAutorisationPersonneStructure extends Migration
             $table->timestamps();
             $table->softDeletes();
         });
-        Schema::enableForeignKeyConstraints();
     }
 
     /**

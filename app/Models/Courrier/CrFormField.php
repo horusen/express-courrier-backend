@@ -10,36 +10,56 @@ namespace App\Models\Courrier;
 use Illuminate\Database\Eloquent\Model as Eloquent;
 
 /**
- * Class CrMoyenSuivi
+ * Class CrFormField
  * 
  * @property int $id
  * @property string $libelle
+ * @property string $label
+ * @property string $value
+ * @property string $type
+ * @property bool $required
  * @property int $inscription_id
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property string $deleted_at
  * 
  * @property \App\Models\Inscription $inscription
+ * @property \Illuminate\Database\Eloquent\Collection $cr_form_field_validators
+ * @property \Illuminate\Database\Eloquent\Collection $cr_form_field_values
  *
  * @package App\Models
  */
-class CrMoyenSuivi extends Eloquent
+class CrFormField extends Eloquent
 {
 	use \Illuminate\Database\Eloquent\SoftDeletes;
-	protected $table = 'cr_moyen_suivi';
+	protected $table = 'cr_form_field';
 
 	protected $casts = [
+		'required' => 'bool',
 		'inscription_id' => 'int'
 	];
 
 	protected $fillable = [
 		'libelle',
-		'description',
+		'label',
+		'value',
+		'type',
+		'required',
 		'inscription_id'
 	];
 
 	public function inscription()
 	{
 		return $this->belongsTo(\App\Models\Inscription::class);
+	}
+
+	public function cr_form_field_validators()
+	{
+		return $this->hasMany(\App\Models\Courrier\CrFormFieldValidator::class, 'form_field_id');
+	}
+
+	public function cr_form_field_values()
+	{
+		return $this->hasMany(\App\Models\Courrier\CrFormFieldValue::class, 'form_field_id');
 	}
 }

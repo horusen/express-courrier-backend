@@ -102,7 +102,7 @@ class DossierController extends LaravelController
         $item->ged_element()->save($element);
 
         return response()
-        ->json($item);
+        ->json($item->load('ged_element'));
     }
 
     public function update(Request $request, $id)
@@ -115,7 +115,7 @@ class DossierController extends LaravelController
         $item->fill($data)->save();
 
         return response()
-        ->json($item);
+        ->json($item->load('ged_element'));
     }
 
     public function destroy($id)
@@ -133,7 +133,7 @@ class DossierController extends LaravelController
         if(Hash::check($request->password, $item->ged_element->password)) {
             $item->bloquer = 0;
             return response()
-            ->json($item);
+            ->json($item->load('ged_element'));
         }
 
         return response()

@@ -2,7 +2,7 @@
 
 /**
  * Created by Reliese Model.
- * Date: Tue, 28 Dec 2021 16:27:03 +0000.
+ * Date: Fri, 07 Jan 2022 03:13:45 +0000.
  */
 
 namespace App\Models\Courrier;
@@ -11,17 +11,18 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
 
 /**
  * Class CrSuivi
- *
+ * 
  * @property int $id
  * @property string $libelle
  * @property \Carbon\Carbon $date
  * @property string $moyen
  * @property string $resultat
- * @property int $inscription
+ * @property int $inscription_id
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property string $deleted_at
- *
+ * 
+ * @property \App\Models\Inscription $inscription
  *
  * @package App\Models
  */
@@ -48,6 +49,6 @@ class CrSuivi extends Eloquent
 
 	public function inscription()
 	{
-		return $this->belongsTo(\App\Models\Inscription::class, 'inscription_id');
+		return $this->belongsTo(\App\Models\Inscription::class);
 	}
 }
