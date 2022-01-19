@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
 
 /**
  * Class CrCourrier
- * 
+ *
  * @property int $id
  * @property string $libelle
  * @property string $objet
@@ -26,7 +26,7 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
  * @property int $structure_id
  * @property int $suivi_par
  * @property int $inscription_id
- * 
+ *
  * @property \App\Models\Inscription $inscription
  * @property \App\Models\Structure $structure
  * @property \App\Models\Courrier\CrType $cr_type
@@ -48,7 +48,9 @@ class CrCourrier extends Eloquent
 	protected $casts = [
 		'valider' => 'bool',
 		'type_id' => 'int',
+		'nature_id' => 'int',
 		'urgence_id' => 'int',
+		'statut_id' => 'int',
 		'structure_id' => 'int',
 		'suivi_par' => 'int',
 		'inscription_id' => 'int'
@@ -65,7 +67,9 @@ class CrCourrier extends Eloquent
 		'commentaire',
 		'valider',
 		'type_id',
+		'nature_id',
 		'urgence_id',
+		'statut_id',
 		'structure_id',
 		'suivi_par',
 		'inscription_id'
@@ -86,9 +90,19 @@ class CrCourrier extends Eloquent
 		return $this->belongsTo(\App\Models\Courrier\CrType::class, 'type_id');
 	}
 
+    public function cr_nature()
+	{
+		return $this->belongsTo(\App\Models\Courrier\CrNature::class, 'nature_id');
+	}
+
 	public function cr_urgence()
 	{
 		return $this->belongsTo(\App\Models\Courrier\CrUrgence::class, 'urgence_id');
+	}
+
+    public function cr_statut()
+	{
+		return $this->belongsTo(\App\Models\Courrier\CrStatut::class, 'statut_id');
 	}
 
 	public function cr_courrier_entrants()

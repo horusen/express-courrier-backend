@@ -28,6 +28,8 @@ class DatabaseSeeder extends Seeder
         $this->call(AutorisationPersonneStructureSeeder::class);
         $this->call(ConditionsUtilisationSeeder::class);
 
+        $this->call(FichierTypeSeeder::class);
+        $this->call(CrStatutSeeder::class);
 
 
         // Messagerie

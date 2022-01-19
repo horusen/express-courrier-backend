@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
 
 /**
  * Class CrType
- * 
+ *
  * @property int $id
  * @property string $libelle
  * @property int $inscription_id
@@ -19,7 +19,7 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property string $deleted_at
- * 
+ *
  * @property \App\Models\Inscription $inscription
  * @property \App\Models\Courrier\CrType $cr_type
  * @property \Illuminate\Database\Eloquent\Collection $cr_courriers
@@ -59,7 +59,12 @@ class CrType extends Eloquent
 		return $this->hasMany(\App\Models\Courrier\CrCourrier::class, 'type_id');
 	}
 
-	public function cr_types()
+    public function cr_etapes()
+	{
+		return $this->hasMany(\App\Models\Courrier\CrEtape::class, 'type_id');
+	}
+
+    public function cr_types()
 	{
 		return $this->hasMany(\App\Models\Courrier\CrType::class, 'type_id');
 	}

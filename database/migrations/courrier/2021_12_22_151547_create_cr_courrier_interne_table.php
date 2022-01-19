@@ -22,7 +22,6 @@ class CreateCrCourrierInterneTable extends Migration
             $table->foreignId('inscription_id')->constrained('inscription')->onDelete('restrict')->onUpdate('restrict');
 
         });
-        Schema::enableForeignKeyConstraints();
     }
 
     /**

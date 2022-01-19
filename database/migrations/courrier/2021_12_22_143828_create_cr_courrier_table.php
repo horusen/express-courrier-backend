@@ -25,10 +25,12 @@ class CreateCrCourrierTable extends Migration
             $table->timestamps();
             $table->softDeletes();
 
+            $table->foreignId('nature_id')->constrained('cr_nature')->onDelete('restrict')->onUpdate('restrict');
             $table->foreignId('type_id')->constrained('cr_type')->onDelete('restrict')->onUpdate('restrict');
             $table->foreignId('urgence_id')->constrained('cr_urgence')->onDelete('restrict')->onUpdate('restrict');
             $table->foreignId('structure_id')->constrained('structures')->onDelete('restrict')->onUpdate('restrict');
             $table->foreignId('suivi_par')->constrained('inscription')->onDelete('restrict')->onUpdate('restrict');
+            $table->foreignId('statut_id')->constrained('cr_statut')->onDelete('restrict')->onUpdate('restrict');
             $table->foreignId('inscription_id')->constrained('inscription')->onDelete('restrict')->onUpdate('restrict');
         });
     }

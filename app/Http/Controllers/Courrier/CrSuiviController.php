@@ -97,7 +97,7 @@ class CrSuiviController extends LaravelController
         $relation_name = $request->relation_name;
         $relation_id = $request->relation_id;
         $item = CrSuivi::find($item_id);
-        $item->{$relation_name}()->syncWithoutDetaching([$relation_id => ['inscription'=> 1]]);
+        $item->{$relation_name}()->syncWithoutDetaching([$relation_id => ['inscription_id'=> 1]]);
 
         return response()->json([
             'message' => 'Element affecter'
@@ -130,7 +130,7 @@ class CrSuiviController extends LaravelController
 
             foreach($request->affectation as $key=>$value)
             {
-                $pivotData = array_fill(0, count($value), ['inscription'=> 1]);
+                $pivotData = array_fill(0, count($value), ['inscription_id'=> 1]);
                 $syncData  = array_combine($value, $pivotData);
                 $item->{$key}()->sync($syncData);
             }
