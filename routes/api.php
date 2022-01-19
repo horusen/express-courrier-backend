@@ -3,6 +3,8 @@
 use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\ConditionsUtilisationController;
 use App\Http\Controllers\InscriptionController;
+use App\Http\Controllers\Messagerie\DiscussionController;
+use App\Http\Controllers\Messagerie\ReactionController;
 use App\Http\Controllers\Structure\EmployeController;
 use App\Http\Controllers\Structure\FonctionController;
 use App\Http\Controllers\Structure\PosteController;
@@ -73,6 +75,13 @@ Route::middleware('auth:sanctum')->group(function () {
 
 
     Route::get('structures/{structure}/structure-et-sous-structures', [StructureController::class, 'getStructureEtSousStructures']);
+
+
+
+    Route::get('discussions', [DiscussionController::class, 'all']);
+    Route::post('reactions', [ReactionController::class, 'store']);
+    Route::get('discussions/{discussion}/reactions', [ReactionController::class, 'getByDiscussion']);
+    Route::get('discussions/{discussion}', [DiscussionController::class, 'show']);
 });
 
 

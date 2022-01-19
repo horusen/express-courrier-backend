@@ -12,6 +12,7 @@ class Reaction extends Model
     protected $table = 'reactions';
     protected $primaryKey = 'id';
     protected $fillable = ['reaction', 'fichier', 'rebondissement', 'discussion', 'inscription'];
+    protected $with = ['inscription'];
 
 
     public function rebondissement()

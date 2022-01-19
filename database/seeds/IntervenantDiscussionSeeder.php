@@ -12,6 +12,6 @@ class IntervenantDiscussionSeeder extends Seeder
      */
     public function run()
     {
-        factory(IntervenantDiscussion::class, 10)->create();
+        factory(IntervenantDiscussion::class, 6)->create();
     }
 }

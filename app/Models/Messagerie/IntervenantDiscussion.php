@@ -12,6 +12,7 @@ class IntervenantDiscussion extends Model
     protected $table = 'intervenant_discussions';
     protected $primaryKey = 'id';
     protected $fillable = ['user1', 'user2', 'discussion', 'inscription'];
+    protected $with = ['user1', 'user2'];
 
 
     public function user1()

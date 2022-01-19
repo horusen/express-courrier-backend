@@ -34,8 +34,8 @@ class DatabaseSeeder extends Seeder
         // $this->call(TypeFichierSeeder::class);
         // $this->call(ExtensionFichierSeeder::class);
         // $this->call(FichierSeeder::class);
-        // $this->call(DiscussionSeeder::class);
-        // $this->call(ReactionSeeder::class);
-        // $this->call(IntervenantDiscussionSeeder::class);
+        $this->call(DiscussionSeeder::class);
+        $this->call(IntervenantDiscussionSeeder::class);
+        $this->call(ReactionSeeder::class);
     }
 }

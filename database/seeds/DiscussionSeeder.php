@@ -12,6 +12,6 @@ class DiscussionSeeder extends Seeder
      */
     public function run()
     {
-        factory(Discussion::class, 10)->create();
+        factory(Discussion::class, 6)->create();
     }
 }
