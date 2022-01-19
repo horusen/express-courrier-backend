@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
 
 /**
  * Class CrUrgence
- * 
+ *
  * @property int $id
  * @property string $libelle
  * @property string $couleur
@@ -23,7 +23,7 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property string $deleted_at
- * 
+ *
  * @property \App\Models\Inscription $inscription
  * @property \Illuminate\Database\Eloquent\Collection $cr_courriers
  *
@@ -36,18 +36,13 @@ class CrUrgence extends Eloquent
 
 	protected $casts = [
 		'delai' => 'int',
-		'delai_relance1' => 'int',
-		'delai_relance2' => 'int',
 		'inscription_id' => 'int'
 	];
 
 	protected $fillable = [
 		'libelle',
 		'couleur',
-		'description',
 		'delai',
-		'delai_relance1',
-		'delai_relance2',
 		'inscription_id'
 	];
 

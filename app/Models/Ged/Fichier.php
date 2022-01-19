@@ -34,12 +34,12 @@ class Fichier extends Eloquent
 	protected $table = 'fichier';
 
 	protected $casts = [
-		'type' => 'int',
+		'type_id' => 'int',
 		'inscription_id' => 'int'
 	];
 
 	protected $fillable = [
-		'type',
+		'type_id',
 		'libelle',
 		'fichier',
 		'inscription_id'
@@ -94,7 +94,7 @@ class Fichier extends Eloquent
 
 	public function fichier_type()
 	{
-		return $this->belongsTo(\App\Models\Ged\FichierType::class, 'type');
+		return $this->belongsTo(\App\Models\Ged\FichierType::class, 'type_id');
 	}
 
 	public function cr_fichiers()
@@ -104,7 +104,7 @@ class Fichier extends Eloquent
 
     public function ged_element()
     {
-        return $this->morphOne(Image::class, 'objet');
+        return $this->morphOne(\App\Models\Ged\GedElement::class, 'objet');
     }
 
     public function dossiers()

@@ -77,7 +77,7 @@ class FichierController extends LaravelController
     {
         if ($value) {
             $query->whereHas('ged_element.ged_favoris', function($query) {
-                $query->where('ged_favoris.inscription_id', 1);
+                $query->where('ged_favori.inscription_id', 1);
              });
         }
     }
@@ -103,24 +103,33 @@ class FichierController extends LaravelController
     public function store(Request $request)
     {
         DB::beginTransaction();
-        $path = $request->file('fichier')->store('document/'.date('Y').'/'.date('F'));
-        // $nameonly=preg_replace('/\..+$/', '', $request->file('fichier')->getClientOriginalName());
-        $n = strrpos($path,".");
-        $extension = ($n===false) ? "" : substr($path,$n+1);
-        $file = FichierType::where('extension','like', '%'.$extension.'%')->first();
 
-        $item = Fichier::create([
-            'inscription_id' => 1,
-            'libelle' => $request->libelle,
-            'type' => $file->id,
-            'fichier' => $path,
-        ]);
+        try {
+            $path = $request->file('fichier')->store('document/'.date('Y').'/'.date('F'));
+            // $nameonly=preg_replace('/\..+$/', '', $request->file('fichier')->getClientOriginalName());
+            $n = strrpos($path,".");
+            $extension = ($n===false) ? "" : substr($path,$n+1);
+            $file = FichierType::where('extension','like', '%'.$extension.'%')->first();
+            $item = Fichier::create([
+                'inscription_id' => 1,
+                'libelle' => $request->libelle,
+                'type_id' => $file->id,
+                'fichier' => $path,
+            ]);
 
-        $element = new GedElement();
-        $item->ged_element()->save($element);
+            $element = new GedElement();
+            $item->ged_element()->save($element);
+            $relation_name = $request->relation_name;
+            $relation_id = $request->relation_id;
+            $item->{$relation_name}()->syncWithoutDetaching([$relation_id => ['inscription_id'=> 1]]);
+        DB::commit();
+        } catch (\Throwable $e) {
+            DB::rollback();
+            throw $e;
+        }
 
         return response()
-        ->json($item->load('ged_element'));
+        ->json($item->load(['ged_element','fichier_type']));
 
     }
 
@@ -149,7 +158,7 @@ class FichierController extends LaravelController
 
                         $relation_name = $request->relation_name;
                         $relation_id = $request->relation_id;
-                        $fichier->{$relation_name}()->syncWithoutDetaching([$relation_id => ['inscription'=> 1]]);
+                        $fichier->{$relation_name}()->syncWithoutDetaching([$relation_id => ['inscription_id'=> 1]]);
                     }
                 }
             }
@@ -205,7 +214,7 @@ class FichierController extends LaravelController
         $relation_name = $request->relation_name;
         $relation_id = $request->relation_id;
         $item = Fichier::find($item_id);
-        $item->{$relation_name}()->syncWithoutDetaching([$relation_id => ['inscription'=> 1]]);
+        $item->{$relation_name}()->syncWithoutDetaching([$relation_id => ['inscription_id'=> 1]]);
 
         return response()->json([
             'message' => 'Element affecter'
@@ -261,7 +270,7 @@ class FichierController extends LaravelController
 
         foreach($affectation as $key=>$value)
         {
-            $pivotData = array_fill(0, count($value), ['inscription'=> 1]);
+            $pivotData = array_fill(0, count($value), ['inscription_id'=> 1]);
             $syncData  = array_combine($value, $pivotData);
             $result = $item->{$key}()->sync($syncData);
         }

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCrUrgenceTable extends Migration
+class CreateCrStatutTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,9 @@ class CreateCrUrgenceTable extends Migration
      */
     public function up()
     {
-        Schema::create('cr_urgence', function (Blueprint $table) {
+        Schema::create('cr_statut', function (Blueprint $table) {
             $table->id();
-            $table->string('libelle');
-            $table->string('couleur');
-            $table->Integer('delai');
+            $table->string('libelle');//courrier, document,...
             $table->foreignId('inscription_id')->constrained('inscription')->onDelete('restrict')->onUpdate('restrict');
             $table->timestamps();
             $table->softDeletes();
@@ -31,6 +29,6 @@ class CreateCrUrgenceTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('cr_urgence');
+        Schema::dropIfExists('cr_statut');
     }
 }

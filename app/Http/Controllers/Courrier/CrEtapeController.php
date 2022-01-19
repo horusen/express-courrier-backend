@@ -6,11 +6,11 @@ use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Builder as myBuilder;
 use App\Http\Shared\Optimus\Bruno\EloquentBuilderTrait;
 use App\Http\Shared\Optimus\Bruno\LaravelController;
-use App\Models\Courrier\CrNature;
+use App\Models\Courrier\CrEtape;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-class CrNatureController extends LaravelController
+class CrEtapeController extends LaravelController
 {
     use EloquentBuilderTrait;
 
@@ -20,7 +20,7 @@ class CrNatureController extends LaravelController
         // Parse the resource options given by GET parameters
         $resourceOptions = $this->parseResourceOptions();
 
-        $query = CrNature::query();
+        $query = CrEtape::query();
         $this->applyResourceOptions($query, $resourceOptions);
 
         if(isset($request->paginate)) {
@@ -55,11 +55,14 @@ class CrNatureController extends LaravelController
     public function store(Request $request)
     {
 
-        $item = CrNature::create([
+        $item = CrEtape::create([
             'inscription_id' => 1,
-            'info' => $request->info,
-            'traitement' => $request->traitement,
-            'structure_id' => $request->structure_id,
+            'libelle' => $request->libelle,
+            'description' => $request->description,
+            'etape' => $request->etape,
+            'type_id' => $request->type_id,
+            'responsable_id' => $request->responsable_id,
+            'statut_id' => $request->statut_id,
         ]);
 
         return response()
@@ -69,7 +72,7 @@ class CrNatureController extends LaravelController
     public function update(Request $request, $id)
     {
 
-        $item = CrNature::findOrFail($id);
+        $item = CrEtape::findOrFail($id);
 
         $data = $request->all();
 
@@ -81,7 +84,7 @@ class CrNatureController extends LaravelController
 
     public function destroy($id)
     {
-        $item = CrNature::findOrFail($id);
+        $item = CrEtape::findOrFail($id);
 
         $item->delete();
 
@@ -95,7 +98,7 @@ class CrNatureController extends LaravelController
         $item_id = $request->id;
         $relation_name = $request->relation_name;
         $relation_id = $request->relation_id;
-        $item = CrNature::find($item_id);
+        $item = CrEtape::find($item_id);
         $item->{$relation_name}()->syncWithoutDetaching([$relation_id => ['inscription_id'=> 1]]);
 
         return response()->json([
@@ -108,7 +111,7 @@ class CrNatureController extends LaravelController
         $item_id = $request->id;
         $relation_name = $request->relation_name;
         $relation_id = $request->relation_id;
-        $item = CrNature::find($item_id);
+        $item = CrEtape::find($item_id);
         $item->{$relation_name}()->detach($relation_id);
 
         return response()->json([
@@ -125,7 +128,7 @@ class CrNatureController extends LaravelController
 
         try {
 
-            $item = CrNature::find($item_id);
+            $item = CrEtape::find($item_id);
 
             foreach($request->affectation as $key=>$value)
             {
@@ -146,7 +149,7 @@ class CrNatureController extends LaravelController
         ]);
     }
 
-    public function getAffectation(CrNature $CrNature)
+    public function getAffectation(CrEtape $CrEtape)
     {
 
         return response()

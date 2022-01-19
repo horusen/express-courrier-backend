@@ -64,7 +64,7 @@ class DossierController extends LaravelController
     {
         if ($value) {
             $query->whereHas('ged_element.ged_favoris', function($query) {
-                $query->where('ged_favoris.inscription_id', 1);
+                $query->where('ged_favori.inscription_id', 1);
              });
         }
     }

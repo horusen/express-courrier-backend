@@ -26,7 +26,8 @@ class DatabaseSeeder extends Seeder
         $this->call(AffectationStructureSeeder::class);
         $this->call(ResponsableStructureSeeder::class);
         $this->call(AutorisationPersonneStructureSeeder::class);
-
+        $this->call(FichierTypeSeeder::class);
+        $this->call(CrStatutSeeder::class);
 
 
         // Messagerie

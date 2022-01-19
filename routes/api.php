@@ -25,6 +25,7 @@ Route::post('dossiers/checkpassword/{id}', 'Ged\DossierController@checkPassword'
 Route::post('fichiers/checkpassword/{id}', 'Ged\FichierController@checkPassword');
 
 Route::customResource('dossiers', 'Ged\DossierController');
+Route::customResource('users', 'UserController');
 Route::customResource('fichiers', 'Ged\FichierController');
 Route::customResource('fichier-types', 'Ged\FichierTypeController');
 Route::customResource('ged-conservations', 'Ged\GedConservationRuleController');
@@ -39,10 +40,12 @@ Route::prefix('courrier')->group(function() {
     Route::customResource('courrier-entrants', 'Courrier\CrCourrierEntrantController');
     Route::customResource('courrier-internes', 'Courrier\CrCourrierInterneController');
     Route::customResource('destinataires', 'Courrier\CrDestinataireController');
+    Route::customResource('etapes', 'Courrier\CrEtapeController');
     Route::customResource('fichiers', 'Courrier\CrFichierController');
     Route::customResource('moyen-suivis', 'Courrier\CrMoyenSuiviController');
     Route::customResource('natures', 'Courrier\CrNatureController');
     Route::customResource('reaffectations', 'Courrier\CrReaffectationController');
+    Route::customResource('statuts', 'Courrier\CrStatutController');
     Route::customResource('structure-copies', 'Courrier\CrStructureCopieController');
     Route::customResource('suivis', 'Courrier\CrSuiviController');
     Route::customResource('traitements', 'Courrier\CrTraitementController');
