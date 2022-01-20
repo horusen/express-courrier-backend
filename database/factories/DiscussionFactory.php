@@ -8,6 +8,7 @@ use Faker\Generator as Faker;
 
 $factory->define(Discussion::class, function (Faker $faker) {
     return [
-        'inscription' => 1
+        'inscription' => 1,
+        'type' => $faker->randomElement([1, 1, 2])
     ];
 });

@@ -17,6 +17,7 @@ class CreateTypeDiscussionsTable extends Migration
             $table->id();
             $table->string('libelle');
             $table->text('description');
+            $table->foreignId('inscription')->constrained('inscription')->onUpdate('restrict')->onDelete('restrict');
             $table->timestamps();
             $table->softDeletes();
         });
