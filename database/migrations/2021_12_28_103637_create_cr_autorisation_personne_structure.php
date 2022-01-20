@@ -21,6 +21,8 @@ class CreateCrAutorisationPersonneStructure extends Migration
             $table->boolean('ajouter_personne')->default(0);
             $table->boolean('retirer_personne')->default(0);
             $table->boolean('affecter_courrier')->default(0);
+            $table->boolean('consulter_messagerie')->default(0);
+            $table->boolean('ecrire_messagerie')->default(0);
             $table->foreignId('structure_id')->constrained('structures')->onUpdate('restrict')->onDelete('restrict');
             $table->foreignId('personne_id')->constrained('inscription')->onUpdate('restrict')->onDelete('restrict');
             $table->foreignId('inscription_id')->constrained('inscription')->onUpdate('restrict')->onDelete('restrict');

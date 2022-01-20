@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateIntervenantDiscussionsTable extends Migration
+class CreateDiscussionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,11 @@ class CreateIntervenantDiscussionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('intervenant_discussions', function (Blueprint $table) {
+        Schema::create('discussions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user1')->constrained('inscription')->onUpdate('restrict')->onDelete('restrict');
-            $table->foreignId('user2')->constrained('inscription')->onUpdate('restrict')->onDelete('restrict');
-            $table->foreignId('discussion')->constrained('discussions')->onUpdate('restrict')->onDelete('restrict');
+            $table->foreignId('type')->constrained('type_discussions')->onUpdate('restrict')->onDelete('restrict');
             $table->foreignId('inscription')->constrained('inscription')->onUpdate('restrict')->onDelete('restrict');
+            $table->timestamp('touched_at')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
@@ -31,6 +30,6 @@ class CreateIntervenantDiscussionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('intervenant_discussions');
+        Schema::dropIfExists('discussions');
     }
 }

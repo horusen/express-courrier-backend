@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateDiscussionsTable extends Migration
+class CreateCorrespondancePersonneStructuresTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,11 @@ class CreateDiscussionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('discussions', function (Blueprint $table) {
+        Schema::create('correspondance_personne_structures', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('discussion')->constrained('discussions')->onUpdate('restrict')->onDelete('restrict');
+            $table->foreignId('user')->constrained('inscription')->onUpdate('restrict')->onDelete('restrict');
+            $table->foreignId('structure')->constrained('structures')->onUpdate('restrict')->onDelete('restrict');
             $table->foreignId('inscription')->constrained('inscription')->onUpdate('restrict')->onDelete('restrict');
             $table->timestamps();
             $table->softDeletes();
@@ -28,6 +31,6 @@ class CreateDiscussionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('discussions');
+        Schema::dropIfExists('correspondance_personne_structures');
     }
 }
