@@ -7,8 +7,10 @@ use App\Models\Messagerie\Discussion;
 use Faker\Generator as Faker;
 
 $factory->define(Discussion::class, function (Faker $faker) {
+    static $type = 1;
+
     return [
         'inscription' => 1,
-        'type' => $faker->randomElement([1, 1, 2])
+        'type' => $type++ < 5 ? 1 : 2
     ];
 });

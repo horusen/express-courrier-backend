@@ -16,8 +16,8 @@ class CreateDeletedDiscussionsTable extends Migration
         Schema::create('deleted_discussions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('discussion')->constrained('discussions')->onUpdate('restrict')->onDelete('restrict');
-            $table->foreignId('user')->constrained('inscription')->onUpdate('restrict')->onDelete('restrict');
-            $table->foreignId('structure')->constrained('structures')->onUpdate('restrict')->onDelete('restrict');
+            $table->foreignId('user')->nullable()->constrained('inscription')->onUpdate('restrict')->onDelete('restrict');
+            $table->foreignId('structure')->nullable()->constrained('structures')->onUpdate('restrict')->onDelete('restrict');
             $table->foreignId('inscription')->constrained('inscription')->onUpdate('restrict')->onDelete('restrict');
             $table->timestamps();
             $table->softDeletes();

@@ -19,6 +19,8 @@ class AutorisationPersonneStructureSeeder extends Seeder
             'ajouter_personne' => true,
             'retirer_personne' => true,
             'affecter_courrier' => true,
+            'consulter_messagerie' => true,
+            'ecrire_messagerie' => true,
             'structure_id' => 1,
             'personne_id' => 1,
             'inscription_id' => 1
@@ -31,6 +33,8 @@ class AutorisationPersonneStructureSeeder extends Seeder
             'ajouter_personne' => true,
             'retirer_personne' => true,
             'affecter_courrier' => true,
+            'consulter_messagerie' => true,
+            'ecrire_messagerie' => true,
             'structure_id' => 1,
             'personne_id' => 2,
             'inscription_id' => 1

@@ -9,7 +9,6 @@ use Faker\Generator as Faker;
 $factory->define(CorrespondancePersonne::class, function (Faker $faker) {
     static $discussion = 1;
 
-    if (!isset($discussion)) return;
 
     return [
         'user1' => 1,

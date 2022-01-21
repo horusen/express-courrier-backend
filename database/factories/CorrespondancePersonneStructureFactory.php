@@ -6,7 +6,7 @@ use App\Models\Messagerie\CorrespondancePersonneStructure;
 use Faker\Generator as Faker;
 
 $factory->define(CorrespondancePersonneStructure::class, function (Faker $faker) {
-    static $discussion = 4;
+    static $discussion = 5;
 
     if (!isset($discussion)) return;
 

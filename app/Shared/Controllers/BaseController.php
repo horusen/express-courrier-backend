@@ -12,6 +12,7 @@ class BaseController extends Controller
     protected $validation;
     protected $modelQuery;
     protected $inscription = 1;
+    protected $service;
 
 
     protected $baseURL = 'http://localhost:8000/';
