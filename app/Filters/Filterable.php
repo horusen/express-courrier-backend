@@ -8,6 +8,6 @@ trait Filterable
 {
     public function scopeFilter(Builder $query, Filter $filter)
     {
-        $filter->apply($query);
+        return $filter->apply($query);
     }
 }
