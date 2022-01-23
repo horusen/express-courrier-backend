@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Filters\Structure;
+namespace App\ApiRequest\Structure;
 
-use App\Filters\Filter;
+use App\ApiRequest\ApiRequest;
 
-class StructureFilter extends Filter
+class StructureApiRequest extends ApiRequest
 {
     public function type($value = null, $operateur = '=')
     {

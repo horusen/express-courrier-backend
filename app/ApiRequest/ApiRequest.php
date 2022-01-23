@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Filters;
+namespace App\ApiRequest;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Scope;
 use Illuminate\Http\Request;
 
-abstract class Filter
+abstract class ApiRequest
 {
     // Should be query params from request
     protected $filters;
