@@ -33,7 +33,7 @@ class Dossier extends Eloquent
 
 	protected $casts = [
 		'conservation' => 'int',
-		'dossier' => 'int',
+		'dossier_id' => 'int',
 		'inscription_id' => 'int'
 	];
 
@@ -41,7 +41,7 @@ class Dossier extends Eloquent
 		'libelle',
 		'description',
 		'conservation',
-        'dossier',
+        'dossier_id',
 		'inscription_id'
 	];
 
@@ -58,8 +58,7 @@ class Dossier extends Eloquent
 
     public function getIsUserAttribute()
 	{
-        return true;
-		if(Auth::check() && $this->attributes['inscription_id'] === 1)
+		if(Auth::check() && $this->attributes['inscription_id'] === Auth::id())
 		{
 			return true;
 		}
@@ -89,7 +88,7 @@ class Dossier extends Eloquent
 
     public function dossier()
 	{
-		return $this->belongsTo(\App\Models\Ged\Dossier::class, 'dossier_id')->with('dossier_parent.ged_element');
+		return $this->belongsTo(\App\Models\Ged\Dossier::class, 'dossier_id')->with('dossier.ged_element');
 	}
 
 	public function dossiers()

@@ -40,7 +40,7 @@ class GedPartageController extends LaravelController
     public function filterIsIns(myBuilder $query, $method, $clauseOperator, $value, $in)
     {
         if ($value) {
-            $query->where('inscription_id', 1);
+            $query->where('inscription_id', Auth::id());
         }
     }
 
@@ -56,7 +56,7 @@ class GedPartageController extends LaravelController
     {
 
         $item = GedPartage::create([
-            'inscription_id' => 1,
+            'inscription_id' => Auth::id(),
             'personne' => $request->personne,
         ]);
 
@@ -94,7 +94,7 @@ class GedPartageController extends LaravelController
         $relation_name = $request->relation_name;
         $relation_id = $request->relation_id;
         $item = GedPartage::find($item_id);
-        $item->{$relation_name}()->syncWithoutDetaching([$relation_id => ['inscription_id'=> 1]]);
+        $item->{$relation_name}()->syncWithoutDetaching([$relation_id => ['inscription_id'=> Auth::id()]]);
 
         return response()->json([
             'message' => 'Element affecter'
@@ -127,7 +127,7 @@ class GedPartageController extends LaravelController
 
             foreach($request->affectation as $key=>$value)
             {
-                $pivotData = array_fill(0, count($value), ['inscription_id'=> 1]);
+                $pivotData = array_fill(0, count($value), ['inscription_id'=> Auth::id()]);
                 $syncData  = array_combine($value, $pivotData);
                 $item->{$key}()->sync($syncData);
             }

@@ -52,7 +52,7 @@ class Fichier extends Eloquent
      */
     public function setClassifiedVisibility($permitted = false)
     {
-        if ((!$this->ged_element->attributes['bloquer']) || Auth::check() && $this->attributes['inscription_id'] === 1) {
+        if ((!$this->ged_element->attributes['bloquer']) || Auth::check() && $this->attributes['inscription_id'] === Auth::id()) {
             $permitted = true;
         }
         if (!$permitted) $this->setHidden($this->classified);
@@ -71,7 +71,7 @@ class Fichier extends Eloquent
     public function getIsUserAttribute()
 	{
         return true;
-		if(Auth::check() && $this->attributes['inscription_id'] === 1)
+		if(Auth::check() && $this->attributes['inscription_id'] === Auth::id())
 		{
 			return true;
 		}
@@ -110,6 +110,11 @@ class Fichier extends Eloquent
     public function dossiers()
 	{
 		return $this->belongsToMany(\App\Models\Ged\Dossier::class, 'fichier_dossier', 'fichier_id', 'dossier_id');
+	}
+
+    public function courriers()
+	{
+		return $this->belongsToMany(\App\Models\Courrier\CrCourrier::class, 'cr_fichier', 'fichier_id', 'courrier_id');
 	}
 
     public function dossier()

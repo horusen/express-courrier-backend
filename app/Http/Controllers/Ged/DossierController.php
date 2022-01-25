@@ -41,7 +41,7 @@ class DossierController extends LaravelController
     public function filterIsIns(myBuilder $query, $method, $clauseOperator, $value, $in)
     {
         if ($value) {
-            $query->where('inscription_id', 1);
+            $query->where('inscription_id', Auth::id());
         }
     }
 
@@ -64,7 +64,7 @@ class DossierController extends LaravelController
     {
         if ($value) {
             $query->whereHas('ged_element.ged_favoris', function($query) {
-                $query->where('ged_favori.inscription_id', 1);
+                $query->where('ged_favori.inscription_id', Auth::id());
              });
         }
     }
@@ -91,7 +91,7 @@ class DossierController extends LaravelController
     {
         if ($value) {
             $query->whereHas('ged_element.partage_a_personnes', function($query) {
-                $query->where('ged_partage.inscription_id', 1);
+                $query->where('ged_partage.inscription_id', Auth::id());
              });
         }
     }
@@ -100,7 +100,7 @@ class DossierController extends LaravelController
     {
         if ($value) {
             $query->whereHas('ged_element.partage_a_personnes', function($query) {
-                $query->where('ged_partage.personne', 1);
+                $query->where('ged_partage.personne', Auth::id());
              });
         }
     }
@@ -109,7 +109,7 @@ class DossierController extends LaravelController
     {
 
         $item = Dossier::create([
-            'inscription_id' => 1,
+            'inscription_id' => Auth::id(),
             'libelle' => $request->libelle,
             'description' => $request->description,
             'conservation_id' => $request->conservation_id,
@@ -165,7 +165,7 @@ class DossierController extends LaravelController
         $relation_name = $request->relation_name;
         $relation_id = $request->relation_id;
         $item = Dossier::find($item_id);
-        $item->{$relation_name}()->syncWithoutDetaching([$relation_id => ['inscription_id'=> 1]]);
+        $item->{$relation_name}()->syncWithoutDetaching([$relation_id => ['inscription_id'=> Auth::id()]]);
 
         return response()->json([
             'message' => 'Element affecter'
@@ -221,7 +221,7 @@ class DossierController extends LaravelController
 
         foreach($affectation as $key=>$value)
         {
-            $pivotData = array_fill(0, count($value), ['inscription_id'=> 1]);
+            $pivotData = array_fill(0, count($value), ['inscription_id'=> Auth::id()]);
             $syncData  = array_combine($value, $pivotData);
             $result = $item->{$key}()->sync($syncData);
         }

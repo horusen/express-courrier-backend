@@ -67,9 +67,10 @@ class GedElement extends Eloquent
 
     public function getUserFavorisAttribute()
 	{
+
 		if(Auth::check())
 		{
-			return $this->favoris()->where('id', 1)->count();
+			return $this->favoris()->where('inscription_id', Auth::id())->count();
 		}
 		return false;
     }
@@ -90,6 +91,11 @@ class GedElement extends Eloquent
 	{
 		return $this->hasMany(\App\Models\Ged\GedFavori::class, 'element');
 	}
+
+    public function favoris()
+	{
+		return $this->belongsToMany(\App\Models\Inscription::class, 'ged_favori', 'element', 'inscription_id');
+    }
 
 	public function ged_partages()
 	{

@@ -40,7 +40,7 @@ class FichierTypeController extends LaravelController
     public function filterIsIns(myBuilder $query, $method, $clauseOperator, $value, $in)
     {
         if ($value) {
-            $query->where('inscription', 1);
+            $query->where('inscription', Auth::id());
         }
     }
 
@@ -56,7 +56,7 @@ class FichierTypeController extends LaravelController
     {
 
         $item = FichierType::create([
-            'inscription_id' => 1,
+            'inscription_id' => Auth::id(),
             'libelle' => $request->libelle,
             'icon' => $request->icon,
             'extension' => $request->extension,
@@ -96,7 +96,7 @@ class FichierTypeController extends LaravelController
         $relation_name = $request->relation_name;
         $relation_id = $request->relation_id;
         $item = FichierType::find($item_id);
-        $item->{$relation_name}()->syncWithoutDetaching([$relation_id => ['inscription_id'=> 1]]);
+        $item->{$relation_name}()->syncWithoutDetaching([$relation_id => ['inscription_id'=> Auth::id()]]);
 
         return response()->json([
             'message' => 'Element affecter'
@@ -129,7 +129,7 @@ class FichierTypeController extends LaravelController
 
             foreach($request->affectation as $key=>$value)
             {
-                $pivotData = array_fill(0, count($value), ['inscription_id'=> 1]);
+                $pivotData = array_fill(0, count($value), ['inscription_id'=> Auth::id()]);
                 $syncData  = array_combine($value, $pivotData);
                 $item->{$key}()->sync($syncData);
             }

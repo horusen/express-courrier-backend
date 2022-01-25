@@ -16,7 +16,7 @@ class CreateCrNatureTable extends Migration
         Schema::create('cr_nature', function (Blueprint $table) {
             $table->id();
             $table->string('libelle');//courrier, document,...
-            $table->text('description');
+            $table->text('description')->nullable();
             $table->foreignId('inscription_id')->constrained('inscription')->onDelete('restrict')->onUpdate('restrict');
             $table->timestamps();
             $table->softDeletes();

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Builder as myBuilder;
 use App\Http\Shared\Optimus\Bruno\EloquentBuilderTrait;
 use App\Http\Shared\Optimus\Bruno\LaravelController;
+use App\Models\Courrier\CrCourrier;
 use App\Models\Courrier\CrCourrierEntrant;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -40,7 +41,7 @@ class CrCourrierEntrantController extends LaravelController
     public function filterIsIns(myBuilder $query, $method, $clauseOperator, $value, $in)
     {
         if ($value) {
-            $query->where('inscription_id', 1);
+            $query->where('inscription_id', Auth::id());
         }
     }
 
@@ -54,14 +55,38 @@ class CrCourrierEntrantController extends LaravelController
 
     public function store(Request $request)
     {
+        DB::beginTransaction();
 
-        $item = CrCourrierEntrant::create([
-            'inscription_id' => 1,
-            'date_arrive' => $request->date_arrive,
-            'courrier_id' => $request->courrier_id,
-            'expediteur' => $request->expediteur,
-            'responsable' => $request->responsable
-        ]);
+        try {
+            $courrier = CrCourrier::create([
+                'inscription_id' => Auth::id(),
+                'libelle' => $request->objet,
+                'objet' => $request->objet,
+                'date_redaction' => $request->date_redaction,
+                'commentaire' => $request->commentaire,
+                'valider' => $request->valider,
+                'type_id' => $request->type_id,
+                'urgence_id' => $request->urgence_id,
+                'statut_id' => 1,
+                'nature_id' => $request->nature_id,
+                'structure_id' => $request->structure_id,
+                'suivi_par' => $request->suivi_par,
+            ]);
+
+            $item = CrCourrierEntrant::create([
+                'inscription_id' => Auth::id(),
+                'date_arrive' => $request->date_arrive,
+                'courrier_id' => $courrier->id,
+                'expediteur_id' => $request->expediteur_id,
+                'responsable_id' => $request->responsable_id
+            ]);
+
+            DB::commit();
+        } catch (\Throwable $e) {
+
+            DB::rollback();
+            throw $e;
+        }
 
         return response()
         ->json($item);
@@ -73,8 +98,8 @@ class CrCourrierEntrantController extends LaravelController
         $item = CrCourrierEntrant::findOrFail($id);
 
         $data = $request->all();
-
         $item->fill($data)->save();
+        $item->cr_courrier->fill($data)->save();
 
         return response()
         ->json($item);
@@ -97,7 +122,7 @@ class CrCourrierEntrantController extends LaravelController
         $relation_name = $request->relation_name;
         $relation_id = $request->relation_id;
         $item = CrCourrierEntrant::find($item_id);
-        $item->{$relation_name}()->syncWithoutDetaching([$relation_id => ['inscription_id'=> 1]]);
+        $item->{$relation_name}()->syncWithoutDetaching([$relation_id => ['inscription_id'=> Auth::id()]]);
 
         return response()->json([
             'message' => 'Element affecter'
@@ -130,7 +155,7 @@ class CrCourrierEntrantController extends LaravelController
 
             foreach($request->affectation as $key=>$value)
             {
-                $pivotData = array_fill(0, count($value), ['inscription_id'=> 1]);
+                $pivotData = array_fill(0, count($value), ['inscription_id'=> Auth::id()]);
                 $syncData  = array_combine($value, $pivotData);
                 $item->{$key}()->sync($syncData);
             }

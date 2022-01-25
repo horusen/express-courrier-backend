@@ -43,7 +43,7 @@ class FichierController extends LaravelController
     public function filterIsIns(myBuilder $query, $method, $clauseOperator, $value, $in)
     {
         if ($value) {
-            $query->where('inscription_id', 1);
+            $query->where('inscription_id', Auth::id());
         }
     }
 
@@ -59,7 +59,7 @@ class FichierController extends LaravelController
     {
         if ($value) {
             $query->whereHas('dossiers', function($query) use ($value){
-                $query->where('dossier.inscription_id', 1 );
+                $query->where('dossier.inscription_id', Auth::id() );
              });
         }
     }
@@ -73,11 +73,20 @@ class FichierController extends LaravelController
         }
     }
 
+    public function filterCourrierId(myBuilder $query, $method, $clauseOperator, $value, $in)
+    {
+        if ($value) {
+            $query->whereHas('courriers', function($query) use ($value){
+                $query->where('cr_courrier.id', $value);
+             });
+        }
+    }
+
     public function filterUserFavoris(myBuilder $query, $method, $clauseOperator, $value, $in)
     {
         if ($value) {
             $query->whereHas('ged_element.ged_favoris', function($query) {
-                $query->where('ged_favori.inscription_id', 1);
+                $query->where('ged_favori.inscription_id', Auth::id());
              });
         }
     }
@@ -86,7 +95,7 @@ class FichierController extends LaravelController
     {
         if ($value) {
             $query->whereHas('ged_element.partage_a_personnes', function($query) {
-                $query->where('ged_partage.inscription_id', 1);
+                $query->where('ged_partage.inscription_id', Auth::id());
              });
         }
     }
@@ -95,7 +104,7 @@ class FichierController extends LaravelController
     {
         if ($value) {
             $query->whereHas('ged_element.partage_a_personnes', function($query) {
-                $query->where('ged_partage.personne', 1);
+                $query->where('ged_partage.personne', Auth::id());
              });
         }
     }
@@ -129,7 +138,7 @@ class FichierController extends LaravelController
             $extension = ($n===false) ? "" : substr($path,$n+1);
             $file = FichierType::where('extension','like', '%'.$extension.'%')->first();
             $item = Fichier::create([
-                'inscription_id' => 1,
+                'inscription_id' => Auth::id(),
                 'libelle' => $request->libelle,
                 'type_id' => $file->id,
                 'fichier' => $path,
@@ -139,7 +148,7 @@ class FichierController extends LaravelController
             $item->ged_element()->save($element);
             $relation_name = $request->relation_name;
             $relation_id = $request->relation_id;
-            $item->{$relation_name}()->syncWithoutDetaching([$relation_id => ['inscription_id'=> 1]]);
+            $item->{$relation_name}()->syncWithoutDetaching([$relation_id => ['inscription_id'=> Auth::id()]]);
         DB::commit();
         } catch (\Throwable $e) {
             DB::rollback();
@@ -163,10 +172,10 @@ class FichierController extends LaravelController
                         $path = $request->file('fichier'.$i)->store('document/'.date('Y').'/'.date('F'));
                         // $nameonly=preg_replace('/\..+$/', '', $request->file('fichier'.$i)->getClientOriginalName());
                         $n = strrpos($path,".");
-                        $extension = ($n===false) ? "" : substr($path,$n+1);
+                        $extension = ($n===false) ? "" : substr($path,$n+Auth::id());
                         $file = FichierType::where('extension','like', '%'.$extension.'%')->first();
                         $fichier = Fichier::create([
-                            'inscription' => 1,
+                            'inscription' => Auth::id(),
                             'libelle' => $request->libelle,
                             'type' => $file->id,
                             'fichier' => $path,
@@ -176,7 +185,7 @@ class FichierController extends LaravelController
 
                         $relation_name = $request->relation_name;
                         $relation_id = $request->relation_id;
-                        $fichier->{$relation_name}()->syncWithoutDetaching([$relation_id => ['inscription_id'=> 1]]);
+                        $fichier->{$relation_name}()->syncWithoutDetaching([$relation_id => ['inscription_id'=> Auth::id()]]);
                     }
                 }
             }
@@ -232,7 +241,7 @@ class FichierController extends LaravelController
         $relation_name = $request->relation_name;
         $relation_id = $request->relation_id;
         $item = Fichier::find($item_id);
-        $item->{$relation_name}()->syncWithoutDetaching([$relation_id => ['inscription_id'=> 1]]);
+        $item->{$relation_name}()->syncWithoutDetaching([$relation_id => ['inscription_id'=> Auth::id()]]);
 
         return response()->json([
             'message' => 'Element affecter'
@@ -288,7 +297,7 @@ class FichierController extends LaravelController
 
         foreach($affectation as $key=>$value)
         {
-            $pivotData = array_fill(0, count($value), ['inscription_id'=> 1]);
+            $pivotData = array_fill(0, count($value), ['inscription_id'=> Auth::id()]);
             $syncData  = array_combine($value, $pivotData);
             $result = $item->{$key}()->sync($syncData);
         }

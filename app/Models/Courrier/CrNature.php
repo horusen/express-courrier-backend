@@ -34,6 +34,7 @@ class CrNature extends Eloquent
 
 	protected $fillable = [
 		'libelle',
+		'description',
 		'inscription_id'
 	];
 

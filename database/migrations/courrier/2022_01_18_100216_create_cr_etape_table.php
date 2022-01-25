@@ -16,7 +16,7 @@ class CreateCrEtapeTable extends Migration
         Schema::create('cr_etape', function (Blueprint $table) {
             $table->id();
             $table->string('libelle');//courrier, document,...
-            $table->text('description');
+            $table->text('description')->nullable();
             $table->integer('etape');
             $table->foreignId('type_id')->constrained('cr_type')->onDelete('restrict')->onUpdate('restrict');
             $table->foreignId('statut_id')->constrained('cr_statut')->onDelete('restrict')->onUpdate('restrict');
