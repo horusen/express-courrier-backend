@@ -69,6 +69,24 @@ class DossierController extends LaravelController
         }
     }
 
+    public function filterBelongToStructureId(myBuilder $query, $method, $clauseOperator, $value, $in)
+    {
+        if ($value) {
+            $query->whereHas('ged_element.structures', function($query) use ($value) {
+                $query->where('ged_element_structure.structure', $value);
+             });
+        }
+    }
+
+    public function filterBelongToUser(myBuilder $query, $method, $clauseOperator, $value, $in)
+    {
+        if ($value) {
+            $query->whereHas('ged_element.ged_element_personnes', function($query) {
+                $query->where('ged_element_personne.personne', Auth::id());
+             });
+        }
+    }
+
     public function filterSharedByUser(myBuilder $query, $method, $clauseOperator, $value, $in)
     {
         if ($value) {

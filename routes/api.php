@@ -142,7 +142,18 @@ Route::prefix('courrier')->group(function() {
     Route::customResource('urgences', 'Courrier\CrUrgenceController');
 });
 
-
+//Dashboard
+Route::get('sumaccueildash','Dash\CourrierdashController@getsum');
+Route::get('structdash/{rela}','Dash\CourrierdashController@getstruct');
+Route::get('natudash/{rela}','Dash\CourrierdashController@getnature');
+Route::get('typedash/{rela}','Dash\CourrierdashController@gettype');
+Route::get('statutdash/{rela}','Dash\CourrierdashController@getstatut');
+Route::get('allstructdash','Dash\CourrierdashController@getallstruct');
+Route::get('crbystructdash/{id}','Dash\CourrierdashController@courrierbystruct');
+Route::get('diffcrdash','Dash\CourrierdashController@diffcr');
+Route::get('diffcrbymonthdash/{id}','Dash\CourrierdashController@diffcrbymonth');
+Route::get('timingdash','Dash\CourrierdashController@timing');
+Route::get('expediteurdash','Dash\CourrierdashController@expediteurcr');
 
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return $request->user();

@@ -44,6 +44,6 @@ class CrNature extends Eloquent
 
 	public function cr_courriers()
 	{
-		return $this->hasMany(\App\Models\Courrier\CrCourrier::class, 'nature');
+		return $this->hasMany(\App\Models\Courrier\CrCourrier::class, 'nature_id');
 	}
 }
