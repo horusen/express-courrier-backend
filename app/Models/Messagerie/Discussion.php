@@ -2,6 +2,7 @@
 
 namespace App\Models\Messagerie;
 
+use App\ApiRequest\ApiRequestConsumer;
 use App\Models\Structure\Inscription;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -10,7 +11,7 @@ use Illuminate\Support\Facades\Auth;
 
 class Discussion extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, ApiRequestConsumer;
     protected $table = 'discussions';
     protected $fillable = ['inscription', 'type', 'touched_at'];
     protected $appends = ['derniere_reaction', 'correspondance'];
@@ -41,13 +42,13 @@ class Discussion extends Model
 
     public function correspondance_personne()
     {
-        return $this->hasOne(CorrespondancePersonne::class, 'discussion');
+        return $this->hasOne(CorrespondancePersonne::class, 'discussion')->select(['user1', 'user2']);
     }
 
 
     public function correspondance_personne_structure()
     {
-        return $this->hasOne(CorrespondancePersonneStructure::class, 'discussion');
+        return $this->hasOne(CorrespondancePersonneStructure::class, 'discussion')->select(['user', 'structure']);
     }
 
     public function deletions()
@@ -61,6 +62,7 @@ class Discussion extends Model
     /**
      *
      * ATTRIBUTES
+     *
      *
      */
     public function getDerniereReactionAttribute()
@@ -101,6 +103,16 @@ class Discussion extends Model
         });
     }
 
+
+    public function scopeWhereReaction(Builder $query)
+    {
+        return $query->whereHas('reactions', function ($q) {
+            $q->whereDoesntHave('deletions', function ($q) {
+                $q->where('user', Auth::id());
+            });
+        });
+    }
+
     public function scopeWhereCorrespondants(Builder $query, $user1, $user2)
     {
         return $query->whereHas('correspondance_personne', function (Builder $query) use ($user1, $user2) {
@@ -117,7 +129,7 @@ class Discussion extends Model
     {
         return $query->whereHas('correspondance_personne_structure', function (Builder $query) use ($user, $structure) {
             $query->where('user', $user)->where('structure', $structure);
-        })->first();
+        });
     }
 
 

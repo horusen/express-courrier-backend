@@ -26,7 +26,6 @@ class StructureController extends BaseController
         'cigle' => 'required'
     ];
 
-    private StructureService $service;
 
     public function __construct(StructureService $service)
     {
@@ -35,11 +34,11 @@ class StructureController extends BaseController
     }
 
 
-    public function all(StructureStructureFilter $request)
-    {
-        // return ['test' => $request->query()];
-        return $this->service->all($request);
-    }
+    // public function all(StructureStructureFilter $request)
+    // {
+    //     // return ['test' => $request->query()];
+    //     return $this->service->all($request);
+    // }
 
     // recupere les structures où l'utilisateur est affecté
     public function index()

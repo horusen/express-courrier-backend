@@ -2,11 +2,9 @@
 
 namespace App\Models\Structure;
 
-use App\Filters\Filterable;
-use App\Models\Admin;
+use App\ApiRequest\ApiRequestConsumer;
 use App\Models\Courrier\CrAutorisationPersonneStructure;
 use App\Models\Structure\Admin as StructureAdmin;
-use Dotenv\Dotenv;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
@@ -14,7 +12,7 @@ use Kalnoy\Nestedset\NodeTrait;
 
 class Structure extends Model
 {
-    use SoftDeletes, NodeTrait, Filterable;
+    use SoftDeletes, NodeTrait, ApiRequestConsumer;
     protected $table = 'structures';
     protected $guarded = [];
     // protected $hidden = ['parent_id'];
@@ -40,6 +38,11 @@ class Structure extends Model
     public function sous_structures()
     {
         return $this->children();
+    }
+
+    public function charge_ecriture_messageries()
+    {
+        return $this->belongsToMany(Inscription::class, CrAutorisationPersonneStructure::class, 'structure_id', 'personne_id')->where('ecrire_messagerie', true);
     }
 
 

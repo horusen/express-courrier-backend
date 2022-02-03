@@ -18,10 +18,7 @@ class StructureService
     use AdminTrait;
 
 
-    public function all(StructureStructureFilter $filter)
-    {
-        return Structure::filter($filter)->paginate(5);
-    }
+
 
     public function store($data)
     {
@@ -38,7 +35,7 @@ class StructureService
             $structure->update(['image' => $file->storeAs('structure/' . $structure->id . '/image', $file->getClientOriginalName(), 'public')]);
         }
 
-        return $structure;
+        return $structure->refresh();
     }
 
 

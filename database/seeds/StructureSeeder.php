@@ -67,6 +67,6 @@ class StructureSeeder extends Seeder
 
 
 
-        factory(Structure::class, 10)->create();
+        factory(Structure::class, 20)->create();
     }
 }

@@ -1,9 +1,8 @@
 <?php
 
-use App\Models\Messagerie\Discussion;
 use Illuminate\Database\Seeder;
 
-class DiscussionSeeder extends Seeder
+class ReactionLuSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -12,6 +11,6 @@ class DiscussionSeeder extends Seeder
      */
     public function run()
     {
-        factory(Discussion::class, 32)->create();
+        //
     }
 }

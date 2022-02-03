@@ -8,14 +8,24 @@ use App\Models\Messagerie\Reaction;
 use Faker\Generator as Faker;
 
 $factory->define(Reaction::class, function (Faker $faker) {
-    $discussion = $faker->numberBetween(1, 6);
-    static $inscription = 1;
+    static $idDiscussion = 1;
+    static $counter = 1;
+
+    if ($counter % 50 == 0) $idDiscussion++;
+
+    $discussion = Discussion::findOrFail($idDiscussion);
+
+
+    if ($idDiscussion < 24)
+        $inscription = $counter++ % 2 == 0 ? $discussion->correspondance_personne->user1 : $discussion->correspondance_personne->user2;
+    else
+        $inscription = $counter++ % 2 == 0 ? $discussion->correspondance_personne_structure->user : $discussion->correspondance_personne_structure->structure()->first()->charge_ecriture_messageries[0]->id;
 
     return [
         'reaction' => $faker->sentence($faker->numberBetween(5, 10)),
         'fichier' => null,
-        'inscription' => $inscription++ % 2 == 0 ? Discussion::find($discussion)->intervenants->user1 : Discussion::find($discussion)->intervenants->user2,
-        'discussion' => $discussion,
+        'inscription' => $inscription,
+        'discussion' => $idDiscussion,
         'rebondissement' => null
     ];
 });

@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Messagerie;
 
+use App\ApiRequest\Messagerie\ReactionApiRequest;
 use App\Http\Controllers\Controller;
 use App\Models\Messagerie\Discussion;
 use App\Models\Messagerie\Reaction;
+use App\Services\Messagerie\ReactionService;
 use App\Shared\Controllers\BaseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -18,24 +20,35 @@ class ReactionController extends BaseController
     ];
 
 
-    public function __construct()
+    public function __construct(ReactionService $service)
     {
         parent::__construct($this->model, $this->validation);
+        $this->service = $service;
     }
 
 
-    public function getByDiscussion(Discussion $discussion)
+    public function getByDiscussion(ReactionApiRequest $request, $discussion)
     {
-        return $this->model::where('discussion', $discussion->id)->get();
+        return $this->service->getByDiscussion($request, $discussion);
     }
 
 
     public function store(Request $request)
     {
-        $request->validate(['reaction' => 'required', 'discussion' => 'required|integer|exists:discussions,id']);
+        $request->validate([
+            'reaction' => 'required_without:fichier',
+            'rebondissement' => 'integer|exists:reactions,id',
+            'discussion' => 'required|integer|exists:discussions,id',
+            'structure' => 'sometimes|integer|exists:structures,id',
+            'fichier' => 'file|required_without:reaction'
+        ]);
 
-        $reaction = $this->model::create($request->all() + ['inscription' => Auth::id()]);
+        return $this->service->store($request->all() + ['inscription' => Auth::id()]);
+    }
 
-        return $this->model::find($reaction->id);
+
+    public function delete(Reaction $reaction, $structure = null)
+    {
+        return   $this->service->delete($reaction, $structure);
     }
 }

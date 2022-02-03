@@ -41,6 +41,8 @@ class DatabaseSeeder extends Seeder
         $this->call(DiscussionSeeder::class);
         $this->call(CorrespondancePersonneSeeder::class);
         $this->call(CorrespondancePersonneStructureSeeder::class);
+        $this->call(ReactionSeeder::class);
+        $this->call(ReactionStructureSeeder::class);
         // $this->call(IntervenantDiscussionSeeder::class);
         // $this->call(ReactionSeeder::class);
 

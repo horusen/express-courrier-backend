@@ -2,26 +2,35 @@
 
 namespace App\Services\Messagerie;
 
+use App\ApiRequest\Messagerie\DiscussionApiRequest;
 use App\Exceptions\NotAllowedException;
-use App\Models\Courrier\CrAutorisationPersonneStructure;
 use App\Models\Messagerie\CorrespondancePersonne;
 use App\Models\Messagerie\CorrespondancePersonneStructure;
 use App\Models\Messagerie\DeletedDiscussion;
 use App\Models\Messagerie\Discussion;
-use Illuminate\Database\Eloquent\Builder;
+use App\Traits\Messagerie\AutorisationDiscussionTrait;
+use Carbon\Carbon;
+use CreateDossierTable;
+use GuzzleHttp\Psr7\Request;
 use Illuminate\Support\Facades\Auth;
 
 class DiscussionService
 {
+
+    use AutorisationDiscussionTrait;
     /***
      *
      *
      * PUBLIC
      *
      */
-    public function getByUser($user)
+    public function getByUser(DiscussionApiRequest $request, $user)
     {
-        return Discussion::whereNotDeleted($user)->whereCorrespondant($user)->orderBy('touched_at', 'DESC')->get();
+        return Discussion::whereNotDeleted($user)
+            ->whereCorrespondant($user)
+            ->whereReaction()
+            ->orderBy('touched_at', 'DESC')
+            ->consume($request);
     }
 
     public function getByStructure($structure)
@@ -41,7 +50,7 @@ class DiscussionService
             abort(422, "La discussion existe déjà");
         }
 
-        $discussion = Discussion::create(['type' => $data['type'], 'inscription' => Auth::id()]);
+        $discussion = Discussion::create(['type' => $data['type'], 'inscription' => Auth::id(), 'touched_at' => Carbon::now()]);
 
         $this->createCorrespondance($data['type'], $discussion->id, $correspondants);
 
@@ -71,6 +80,21 @@ class DiscussionService
         }
 
         throw new NotAllowedException();
+    }
+
+
+    public function getByCorrespondance($data)
+    {
+        if ($data['type'] == 1) {
+            $discussion = $this->getDiscussionPersonnes($data['user1'], $data['user2']);
+        } else if ($data['type'] == 2) {
+            $discussion =  $this->getDiscussionPersonneStructure($data['user'], $data['structure']);
+        } else {
+            abort(422, "Données ambigues");
+        }
+
+
+        return isset($discussion) ? $discussion : $this->store($data);
     }
 
 
@@ -171,38 +195,5 @@ class DiscussionService
             'structure' => $structure,
             'inscription' => Auth::id()
         ]);
-    }
-
-    private function isUserCorrespondantInDiscussion($discussion, $user)
-    {
-        $discussion = Discussion::whereCorrespondant($user)->find($discussion);
-
-        return isset($discussion);
-        // $correspondance = CorrespondancePersonne::where('discussion', $discussion)->where(function ($q) use ($user) {
-        //     $q->where('user1', $user)->orWhere('user2', $user);
-        // })->first();
-
-        // return isset($correspondance);
-    }
-
-    public function isStructureCorrespondantInDiscussion($discussion, $structure)
-    {
-        $discussion = Discussion::whereStructure($structure)->find($discussion);
-        return isset($discussion);
-    }
-
-
-    public function isUserHasAutorisationFromStructure($structure, $user, string $autorisation)
-    {
-        if (!in_array($autorisation, ['ecrire_messagerie', 'consulter_messagerie'])) {
-            abort(500, "Type autorisation doesnt exists");
-        }
-
-        $autorisation = CrAutorisationPersonneStructure::where('structure_id', $structure)
-            ->where('personne_id', $user)
-            ->where($autorisation, true)
-            ->first();
-
-        return isset($autorisation);
     }
 }

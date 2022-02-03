@@ -12,7 +12,7 @@ $factory->define(CorrespondancePersonne::class, function (Faker $faker) {
 
     return [
         'user1' => 1,
-        'user2' => $faker->numberBetween(2, 50),
+        'user2' => $faker->unique()->numberBetween(2, 50),
         'discussion' => $discussion++,
         'inscription' => 1
     ];

@@ -12,6 +12,6 @@ class CorrespondancePersonneStructureSeeder extends Seeder
      */
     public function run()
     {
-        factory(CorrespondancePersonneStructure::class, 2)->create();
+        factory(CorrespondancePersonneStructure::class, 9)->create();
     }
 }

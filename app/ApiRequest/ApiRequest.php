@@ -25,10 +25,10 @@ abstract class ApiRequest
 
     private function _parseRequest(Request $request)
     {
-        $this->filters = $request->except(['search', 'per_page', 'current_page', 'sort']);
+        $this->filters = $request->except(['search', 'per_page', 'page', 'sort']);
         $this->searchKeyword = $request->search;
         $this->perPage = $request->per_page;
-        $this->page = $request->current_page;
+        $this->page = $request->page;
         $this->sortingParams  = $request->sort;
     }
 
@@ -107,12 +107,12 @@ abstract class ApiRequest
     {
         $this->builder = $builder;
 
-        $this->research($this->searchKeyword);
+        if ($this->searchKeyword) $this->research($this->searchKeyword);
 
-        $this->filter($this->filters);
+        if ($this->filters) $this->filter($this->filters);
 
         if ($this->sortingParams) $this->sort($this->sortingParams);
 
-        return isset($this->perPage) || isset($this->page) ?  $this->paginate($builder, $this->perPage, $this->page) : $builder->get();
+        return isset($this->perPage) || isset($this->page) ?  $this->paginate($builder, $this->perPage, $this->page) : response()->json(['data' => $builder->get()], 200);
     }
 }

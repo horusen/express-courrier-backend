@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\ConditionsUtilisationController;
+use App\Http\Controllers\Ged\DossierController;
 use App\Http\Controllers\InscriptionController;
 use App\Http\Controllers\Messagerie\DiscussionController;
 use App\Http\Controllers\Messagerie\ReactionController;
@@ -117,10 +118,14 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('structures/{structure}/structure-et-sous-structures', [StructureController::class, 'getStructureEtSousStructures']);
 
+    Route::get('dossiers', [DossierController::class, 'getAll']);
 
 
-    Route::get('discussions', [DiscussionController::class, 'all']);
+    Route::post('discussions/check', [DiscussionController::class, 'check']);
+    Route::get('discussions/all', [DiscussionController::class, 'all']);
     Route::post('reactions', [ReactionController::class, 'store']);
+    Route::delete('reactions/{reaction}', [ReactionController::class, 'delete']);
+    Route::delete('reactions/{reaction}/structure/{structure}', [ReactionController::class, 'delete']);
     Route::get('discussions/{discussion}/reactions', [ReactionController::class, 'getByDiscussion']);
     Route::get('discussions/{discussion}', [DiscussionController::class, 'show']);
 

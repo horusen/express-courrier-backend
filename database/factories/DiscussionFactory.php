@@ -11,6 +11,6 @@ $factory->define(Discussion::class, function (Faker $faker) {
 
     return [
         'inscription' => 1,
-        'type' => $type++ < 5 ? 1 : 2
+        'type' => $type++ < 24 ? 1 : 2
     ];
 });

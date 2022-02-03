@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Messagerie;
 
+use App\ApiRequest\Messagerie\DiscussionApiRequest;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Messagerie\DiscussionRequest;
 use App\Models\Messagerie\Discussion;
@@ -26,14 +27,15 @@ class DiscussionController extends BaseController
     }
 
 
-    public function getByUser()
+    public function getByUser(DiscussionApiRequest $request)
     {
-        return $this->service->getByUser(Auth::id());
+        return $this->service->getByUser($request, Auth::id());
     }
 
     public function getByStructure($structure)
     {
-        return $this->service->getByStructure($structure);
+        $discussion = $this->service->getByStructure($structure);
+        return response()->json($data = $discussion, $status = 200);
     }
 
 
@@ -42,6 +44,11 @@ class DiscussionController extends BaseController
         return $this->service->store($request->all());
     }
 
+    public function check(DiscussionRequest $request)
+    {
+
+        return $this->service->getByCorrespondance($request->all());
+    }
 
     public function delete(Discussion $discussion, $structure = null)
     {
@@ -53,7 +60,7 @@ class DiscussionController extends BaseController
 
     public function all()
     {
-        return $this->model::all();
+        return response()->json($this->model::all(), $status = 200);
     }
 
 

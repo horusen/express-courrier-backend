@@ -15,10 +15,10 @@ class CreateReactionsTable extends Migration
     {
         Schema::create('reactions', function (Blueprint $table) {
             $table->id();
-            $table->text('reaction');
+            $table->text('reaction')->nullable();
             $table->foreignId('discussion')->constrained('discussions')->onUpdate('restrict')->onDelete('restrict');
             $table->foreignId('rebondissement')->nullable()->constrained('reactions')->onUpdate('restrict')->onDelete('restrict');
-            $table->foreignId('fichier')->nullable()->constrained('fichiers')->onUpdate('restrict')->onDelete('restrict');
+            $table->string('fichier')->nullable();
             $table->foreignId('inscription')->nullable()->constrained('inscription')->onUpdate('restrict')->onDelete('restrict');
             $table->timestamps();
             $table->softDeletes();

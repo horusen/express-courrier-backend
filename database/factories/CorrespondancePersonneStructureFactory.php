@@ -6,13 +6,13 @@ use App\Models\Messagerie\CorrespondancePersonneStructure;
 use Faker\Generator as Faker;
 
 $factory->define(CorrespondancePersonneStructure::class, function (Faker $faker) {
-    static $discussion = 5;
+    static $discussion = 24;
 
     if (!isset($discussion)) return;
 
     return [
         'user' => 1,
-        'structure' => $faker->numberBetween(2, 6),
+        'structure' => $faker->unique()->numberBetween(2, 25),
         'discussion' => $discussion++,
         'inscription' => 1
     ];
