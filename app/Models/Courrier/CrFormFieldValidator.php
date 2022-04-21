@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
 
 /**
  * Class CrFormFieldValidator
- * 
+ *
  * @property int $id
  * @property bool $required
  * @property bool $requiredTrue
@@ -27,7 +27,7 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property string $deleted_at
- * 
+ *
  * @property \App\Models\Courrier\CrFormField $cr_form_field
  * @property \App\Models\Inscription $inscription
  *
@@ -47,7 +47,6 @@ class CrFormFieldValidator extends Eloquent
 		'nullValidator' => 'bool',
 		'min' => 'int',
 		'max' => 'int',
-		'form_field_id' => 'int',
 		'inscription_id' => 'int'
 	];
 
@@ -61,13 +60,12 @@ class CrFormFieldValidator extends Eloquent
 		'patern',
 		'min',
 		'max',
-		'form_field_id',
 		'inscription_id'
 	];
 
-	public function cr_form_field()
+	public function cr_form_fields()
 	{
-		return $this->belongsTo(\App\Models\Courrier\CrFormField::class, 'form_field_id');
+		return $this->hasMany(\App\Models\Courrier\CrFormField::class, 'validators_id');
 	}
 
 	public function inscription()

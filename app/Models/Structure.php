@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
 
 /**
  * Class Structure
- * 
+ *
  * @property int $id
  * @property string $libelle
  * @property string $cigle
@@ -22,7 +22,7 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property string $deleted_at
- * 
+ *
  * @property \App\Models\Structure $structure
  * @property \App\Models\TypeStructure $type_structure
  * @property \Illuminate\Database\Eloquent\Collection $admins
@@ -54,6 +54,14 @@ class Structure extends Eloquent
 		'parent',
 		'inscription'
 	];
+
+    public function getImageAttribute(){
+		if($this->attributes['image']){
+			$document_scanne = "http://dev.expressfile/".$this->attributes['image'];
+			return $document_scanne;
+		}
+		return 0;
+	}
 
 	public function inscription()
 	{
@@ -111,4 +119,15 @@ class Structure extends Eloquent
 	{
 		return $this->hasMany(\App\Models\Structure::class, 'parent');
 	}
+
+    public function _employes()
+    {
+        return $this->belongsToMany(Inscription::class, AffectationStructure::class, 'structure', 'user');
+    }
+
+
+    public function affectation_courrier()
+    {
+        return $this->morphOne(\App\Models\Courrier\CrAffectationCourrier::class, 'objet');
+    }
 }

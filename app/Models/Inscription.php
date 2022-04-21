@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
 
 /**
  * Class Inscription
- * 
+ *
  * @property int $id
  * @property string $prenom
  * @property string $nom
@@ -25,7 +25,7 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property string $deleted_at
- * 
+ *
  * @property \Illuminate\Database\Eloquent\Collection $admins
  * @property \Illuminate\Database\Eloquent\Collection $affectation_structures
  * @property \Illuminate\Database\Eloquent\Collection $cr_actions
@@ -88,6 +88,14 @@ class Inscription extends Eloquent
 		'sexe',
 		'inscription'
 	];
+
+    public function getPhotoAttribute(){
+		if($this->attributes['photo']){
+			$document_scanne = "http://dev.expressfile/".$this->attributes['photo'];
+			return $document_scanne;
+		}
+		return 0;
+	}
 
 	public function inscription()
 	{
@@ -268,4 +276,9 @@ class Inscription extends Eloquent
 	{
 		return $this->hasMany(\App\Models\TypeStructure::class, 'inscription');
 	}
+
+    public function affectation_courrier()
+    {
+        return $this->morphOne(\App\Models\Courrier\CrAffectationCourrier::class, 'objet');
+    }
 }

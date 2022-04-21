@@ -15,10 +15,10 @@ class CreateCrReaffectationTable extends Migration
     {
         Schema::create('cr_reaffectation', function (Blueprint $table) {
             $table->id();
-            $table->string('libelle');
+            $table->text('libelle');
             $table->foreignId('courrier_id')->constrained('cr_courrier')->onUpdate('restrict')->onDelete('restrict');
             $table->foreignId('structure_id')->constrained('structures')->onDelete('restrict')->onUpdate('restrict');
-            $table->foreignId('suivi_par')->constrained('inscription')->onDelete('restrict')->onUpdate('restrict');
+            $table->foreignId('suivi_par')->nullable()->constrained('inscription')->onDelete('restrict')->onUpdate('restrict');
             $table->foreignId('inscription_id')->constrained('inscription')->onDelete('restrict')->onUpdate('restrict');
             $table->timestamps();
             $table->softDeletes();

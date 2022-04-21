@@ -62,7 +62,7 @@ class GedElement extends Eloquent
 		'archivated_at'
 	];
 
-	protected $appends = ['user_favoris'];
+	protected $appends = ['user_favoris', 'comments_count'];
     protected $classified = ['password'];
 
     public function getUserFavorisAttribute()
@@ -73,6 +73,11 @@ class GedElement extends Eloquent
 			return $this->favoris()->where('inscription_id', Auth::id())->count();
 		}
 		return false;
+    }
+
+    public function getCommentsCountAttribute()
+	{
+		return $this->cr_commentaires()->count();
     }
 
 	public function ged_element_personnes()
@@ -111,4 +116,9 @@ class GedElement extends Eloquent
     {
         return $this->morphTo();
     }
+
+    public function cr_commentaires()
+	{
+		return $this->belongsToMany(\App\Models\Courrier\CrCommentaire::class, 'ged_affectation_commentaire_element', 'element', 'commentaire');
+	}
 }

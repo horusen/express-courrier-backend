@@ -128,8 +128,11 @@ class DossierController extends LaravelController
 
         $item = Dossier::findOrFail($id);
 
-        $data = $request->all();
+        if($request->has('dossier_id') && !$request->dossier_id) {
+            $request->merge(['dossier_id' => null]);
+        }
 
+        $data = $request->all();
         $item->fill($data)->save();
 
         return response()

@@ -80,7 +80,7 @@ class Fichier extends Eloquent
 
     public function getFichierAttribute(){
 		if($this->attributes['fichier']){
-			$document_scanne = "http://127.0.0.1:8000/".$this->attributes['fichier'];
+			$document_scanne = "http://dev.expressfile/".$this->attributes['fichier'];
 			return $document_scanne;
 		}
 		return 0;
@@ -121,4 +121,9 @@ class Fichier extends Eloquent
 	{
 		return $this->hasOneThrough(\App\Models\Ged\Dossier::class, 'fichier_dossier', 'fichier_id', 'dossier.id', 'fichier.id', 'dossier_id');
     }
+
+    public function cr_commentaires()
+	{
+		return $this->belongsToMany(\App\Models\Courrier\CrCommentaire::class, 'cr_affectation_commentaire_fichier', 'fichier', 'commentaire');
+	}
 }

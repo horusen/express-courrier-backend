@@ -31,54 +31,55 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
  *
  * @package App\Models\Courrier
  */
-class CrEtape extends Eloquent
+class CrTache extends Eloquent
 {
 	use \Illuminate\Database\Eloquent\SoftDeletes;
-	protected $table = 'cr_etape';
+	protected $table = 'cr_tache';
 
 	protected $casts = [
-        'duree' => 'int',
-		'etape' => 'int',
-		'type_id' => 'int',
-		'responsable_id' => 'int',
 		'inscription_id' => 'int',
-        'structure_id' => 'int'
+		'courrier_id' => 'int'
 	];
 
 	protected $fillable = [
 		'libelle',
 		'description',
-		'duree',
-		'etape',
-		'type_id',
-		'responsable_id',
 		'inscription_id',
-		'structure_id'
+        'courrier_id',
+        'statut_color',
+        'statut_icon',
+        'statut',
 	];
+
+    public function getCommentsCountAttribute()
+	{
+		return $this->cr_commentaires()->count();
+    }
+
+    protected $appends = ['comments_count'];
 
 	public function inscription()
 	{
 		return $this->belongsTo(\App\Models\Inscription::class, 'inscription_id');
 	}
 
-    public function responsable()
+    public function courrier()
 	{
-		return $this->belongsTo(\App\Models\Inscription::class, 'responsable_id');
+		return $this->belongsTo(\App\Models\Courrier\CrCourrier::class, 'courrier_id');
 	}
 
-    public function cr_statut()
+    public function responsables()
 	{
-		return $this->belongsTo(\App\Models\Courrier\CrStatut::class, 'statut_id');
+        return $this->belongsToMany(\App\Models\Inscription::class, 'cr_affectation_tache_personne', 'tache', 'personne');
 	}
 
-    public function cr_types()
+    public function structures()
 	{
-		return $this->belongsToMany(\App\Models\Courrier\CrType::class, 'cr_affectation_etape_type_courrier', 'etape', 'type');
-	}
+        return $this->belongsToMany(\App\Models\Structure::class, 'cr_affectation_tache_structure', 'tache', 'structure');
+    }
 
-
-    public function structure()
+    public function cr_commentaires()
 	{
-		return $this->belongsTo(\App\Models\Structure::class);
+		return $this->belongsToMany(\App\Models\Courrier\CrCommentaire::class, 'cr_affectation_commentaire_tache', 'tache', 'commentaire');
 	}
 }

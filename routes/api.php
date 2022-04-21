@@ -64,10 +64,14 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::prefix('courrier')->group(function() {
         Route::customResource('actions', 'Courrier\CrActionController');
+        Route::customResource('affectation-courriers', 'Courrier\CrAffectationCourrierController');
         Route::customResource('ampiliations', 'Courrier\CrAmpiliationController');
+        Route::customResource('clotures', 'Courrier\CrClotureController');
+        Route::customResource('commentaires', 'Courrier\CrCommentaireController');
         Route::customResource('coordonnees', 'Courrier\CrCoordonneeController');
         Route::customResource('courriers', 'Courrier\CrCourrierController');
         Route::customResource('courrier-entrants', 'Courrier\CrCourrierEntrantController');
+        Route::customResource('courrier-etapes', 'Courrier\CrCourrierEtapeController');
         Route::customResource('courrier-internes', 'Courrier\CrCourrierInterneController');
         Route::customResource('destinataires', 'Courrier\CrDestinataireController');
         Route::customResource('etapes', 'Courrier\CrEtapeController');
@@ -78,9 +82,15 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::customResource('statuts', 'Courrier\CrStatutController');
         Route::customResource('structure-copies', 'Courrier\CrStructureCopieController');
         Route::customResource('suivis', 'Courrier\CrSuiviController');
+        Route::customResource('taches', 'Courrier\CrTacheController');
         Route::customResource('traitements', 'Courrier\CrTraitementController');
         Route::customResource('types', 'Courrier\CrTypeController');
         Route::customResource('urgences', 'Courrier\CrUrgenceController');
+    });
+
+    Route::prefix('json-form')->group(function() {
+        Route::customResource('controls', 'Courrier\CrFormFieldController');
+        Route::customResource('validators', 'Courrier\CrFormFieldValidatorController');
     });
 
     Route::post('employes', [EmployeController::class, 'store']);

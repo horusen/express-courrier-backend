@@ -6,11 +6,13 @@ use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Builder as myBuilder;
 use App\Http\Shared\Optimus\Bruno\EloquentBuilderTrait;
 use App\Http\Shared\Optimus\Bruno\LaravelController;
-use App\Models\Courrier\CrEtape;
+use App\Models\Courrier\CrCommentaire;
+use App\Models\Ged\Fichier;
+use App\Models\Ged\FichierType;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-class CrEtapeController extends LaravelController
+class CrCommentaireController extends LaravelController
 {
     use EloquentBuilderTrait;
 
@@ -20,7 +22,7 @@ class CrEtapeController extends LaravelController
         // Parse the resource options given by GET parameters
         $resourceOptions = $this->parseResourceOptions();
 
-        $query = CrEtape::query();
+        $query = CrCommentaire::query();
         $this->applyResourceOptions($query, $resourceOptions);
 
         if(isset($request->paginate)) {
@@ -48,86 +50,112 @@ class CrEtapeController extends LaravelController
     public function filterSearchString(myBuilder $query, $method, $clauseOperator, $value)
     {
         if($value) {
-            $query->orWhere('libelle', 'like', "%" .$value . "%");
+            $query->where('libelle_commentaire', 'like', "%" .$value . "%");
         }
     }
 
-    public function filterParentCrTypeId(myBuilder $query, $method, $clauseOperator, $value, $in)
+    public function filterNoParent(myBuilder $query, $method, $clauseOperator, $value, $in)
+    {
+        if($value) {
+            $query->whereDoesntHave('cr_commentaire');
+        }
+    }
+
+    public function filterHasFile(myBuilder $query, $method, $clauseOperator, $value)
+    {
+        if($value) {
+            $query->whereHas('fichiers');
+        }
+    }
+
+    public function filterParentGedId(myBuilder $query, $method, $clauseOperator, $value, $in)
     {
         if ($value) {
-            $query->whereHas('cr_types', function($query) use ($value){
-                $query->where('cr_type.id', $value );
+            $query->whereHas('ged_elements', function($query) use ($value){
+                $query->where('ged_element.id', $value );
              });
-             request()->request->add(['type_id' => $value]);
         }
     }
 
-    public function sortOrderlyWay(myBuilder $query, $value)
+    public function filterParentCourrierId(myBuilder $query, $method, $clauseOperator, $value, $in)
     {
-        $type_id = request()->exists('type_id') ? request()->type_id : null;
         if ($value) {
-            $query->leftjoin('cr_affectation_etape_type_courrier', function ($join) use ($type_id) {
-                $join->on('cr_affectation_etape_type_courrier.etape', '=', 'cr_etape.id');
-                if($type_id) {
-                   $join->where('cr_affectation_etape_type_courrier.type', '=', $type_id);
-                };
-            })
-            ->orderBy('cr_affectation_etape_type_courrier.id_pivot');
+            $query->whereHas('cr_courriers', function($query) use ($value){
+                $query->where('cr_courrier.id', $value );
+             });
         }
     }
 
+    public function filterParentTacheId(myBuilder $query, $method, $clauseOperator, $value, $in)
+    {
+        if ($value) {
+            $query->whereHas('cr_taches', function($query) use ($value){
+                $query->where('cr_tache.id', $value );
+             });
+        }
+    }
 
     public function store(Request $request)
     {
+        DB::beginTransaction();
 
-        $data = $request->all();
+        try {
 
-        if($request->exists('responsable_id'))
-        {
-            $data['structure_id']=null;
-        } else if ($request->exists('structure_id'))
-        {
-            $data['responsable_id']=null;
+            $item = CrCommentaire::create([
+                'inscription' => Auth::id(),
+                'libelle_commentaire' => $request->libelle_commentaire,
+                'contenu' => $request->contenu,
+                'commentaire' => $request->commentaire,
+            ]);
+
+            if($request->fichier_count) {
+                for($i =0; $i<$request->fichier_count; $i++) {
+                    if($request->hasFile('fichier'.$i))
+                    {
+                        $path = $request->file('fichier'.$i)->store('document/'.date('Y').'/'.date('F'));
+                        $nameonly=preg_replace('/\..+$/', '', $request->file('fichier'.$i)->getClientOriginalName());
+                        $n = strrpos($path,".");
+                        $extension = ($n===false) ? "" : substr($path,$n+1);
+                        $file = FichierType::where('extension','like', '%'.$extension.'%')->first();
+
+                        $fichier = Fichier::create([
+                            'inscription_id' => Auth::id(),
+                            'libelle' => $nameonly,
+                            'type_id' => $file->id,
+                            'fichier' => $path,
+                        ]);
+
+                        $fichier->cr_commentaires()->attach([$item->id => ['inscription_id'=> Auth::id()]]);
+                    }
+                }
+            }
+            DB::commit();
+        } catch (\Throwable $e) {
+
+            DB::rollback();
+            throw $e;
         }
 
-        $item = CrEtape::create([
-            'inscription_id' => Auth::id(),
-            'libelle' => $request->libelle,
-            'description' => $request->description,
-            'duree' => $request->duree,
-            'etape' => $request->etape,
-            'responsable_id' => $data['responsable_id'],
-            'structure_id' => $data['structure_id'],
-        ]);
-
         return response()
-        ->json($item->load(['responsable', 'structure']));
+        ->json($item->load(['fichiers']));
     }
 
     public function update(Request $request, $id)
     {
 
-        $item = CrEtape::findOrFail($id);
+        $item = CrCommentaire::findOrFail($id);
 
         $data = $request->all();
-
-        if($request->exists('responsable_id'))
-        {
-            $data['structure_id']=null;
-        } else if ($request->exists('structure_id'))
-        {
-            $data['responsable_id']=null;
-        }
 
         $item->fill($data)->save();
 
         return response()
-        ->json($item->load(['responsable', 'structure']));
+        ->json($item->load(['fichiers']));
     }
 
     public function destroy($id)
     {
-        $item = CrEtape::findOrFail($id);
+        $item = CrCommentaire::findOrFail($id);
 
         $item->delete();
 
@@ -141,7 +169,7 @@ class CrEtapeController extends LaravelController
         $item_id = $request->id;
         $relation_name = $request->relation_name;
         $relation_id = $request->relation_id;
-        $item = CrEtape::find($item_id);
+        $item = CrCommentaire::find($item_id);
         $item->{$relation_name}()->syncWithoutDetaching([$relation_id => ['inscription_id'=> Auth::id()]]);
 
         return response()->json([
@@ -154,7 +182,7 @@ class CrEtapeController extends LaravelController
         $item_id = $request->id;
         $relation_name = $request->relation_name;
         $relation_id = $request->relation_id;
-        $item = CrEtape::find($item_id);
+        $item = CrCommentaire::find($item_id);
         $item->{$relation_name}()->detach($relation_id);
 
         return response()->json([
@@ -171,7 +199,7 @@ class CrEtapeController extends LaravelController
 
         try {
 
-            $item = CrEtape::find($item_id);
+            $item = CrCommentaire::find($item_id);
 
             foreach($request->affectation as $key=>$value)
             {
@@ -192,7 +220,7 @@ class CrEtapeController extends LaravelController
         ]);
     }
 
-    public function getAffectation(CrEtape $CrEtape)
+    public function getAffectation(CrCommentaire $CrCommentaire)
     {
 
         return response()

@@ -109,8 +109,21 @@ class Structure extends Model
         return $this->responsables()->first();
     }
 
-    protected function getImageAttribute($value)
+    // protected function getImageAttribute($value)
+    // {
+    //     return env('IMAGE_PREFIX_URL') . '/storage/' . $value;
+    // }
+
+    public function getImageAttribute(){
+		if($this->attributes['image']){
+			$document_scanne = "http://dev.expressfile/".$this->attributes['image'];
+			return $document_scanne;
+		}
+		return 0;
+	}
+
+    public function affectation_courrier()
     {
-        return env('IMAGE_PREFIX_URL') . '/storage/' . $value;
+        return $this->morphOne(\App\Models\Courrier\CrAffectationCourrier::class, 'objet');
     }
 }

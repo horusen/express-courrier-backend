@@ -59,13 +59,15 @@ class CrType extends Eloquent
 		return $this->hasMany(\App\Models\Courrier\CrCourrier::class, 'type_id');
 	}
 
+
     public function cr_etapes()
 	{
-		return $this->hasMany(\App\Models\Courrier\CrEtape::class, 'type_id');
+		return $this->belongsToMany(\App\Models\Courrier\CrType::class, 'cr_affectation_etape_type_courrier', 'type', 'etape');
 	}
 
-    public function cr_types()
+    public function cr_etapes_clearing()
 	{
-		return $this->hasMany(\App\Models\Courrier\CrType::class, 'type_id');
+		return $this->belongsToMany(\App\Models\Courrier\CrType::class, 'cr_affectation_etape_type_courrier', 'type', 'etape');
 	}
+
 }

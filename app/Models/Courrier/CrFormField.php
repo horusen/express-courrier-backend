@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
 
 /**
  * Class CrFormField
- * 
+ *
  * @property int $id
  * @property string $libelle
  * @property string $label
@@ -22,7 +22,7 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property string $deleted_at
- * 
+ *
  * @property \App\Models\Inscription $inscription
  * @property \Illuminate\Database\Eloquent\Collection $cr_form_field_validators
  * @property \Illuminate\Database\Eloquent\Collection $cr_form_field_values
@@ -36,7 +36,8 @@ class CrFormField extends Eloquent
 
 	protected $casts = [
 		'required' => 'bool',
-		'inscription_id' => 'int'
+		'inscription_id' => 'int',
+        'validators_id' => 'int'
 	];
 
 	protected $fillable = [
@@ -45,6 +46,7 @@ class CrFormField extends Eloquent
 		'value',
 		'type',
 		'required',
+        'validators_id',
 		'inscription_id'
 	];
 
@@ -53,9 +55,9 @@ class CrFormField extends Eloquent
 		return $this->belongsTo(\App\Models\Inscription::class);
 	}
 
-	public function cr_form_field_validators()
+	public function cr_form_field_validator()
 	{
-		return $this->hasMany(\App\Models\Courrier\CrFormFieldValidator::class, 'form_field_id');
+		return $this->belongsTo(\App\Models\Courrier\CrFormFieldValidator::class, 'validators_id');
 	}
 
 	public function cr_form_field_values()

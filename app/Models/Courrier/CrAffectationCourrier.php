@@ -2,7 +2,7 @@
 
 /**
  * Created by Reliese Model.
- * Date: Fri, 07 Jan 2022 03:13:45 +0000.
+ * Date: Wed, 13 Apr 2022 10:47:38 +0000.
  */
 
 namespace App\Models\Courrier;
@@ -10,50 +10,52 @@ namespace App\Models\Courrier;
 use Illuminate\Database\Eloquent\Model as Eloquent;
 
 /**
- * Class CrFormFieldValue
+ * Class CrAffectationCourrier
  *
  * @property int $id
- * @property string $value
+ * @property int $courrier
  * @property string $objet_type
  * @property int $objet_id
- * @property int $form_field_id
- * @property int $inscription_id
+ * @property string $suggestion_reponse
+ * @property string $recommandation
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property string $deleted_at
+ * @property int $inscription_id
  *
- * @property \App\Models\Courrier\CrFormField $cr_form_field
  * @property \App\Models\Inscription $inscription
+ * @property \App\Models\CrCourrier $cr_courrier
  *
- * @package App\Models
+ * @package App\Models\Courrier
  */
-class CrFormFieldValue extends Eloquent
+class CrAffectationCourrier extends Eloquent
 {
 	use \Illuminate\Database\Eloquent\SoftDeletes;
-	protected $table = 'cr_form_field_value';
+	protected $table = 'cr_affectation_courrier';
 
 	protected $casts = [
+		'courrier' => 'int',
 		'objet_id' => 'int',
-		'form_field_id' => 'int',
 		'inscription_id' => 'int'
 	];
 
 	protected $fillable = [
-		'value',
+		'courrier',
 		'objet_type',
 		'objet_id',
-		'form_field_id',
+		'suggestion_reponse',
+		'recommandation',
 		'inscription_id'
 	];
-
-	public function cr_form_field()
-	{
-		return $this->belongsTo(\App\Models\Courrier\CrFormField::class, 'form_field_id');
-	}
 
 	public function inscription()
 	{
 		return $this->belongsTo(\App\Models\Inscription::class);
+	}
+
+	public function cr_courrier()
+	{
+		return $this->belongsTo(\App\Models\Courrier\CrCourrier::class, 'courrier');
 	}
 
     public function objet()

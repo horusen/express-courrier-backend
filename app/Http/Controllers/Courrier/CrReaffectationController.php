@@ -64,7 +64,7 @@ class CrReaffectationController extends LaravelController
         ]);
 
         return response()
-        ->json($item);
+        ->json($item->load('structure'));
     }
 
     public function update(Request $request, $id)

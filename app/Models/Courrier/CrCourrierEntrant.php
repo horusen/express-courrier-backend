@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
 
 /**
  * Class CrCourrierEntrant
- * 
+ *
  * @property int $id
  * @property \Carbon\Carbon $date_arrive
  * @property \Carbon\Carbon $created_at
@@ -21,7 +21,7 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
  * @property int $expediteur_id
  * @property int $responsable_id
  * @property int $inscription_id
- * 
+ *
  * @property \App\Models\Courrier\CrCourrier $cr_courrier
  * @property \App\Models\Courrier\CrCoordonnee $cr_coordonnee
  * @property \App\Models\Inscription $inscription
@@ -67,6 +67,11 @@ class CrCourrierEntrant extends Eloquent
 	public function inscription()
 	{
 		return $this->belongsTo(\App\Models\Inscription::class, 'responsable_id');
+	}
+
+    public function user()
+	{
+		return $this->belongsTo(\App\Models\Inscription::class, 'inscription_id');
 	}
 
 	public function cr_courrier_sortants()
