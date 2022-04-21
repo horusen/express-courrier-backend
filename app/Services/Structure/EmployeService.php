@@ -2,23 +2,60 @@
 
 namespace App\Services\Structure;
 
-use App\Exceptions\Structure\UserAlreadyVerifiedException;
+use App\ApiRequest\Structure\EmployeApiRequest;
+use App\Exceptions\NotAllowedException;
 use App\Models\Structure\AffectationStructure;
-use App\Models\Structure\Inscription;
-use App\Services\AuthService;
+use App\Models\Structure\Structure;
+use App\Services\BaseService;
 use App\Traits\Structure\AdminTrait;
 use Carbon\Carbon;
-use GuzzleHttp\Psr7\Request;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class EmployeService
+class EmployeService extends BaseService
 {
     use AdminTrait;
+
+    public function __construct(AffectationStructure $model)
+    {
+        parent::__construct($model);
+    }
+    public function getByStructure(EmployeApiRequest $request,  $structure)
+    {
+        $status = $request->request->status;
+
+        if (!isset($status) || !in_array($status, ['valid', 'unactivated', 'unverified'])) {
+            $status = 'valid';
+        }
+
+        if ($status != 'valid') {
+            if (!($this->isModerateur(Auth::id(), 10) || $this->isAdmin(Auth::id(), 10))) throw new NotAllowedException();
+        }
+
+        return $this->model::status($status)->where('structure', $structure)->with(['fonction', 'poste', 'user'])->consume($request);
+    }
+
+
+    public function update($id, $data)
+    {
+        // Update affectation structure details
+        $affectation = $this->model::findOrFail($id);
+        $affectation->update(['poste' => $data['poste'], 'fonction' => $data['fonction']]);
+
+        // Return the value
+        return $this->show($id);
+    }
 
 
     public function validateEmploye($employe)
     {
         $employe->update(['activated_at' => Carbon::now()]);
         return $employe;
+    }
+
+
+    public function show($id)
+    {
+        return $this->model::with(['fonction', 'poste', 'user', 'structure:id,libelle,type'])->findOrFail($id);
     }
 }

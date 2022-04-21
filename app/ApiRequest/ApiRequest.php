@@ -6,14 +6,15 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Scope;
 use Illuminate\Http\Request;
 
-abstract class ApiRequest
+class ApiRequest
 {
     // Should be query params from request
-    protected $filters;
-    protected $searchKeyword;
-    protected $perPage;
-    protected $page;
-    protected $sortingParams;
+    public $filters;
+    public $searchKeyword;
+    public $perPage;
+    public $page;
+    public $sortingParams;
+    public $request;
 
     // Builder instance
     protected Builder $builder;
@@ -21,6 +22,7 @@ abstract class ApiRequest
     public function __construct(Request $request)
     {
         $this->_parseRequest($request);
+        $this->request = $request;
     }
 
     private function _parseRequest(Request $request)
@@ -38,20 +40,21 @@ abstract class ApiRequest
             abort(422, "Les informations pour la pagination sont incompletes. Verifiez votre url");
         }
 
-        return $builder->simplePaginate($perPage, ['*'], 'page', $currentPage)->withQueryString();
+        return $builder->paginate($perPage, ['*'], 'page', $currentPage)->withQueryString();
     }
 
 
-
+    // TODO: Passez le builder en parametre
     public function filter($filters)
     {
         foreach ($filters as $name => $value) {
-            if (method_exists($this, $name)) {
+            if (method_exists($this, 'filter_by_' . $name)) {
                 $params = $this->serialiseFilteringParams($value);
-                call_user_func_array([$this, $name], [$params['value'], $params['operator']]);
-            } else {
-                abort(422, "Le filtre '" . $name . "' n'existe pas. Verifiez votre url");
+                call_user_func_array([$this, 'filter_by_' . $name], [$this->builder, $params['value'], $params['operator']]);
             }
+            // else {
+            //     abort(422, "Le filtre '" . $name . "' n'existe pas. Verifiez votre url");
+            // }
         }
     }
 
@@ -66,7 +69,7 @@ abstract class ApiRequest
     public function research($keyword)
     {
         if (method_exists($this, 'search')) {
-            call_user_func_array([$this, 'search'], [$keyword]);
+            call_user_func_array([$this, 'search'], [$this->builder, $keyword]);
         } else {
             abort(422, "La recherche n'est pas configuré pour cet endpoit. Verifiez votre url");
         }
@@ -101,7 +104,20 @@ abstract class ApiRequest
         return trim($sortingParam);
     }
 
+    public function simpleFilter($builder, $element, $value, $operator = '=')
+    {
+        $values = explode(',', $value);
+        if (count($values) > 1)
+            return $builder->whereIn($element, $values);
 
+        return $builder->where($element, $operator, $value);
+    }
+
+
+    public function simpleSearch($builder, $keyword)
+    {
+        return $builder->where('libelle', 'like', '%' . $keyword . '%');
+    }
 
     public function apply(Builder $builder)
     {
@@ -113,6 +129,9 @@ abstract class ApiRequest
 
         if ($this->sortingParams) $this->sort($this->sortingParams);
 
-        return isset($this->perPage) || isset($this->page) ?  $this->paginate($builder, $this->perPage, $this->page) : response()->json(['data' => $builder->get()], 200);
+        return
+            isset($this->perPage) || isset($this->page)
+            ?  $this->paginate($builder, $this->perPage, $this->page) :
+            response()->json(['data' => $builder->latest()->get()], 200);
     }
 }

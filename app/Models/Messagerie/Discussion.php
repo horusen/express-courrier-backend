@@ -14,7 +14,7 @@ class Discussion extends Model
     use SoftDeletes, ApiRequestConsumer;
     protected $table = 'discussions';
     protected $fillable = ['inscription', 'type', 'touched_at'];
-    protected $appends = ['derniere_reaction', 'correspondance'];
+    protected $appends = ['derniere_reaction', 'correspondance', 'nombre_reaction_non_lus'];
 
 
 
@@ -32,7 +32,7 @@ class Discussion extends Model
 
     public function reactions()
     {
-        return $this->hasMany(Reaction::class, 'discussion');
+        return $this->hasMany(Reaction::class, 'discussion')->whereNotDeleted();
     }
 
     public function type()
@@ -44,6 +44,9 @@ class Discussion extends Model
     {
         return $this->hasOne(CorrespondancePersonne::class, 'discussion')->select(['user1', 'user2']);
     }
+
+
+
 
 
     public function correspondance_personne_structure()
@@ -77,6 +80,11 @@ class Discussion extends Model
         } else if ($this->type == 2) {
             return $this->correspondance_personne_structure()->get()->first();
         }
+    }
+
+    public function getNombreReactionNonLusAttribute()
+    {
+        return $this->reactions()->whereNotReaded(Auth::id())->count();
     }
 
 

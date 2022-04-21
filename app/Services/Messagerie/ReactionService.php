@@ -2,42 +2,71 @@
 
 namespace App\Services\Messagerie;
 
-use App\Actions\Messagerie\CreateReactionLuAction;
 use App\ApiRequest\Messagerie\ReactionApiRequest;
+use App\Events\InboxMessageEvent;
+use App\Events\MessageSentEvent;
 use App\Exceptions\NotAllowedException;
 use App\Models\Messagerie\Discussion;
 use App\Models\Messagerie\Reaction;
-use App\Models\Messagerie\ReactionLu;
 use App\Models\Messagerie\ReactionStructure;
 use App\Models\Messagerie\ReactionSupprime;
+use App\Services\BaseService;
 use App\Traits\Messagerie\AutorisationDiscussionTrait;
 use Carbon\Carbon;
-use GuzzleHttp\Psr7\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 
-class ReactionService
+class ReactionService extends BaseService
 {
     use AutorisationDiscussionTrait;
+
+
+    public function __construct(Reaction $model)
+    {
+        parent::__construct($model);
+    }
 
     // Marquer les elements comme dans un queue job
     public function getByDiscussion(ReactionApiRequest $request, $discussion, $structure = null)
     {
+        // Definir une constante qui va representer le nombre de reactions
+        // à recuperer pour chaque iteration
+        $perIteration = 15;
 
-        return $reactions = Reaction::where('discussion', $discussion)->latest()->whereNotDeleted()->consume($request);
+        // Recuperer le nombre de reactions non-lu par l'utilisateur pour cette discussion
+        $unreadedReactionsCount = $this->model::where('discussion', $discussion)->whereDoesntHave('reaction_lus', function ($q) {
+            $q->where('user', Auth::id());
+        })->count();
 
-        $returned = $reactions->toArray();
 
-        if ($structure) $this->marquerCommeLuParStructure($reactions, $structure);
-        else $this->marquerCommeLuParUser($reactions, Auth::id());
+        // Si Le nombre de reactions non lu est superieur au nombre de reactions
+        // A recuperer pour chaque iteration, on recupere toute les reactions non-lu
+        // Si non on recupere juste le nombre de reactions predefini
+        $reactions = [];
+        $query = $this->model::where('discussion', $discussion)->whereNotDeleted()->latest();
+        if ($perIteration >= $unreadedReactionsCount) {
+            $reactions = $request->paginate($query, $perIteration, $request->page);
+        } else {
+            $reactions = $request->paginate($query, $unreadedReactionsCount, $request->page);
+        }
 
-        return $returned;
+
+        // Marquer toute les reactions de la discussion comme lu
+
+        if ($structure) $this->marquerCommeLuParStructure($reactions->items(), $structure);
+        else $this->marquerCommeLuParUser($reactions->items(), Auth::id());
+
+        return $reactions;
+    }
+
+    public function marquerDiscussionLu($discussion)
+    {
     }
 
     public function marquerCommeLuParUser($reactions)
     {
         foreach ($reactions as $reaction) {
-            $reaction->marquerCommeLuByUser(Auth::id());
+            $reaction->marquerCommeLuParUser(Auth::id());
         }
     }
 
@@ -54,7 +83,7 @@ class ReactionService
 
         if (Arr::has($data, 'structure')) {
             if (
-                !$this->isUserHasAutorisationFromStructure($data['structure'], Auth::id(), 'consulter_messagerie') ||
+                !$this->isUserHasAutorisationFromStructure($data['structure'], Auth::id(), 'ecrire_messagerie') ||
                 !$this->isStructureCorrespondantInDiscussion($data['discussion'], $data['structure'])
             )
                 throw new NotAllowedException();
@@ -69,7 +98,7 @@ class ReactionService
             unset($data['fichier']);
         }
 
-        $reaction = Reaction::create($data);
+        $reaction = $this->model::create($data);
 
 
         if (Arr::has($data, 'structure')) $this->affecterReactionStructure($reaction, $data['structure']);
@@ -82,7 +111,10 @@ class ReactionService
 
         $this->touchDiscussion($reaction->discussion);
 
-        return Reaction::find($reaction->id);
+        broadcast(new MessageSentEvent($reaction))->toOthers();
+        broadcast(new InboxMessageEvent(Discussion::find($reaction->discussion)))->toOthers();
+
+        return $this->model::find($reaction->id);
     }
 
 

@@ -15,7 +15,7 @@ class CreateReactionsTable extends Migration
     {
         Schema::create('reactions', function (Blueprint $table) {
             $table->id();
-            $table->text('reaction')->nullable();
+            $table->text('reaction')->nullable()->charset('utf8mb4');
             $table->foreignId('discussion')->constrained('discussions')->onUpdate('restrict')->onDelete('restrict');
             $table->foreignId('rebondissement')->nullable()->constrained('reactions')->onUpdate('restrict')->onDelete('restrict');
             $table->string('fichier')->nullable();

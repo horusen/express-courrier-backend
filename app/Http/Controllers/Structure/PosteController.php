@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Structure;
 
 use App\Http\Controllers\Controller;
 use App\Models\Structure\Poste;
+use App\Services\Structure\PosteService;
 use App\Shared\Controllers\BaseController;
 use Illuminate\Http\Request;
 
@@ -15,9 +16,9 @@ class PosteController extends BaseController
     ];
 
 
-    public function __construct()
+    public function __construct(PosteService $service)
     {
-        parent::__construct($this->model, $this->validation);
+        parent::__construct($this->validation, $service);
     }
 
 

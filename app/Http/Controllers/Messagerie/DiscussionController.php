@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Messagerie;
 
 use App\ApiRequest\Messagerie\DiscussionApiRequest;
+use App\Events\testev;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Messagerie\DiscussionRequest;
 use App\Models\Messagerie\Discussion;
@@ -13,17 +14,19 @@ use Illuminate\Support\Facades\Auth;
 
 class DiscussionController extends BaseController
 {
-    protected $model = Discussion::class;
     protected $validation = [
-        // 'field_name' => 'field_validation'
+        'type' => 'required|integer|exists:type_discussions,id',
+        'user1' => 'required_if:type,1|integer|exists:inscription,id',
+        'user2' => 'required_if:type,1|integer|exists:inscription,id',
+        'user' => 'required_if:type,2|integer|exists:inscription,id',
+        'structure' => 'required_if:type,2|integer|exists:structures,id',
     ];
 
 
 
     public function __construct(DiscussionService $service)
     {
-        parent::__construct($this->model, $this->validation);
-        $this->service = $service;
+        parent::__construct($this->validation, $service);
     }
 
 
@@ -32,21 +35,16 @@ class DiscussionController extends BaseController
         return $this->service->getByUser($request, Auth::id());
     }
 
-    public function getByStructure($structure)
+    public function getByStructure(DiscussionApiRequest $request, $structure)
     {
-        $discussion = $this->service->getByStructure($structure);
-        return response()->json($data = $discussion, $status = 200);
+        return $this->service->getByStructure($request, $structure);
     }
 
 
-    public function store(DiscussionRequest $request)
-    {
-        return $this->service->store($request->all());
-    }
+
 
     public function check(DiscussionRequest $request)
     {
-
         return $this->service->getByCorrespondance($request->all());
     }
 
@@ -60,12 +58,6 @@ class DiscussionController extends BaseController
 
     public function all()
     {
-        return response()->json($this->model::all(), $status = 200);
-    }
-
-
-    public function show(Discussion $discussion)
-    {
-        return $discussion;
+        return response()->json(Discussion::all(), $status = 200);
     }
 }

@@ -16,7 +16,7 @@ class Structure extends Model
     protected $table = 'structures';
     protected $guarded = [];
     // protected $hidden = ['parent_id'];
-    protected $with = ['type', 'parent'];
+    protected $with = ['type:id,libelle', 'parent'];
 
     protected $appends = ['has_sous_structures', 'responsable', 'admin_type'];
 
@@ -38,6 +38,11 @@ class Structure extends Model
     public function sous_structures()
     {
         return $this->children();
+    }
+
+    public function autorisations()
+    {
+        return $this->hasMany(CrAutorisationPersonneStructure::class, 'structure_id');
     }
 
     public function charge_ecriture_messageries()
@@ -93,7 +98,7 @@ class Structure extends Model
 
     public function responsables()
     {
-        return $this->belongsToMany(Inscription::class, ResponsableStructure::class, 'structure', 'responsable');
+        return $this->belongsToMany(Inscription::class, ResponsableStructure::class, 'structure', 'responsable')->select(['inscription.id', 'prenom', 'nom', 'photo']);
     }
 
     public  function charger_courriers()

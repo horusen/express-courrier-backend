@@ -2,13 +2,14 @@
 
 namespace App\Models\Structure;
 
+use App\ApiRequest\ApiRequestConsumer;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class AffectationStructure extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, ApiRequestConsumer;
     protected $table = 'affectation_structures';
     protected $fillable = [
         'user', 'structure', 'fonction', 'poste', 'inscription', 'activated_at'
@@ -72,7 +73,7 @@ class AffectationStructure extends Model
     }
 
 
-    public function scopeStatus(Builder $query, $status = 'valid')
+    public function scopeStatus(Builder $query, $status)
     {
 
         if ($status == 'valid') {

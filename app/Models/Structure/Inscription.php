@@ -7,7 +7,6 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\Auth;
 
 
 class Inscription extends Authenticatable implements MustVerifyEmail
@@ -49,6 +48,11 @@ class Inscription extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Structure::class, 'inscription');
     }
 
+    public function affectation_structure()
+    {
+        return $this->hasOne(AffectationStructure::class, 'user');
+    }
+
 
     public function getNomCompletAttribute()
     {
@@ -69,6 +73,8 @@ class Inscription extends Authenticatable implements MustVerifyEmail
     {
         return $this->belongsToMany(Structure::class, AffectationStructure::class, 'user', 'structure');
     }
+
+
 
 
     public function sendEmailVerificationNotification()

@@ -5,52 +5,21 @@ namespace App\Http\Controllers;
 use App\Models\Structure\Inscription;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Swift_TransportException;
 
 class InscriptionController extends Controller
 {
 
-    public function test(Request $request)
-    {
-        // return ['url' => url()->full()];
-    }
+
 
 
     // TODO add image thumbnail to load image faster
     public function store(Request $request)
     {
-        $request->validate([
-            'prenom' => 'required',
-            'nom' => 'required',
-            'date_naissance' => 'required|date',
-            'lieu_naissance' => 'required',
-            'telephone' => 'required',
-            'identifiant' => 'required',
-            'sexe' => 'required|in:HOMME,FEMME',
-            'email' => 'required|email|unique:inscription,email',
-            'photo' => 'sometimes|image',
-        ]);
+        $this->service->validate($request);
 
-
-        $inscription = Inscription::create($request->except('photo'));
-
-
-        // TOFO
-        if ($request->hasFile('photo')) {
-            $file = $request->file('photo');
-            $imagePath = $file->storeAs('inscription/' . $inscription->email . '/photo', $file->getClientOriginalName(), 'public');
-            $inscription->update(['photo' => $imagePath]);
-        }
-
-        try {
-            $inscription->sendEmailVerificationNotification();
-        } catch (Exception $e) {
-            $inscription->forceDelete();
-            throw new Swift_TransportException($e);
-        }
-
-
-        return $inscription;
+        return $this->service->store($request);
     }
 
 

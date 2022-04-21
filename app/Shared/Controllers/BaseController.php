@@ -2,66 +2,59 @@
 
 namespace App\Shared\Controllers;
 
+use App\ApiRequest\ApiRequest;
 use App\Http\Controllers\Controller;
-
+use App\Services\BaseService;
 use Illuminate\Http\Request;
 
 class BaseController extends Controller
 {
-    protected $model;
     protected $validation;
-    protected $modelQuery;
-    protected $inscription = 1;
     protected $service;
+    protected $apiRequest;
 
 
-    protected $baseURL = 'http://localhost:8000/';
-    protected $omittedFieldOnTableStructure = [];
-    protected $defaultOmittedFieldOnTableStructure = ['id', 'created_at', 'updated_at', 'deleted_at', 'inscription'];
 
-    public function __construct(string $model, $validation)
+    public function __construct(array $validation, BaseService $service, ApiRequest $apiRequest = null)
     {
-        $this->model = $model;
         $this->validation = $validation;
-        $this->modelQuery = $model::query();
+        $this->service = $service;
+        $this->apiRequest = $apiRequest;
     }
 
 
-
-    public function isValid(Request $request)
+    public function index()
     {
-        return $this->validate($request, $this->validation);
+        return $this->service->list($this->apiRequest);
     }
 
 
 
+    public function store(Request $request)
+    {
+        $request->validate($this->validation);
+        return $this->service->store($request->all());
+    }
+
+
+    public function update(Request $request, int $id)
+    {
+        $request->validate($this->validation);
+        return $this->service->update($id, $request->all());
+    }
 
 
 
-    // public function download($file)
-    // {
-    //     $file = Fichier::find($file);
-    //     $contentType = null;
-
-    //     if (preg_match(ExtensionFichier::getImageRegex(), $file->extension()->get()->first()->libelle)) {
-    //         $contentType = 'image/' . $file->extension()->get()->first()->libelle;
-    //     } elseif (preg_match(ExtensionFichier::getDocumentRegex(), $file->extension()->get()->first()->libelle)) {
-    //         $contentType = 'application/' . $file->extension()->get()->first()->libelle;
-    //     }
-    //     $headers = [
-    //         'Content-Type' => $contentType
-    //     ];
-    //     $fileDownload = str_replace($this->baseURL, public_path() . '/', $file->path);
-    //     return response()->download($fileDownload, $file->name, $headers, 'inline');
-    // }
+    public function show(int $id)
+    {
+        return $this->service->show($id);
+    }
 
 
-
-
-
-
-
-
+    public function destroy($id)
+    {
+        return $this->service->destroy($id);
+    }
 
     public static  function static_many_to_many_update($new_array, $old_array, $affectation_model, $model_field, $foreign_field, $model_id, $inscription)
     {

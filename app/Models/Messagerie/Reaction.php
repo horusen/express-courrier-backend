@@ -55,9 +55,14 @@ class Reaction extends Model
         return $this->structures()->get()->first();
     }
 
+    public function reaction_lus()
+    {
+        return $this->hasMany(ReactionLu::class, 'reaction');
+    }
+
     public function structures()
     {
-        return $this->belongsToMany(Structure::class, ReactionStructure::class, 'reaction', 'structure')->without('type')->select(['libelle', 'image']);
+        return $this->belongsToMany(Structure::class, ReactionStructure::class, 'reaction', 'structure')->without('type')->select(['structures.id', 'libelle', 'image', 'cigle']);
     }
 
     public function scopeWhereNotDeleted(Builder $query)
@@ -70,5 +75,18 @@ class Reaction extends Model
     protected function getFichierAttribute($value)
     {
         if (isset($value)) return env("IMAGE_PREFIX_URL") . Storage::url($value);
+    }
+
+
+    public function scopeWhereNotReaded($builder, $user_id)
+    {
+        return $builder->whereDoesntHave('reaction_lus', function ($q) use ($user_id) {
+            $q->where('user', $user_id);
+        });
+    }
+
+    public function marquerCommeLuParUser($user)
+    {
+        ReactionLu::create(['reaction' => $this->id, 'user' => Auth::id(), 'inscription' => $user]);
     }
 }

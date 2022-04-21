@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Structure;
 
 use App\Http\Controllers\Controller;
 use App\Models\Structure\Fonction;
+use App\Services\Structure\FonctionService;
 use App\Shared\Controllers\BaseController;
 use Illuminate\Http\Request;
 
@@ -15,9 +16,9 @@ class FonctionController extends BaseController
     ];
 
 
-    public function __construct()
+    public function __construct(FonctionService $service)
     {
-        parent::__construct($this->model, $this->validation);
+        parent::__construct($this->validation, $service);
     }
 
 

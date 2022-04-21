@@ -7,6 +7,7 @@
 
 namespace App\Models\Courrier;
 
+use App\ApiRequest\ApiRequestConsumer;
 use Illuminate\Database\Eloquent\Model as Eloquent;
 
 /**
@@ -54,140 +55,140 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
  */
 class CrCourrier extends Eloquent
 {
-	use \Illuminate\Database\Eloquent\SoftDeletes;
-	protected $table = 'cr_courrier';
+    use \Illuminate\Database\Eloquent\SoftDeletes, ApiRequestConsumer;
+    protected $table = 'cr_courrier';
 
-	protected $casts = [
-		'valider' => 'bool',
-		'type_id' => 'int',
-		'nature_id' => 'int',
-		'urgence_id' => 'int',
-		'statut_id' => 'int',
-		'structure_id' => 'int',
-		'suivi_par' => 'int',
-		'inscription_id' => 'int',
+    protected $casts = [
+        'valider' => 'bool',
+        'type_id' => 'int',
+        'nature_id' => 'int',
+        'urgence_id' => 'int',
+        'statut_id' => 'int',
+        'structure_id' => 'int',
+        'suivi_par' => 'int',
+        'inscription_id' => 'int',
         'current_etape_id' => 'int',
-		'cloture_id' => 'int'
-	];
+        'cloture_id' => 'int'
+    ];
 
-	protected $dates = [
-		'date_redaction',
-		'date_cloture'
-	];
+    protected $dates = [
+        'date_redaction',
+        'date_cloture'
+    ];
 
-	protected $fillable = [
-		'libelle',
-		'objet',
-		'date_redaction',
-		'commentaire',
-		'valider',
-		'nature_id',
-		'type_id',
-		'urgence_id',
-		'structure_id',
-		'suivi_par',
-		'statut_id',
-		'inscription_id',
-		'current_etape_id',
-		'cloture_id',
-		'date_cloture',
-		'message_cloture'
-	];
+    protected $fillable = [
+        'libelle',
+        'objet',
+        'date_redaction',
+        'commentaire',
+        'valider',
+        'nature_id',
+        'type_id',
+        'urgence_id',
+        'structure_id',
+        'suivi_par',
+        'statut_id',
+        'inscription_id',
+        'current_etape_id',
+        'cloture_id',
+        'date_cloture',
+        'message_cloture'
+    ];
 
-	public function inscription()
-	{
-		return $this->belongsTo(\App\Models\Inscription::class, 'suivi_par');
-	}
+    public function inscription()
+    {
+        return $this->belongsTo(\App\Models\Inscription::class, 'suivi_par');
+    }
 
     public function cr_cloture()
-	{
-		return $this->belongsTo(\App\Models\Courrier\CrCloture::class, 'cloture_id');
-	}
+    {
+        return $this->belongsTo(\App\Models\Courrier\CrCloture::class, 'cloture_id');
+    }
 
     public function cr_courrier_etape()
-	{
-		return $this->belongsTo(\App\Models\Courrier\CrCourrierEtape::class, 'current_etape_id');
-	}
+    {
+        return $this->belongsTo(\App\Models\Courrier\CrCourrierEtape::class, 'current_etape_id');
+    }
 
 
-	public function structure()
-	{
-		return $this->belongsTo(\App\Models\Structure::class);
-	}
+    public function structure()
+    {
+        return $this->belongsTo(\App\Models\Structure::class);
+    }
 
     public function cr_reaffected_structures()
-	{
-		return $this->belongsToMany(\App\Models\Structure::class, 'cr_reaffectation', 'courrier_id', 'structure_id');
-	}
+    {
+        return $this->belongsToMany(\App\Models\Structure::class, 'cr_reaffectation', 'courrier_id', 'structure_id');
+    }
 
     public function cr_reaffected_structure()
-	{
+    {
         return $this->hasOneThrough(\App\Models\Structure::class, \App\Models\Courrier\CrReaffectation::class, 'courrier_id', 'id', 'id', 'structure_id');
     }
 
-	public function cr_type()
-	{
-		return $this->belongsTo(\App\Models\Courrier\CrType::class, 'type_id');
-	}
+    public function cr_type()
+    {
+        return $this->belongsTo(\App\Models\Courrier\CrType::class, 'type_id');
+    }
 
     public function cr_nature()
-	{
-		return $this->belongsTo(\App\Models\Courrier\CrNature::class, 'nature_id');
-	}
+    {
+        return $this->belongsTo(\App\Models\Courrier\CrNature::class, 'nature_id');
+    }
 
-	public function cr_urgence()
-	{
-		return $this->belongsTo(\App\Models\Courrier\CrUrgence::class, 'urgence_id');
-	}
+    public function cr_urgence()
+    {
+        return $this->belongsTo(\App\Models\Courrier\CrUrgence::class, 'urgence_id');
+    }
 
     public function cr_affectation_courriers()
-	{
-		return $this->hasMany(\App\Models\Courrier\CrAffectationCourrier::class, 'courrier');
-	}
+    {
+        return $this->hasMany(\App\Models\Courrier\CrAffectationCourrier::class, 'courrier');
+    }
 
 
     public function cr_statut()
-	{
-		return $this->belongsTo(\App\Models\Courrier\CrStatut::class, 'statut_id');
-	}
+    {
+        return $this->belongsTo(\App\Models\Courrier\CrStatut::class, 'statut_id');
+    }
 
-	public function cr_courrier_entrants()
-	{
-		return $this->hasMany(\App\Models\Courrier\CrCourrierEntrant::class, 'courrier_id');
-	}
+    public function cr_courrier_entrants()
+    {
+        return $this->hasMany(\App\Models\Courrier\CrCourrierEntrant::class, 'courrier_id');
+    }
 
     public function cr_courrier_etapes()
-	{
-		return $this->hasMany(\App\Models\Courrier\CrCourrierEtape::class, 'courrier_id');
-	}
+    {
+        return $this->hasMany(\App\Models\Courrier\CrCourrierEtape::class, 'courrier_id');
+    }
 
-	public function cr_courrier_internes()
-	{
-		return $this->hasMany(\App\Models\Courrier\CrCourrierInterne::class, 'courrier_id');
-	}
+    public function cr_courrier_internes()
+    {
+        return $this->hasMany(\App\Models\Courrier\CrCourrierInterne::class, 'courrier_id');
+    }
 
-	public function cr_courrier_sortants()
-	{
-		return $this->hasMany(\App\Models\Courrier\CrCourrierSortant::class, 'courrier_id');
-	}
+    public function cr_courrier_sortants()
+    {
+        return $this->hasMany(\App\Models\Courrier\CrCourrierSortant::class, 'courrier_id');
+    }
 
-	public function cr_fichiers()
-	{
-		return $this->hasMany(\App\Models\Courrier\CrFichier::class, 'courrier_id');
-	}
+    public function cr_fichiers()
+    {
+        return $this->hasMany(\App\Models\Courrier\CrFichier::class, 'courrier_id');
+    }
 
-	public function cr_reaffectations()
-	{
-		return $this->hasMany(\App\Models\Courrier\CrReaffectation::class, 'courrier_id');
-	}
+    public function cr_reaffectations()
+    {
+        return $this->hasMany(\App\Models\Courrier\CrReaffectation::class, 'courrier_id');
+    }
 
-	public function cr_traitements()
-	{
-		return $this->hasMany(\App\Models\Courrier\CrTraitement::class, 'courrier_id');
-	}
+    public function cr_traitements()
+    {
+        return $this->hasMany(\App\Models\Courrier\CrTraitement::class, 'courrier_id');
+    }
 
     public function cr_commentaires()
-	{
-		return $this->belongsToMany(\App\Models\Courrier\CrCourrier::class, 'cr_affectation_commentaire_courrier', 'courrier', 'commentaire');
-	}
+    {
+        return $this->belongsToMany(\App\Models\Courrier\CrCourrier::class, 'cr_affectation_commentaire_courrier', 'courrier', 'commentaire');
+    }
 }

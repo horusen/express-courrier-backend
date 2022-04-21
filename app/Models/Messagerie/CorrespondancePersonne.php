@@ -12,7 +12,16 @@ class CorrespondancePersonne extends Model
     protected $table = 'correspondance_personnes';
     protected $primaryKey = 'id';
     protected $fillable = ['user1', 'inscription', 'user2', 'discussion'];
-    protected $with = ['user1:id,prenom,nom,photo', 'user2:id,prenom,nom,photo'];
+    protected $with = [
+        'user1:id,prenom,nom,photo',
+        'user1.affectation_structure.structure:id,libelle,type',
+        'user1.affectation_structure.poste:id,libelle',
+        'user1.affectation_structure.fonction:id,libelle',
+        'user2:id,prenom,nom,photo',
+        'user2.affectation_structure.poste:id,libelle',
+        'user2.affectation_structure.fonction:id,libelle',
+        'user2.affectation_structure.structure:id,libelle,type'
+    ];
 
 
     public function user1()

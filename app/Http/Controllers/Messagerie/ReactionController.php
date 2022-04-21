@@ -14,16 +14,18 @@ use Illuminate\Support\Facades\Auth;
 class ReactionController extends BaseController
 {
     // Don't forget to extends BaseController
-    protected $model = Reaction::class;
     protected $validation = [
-        // 'field_name' => 'field_validation'
+        'reaction' => 'required_without:fichier',
+        'rebondissement' => 'integer|exists:reactions,id',
+        'discussion' => 'required|integer|exists:discussions,id',
+        'structure' => 'sometimes|integer|exists:structures,id',
+        'fichier' => 'file|required_without:reaction'
     ];
 
 
     public function __construct(ReactionService $service)
     {
-        parent::__construct($this->model, $this->validation);
-        $this->service = $service;
+        parent::__construct($this->validation, $service);
     }
 
 
@@ -35,13 +37,7 @@ class ReactionController extends BaseController
 
     public function store(Request $request)
     {
-        $request->validate([
-            'reaction' => 'required_without:fichier',
-            'rebondissement' => 'integer|exists:reactions,id',
-            'discussion' => 'required|integer|exists:discussions,id',
-            'structure' => 'sometimes|integer|exists:structures,id',
-            'fichier' => 'file|required_without:reaction'
-        ]);
+        $request->validate($this->validation);
 
         return $this->service->store($request->all() + ['inscription' => Auth::id()]);
     }

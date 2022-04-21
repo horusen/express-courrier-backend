@@ -8,9 +8,9 @@ use Illuminate\Database\Eloquent\Builder;
 class DiscussionApiRequest extends ApiRequest
 {
 
-    public function search($keyword)
+    public function search($builder, $keyword)
     {
-        return $this->builder->whereHas('correspondance_personne', function ($q) use ($keyword) {
+        return $builder->whereHas('correspondance_personne', function ($q) use ($keyword) {
             $q->whereHas('user1', function ($q) use ($keyword) {
                 $q->where('prenom', 'like', '%' . $keyword . '%')->orWhere('nom', 'like', '%' . $keyword . '%');
             })->orWhereHas('user2', function ($q) use ($keyword) {

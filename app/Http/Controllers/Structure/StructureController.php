@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Structure;
 
-use App\Filters\Structure\StructureFilter as StructureStructureFilter;
-use App\Filters\StructureFilter;
-use App\Models\Structure\Admin;
+use App\ApiRequest\Structure\StructureApiRequest;
 use App\Models\Structure\Structure;
+use App\Services\Structure\AdminService;
+use App\Services\Structure\AffectationStructureService;
 use App\Services\StructureService;
 use App\Shared\Controllers\BaseController;
 use App\Traits\Structure\AdminTrait;
@@ -18,7 +18,9 @@ class StructureController extends BaseController
     use StructureTrait;
     use AdminTrait;
     // use FileHandlerTrait;
+    protected AdminService $adminService;
     protected $model = Structure::class;
+    protected AffectationStructureService $affectationStructureService;
     protected $validation = [
         'libelle' => 'required',
         'type' => 'required|integer|exists:type_structures,id',
@@ -27,10 +29,11 @@ class StructureController extends BaseController
     ];
 
 
-    public function __construct(StructureService $service)
+    public function __construct(StructureService $service, StructureApiRequest $apiRequest, AffectationStructureService $affectationStructureService, AdminService $adminService)
     {
-        parent::__construct($this->model, $this->validation);
-        $this->service = $service;
+        parent::__construct($this->validation, $service, $apiRequest);
+        $this->affectationStructureService = $affectationStructureService;
+        $this->adminService = $adminService;
     }
 
 
@@ -43,36 +46,34 @@ class StructureController extends BaseController
     // recupere les structures où l'utilisateur est affecté
     public function index()
     {
-
-        return Structure::whereHas('affectation_structures', function ($q) {
-            $q->where('user', Auth::id());
-        })->get();
+        return $this->service->list($this->apiRequest);
     }
 
 
 
 
 
-    // public function all()
-    // {
-    //     return $this->model::all();
-    // }
+    public function all(StructureApiRequest $request)
+    {
+        return $this->model::consume($request);
+    }
 
 
     public function store(Request $request)
     {
-        $this->isValid($request);
+        $request->validate($this->validation);
 
 
         $structure = $this->service->store($request->all());
 
 
+
         // On definit le nouveau membre comme moderateur
-        Admin::create([
-            'user' => $this->inscription,
+        $this->adminService->store([
+            'user' => Auth::id(),
             'structure' => $structure->id,
             'type' => 2,
-            'inscription' => $this->inscription
+            'inscription' => Auth::id()
         ]);
 
         return $structure;
@@ -90,23 +91,22 @@ class StructureController extends BaseController
         return Structure::withDepth()->with('sous_structures')->having('depth', '=', 0)->ancestorsAndSelf($structure);
     }
 
-    public function getSousStructures(Structure $structure)
+    public function getSousStructures(Structure $structure, StructureApiRequest $request)
     {
-        return $structure->sous_structures()->get();
+        return $this->service->getSousStructures($structure, $request);
     }
 
 
-    public function getAutresStructures()
+    public function getAutresStructures(StructureApiRequest $apiRequest)
     {
-        return Structure::whereDoesntHave('affectation_structures', function ($q) {
-            $q->where('user', Auth::id());
-        })->get();
+
+        return $this->service->getAutresStructures($apiRequest);
     }
 
 
-    public function getAllSousStructures(Structure $structure)
+    public function getAllSousStructures(Structure $structure, StructureApiRequest $request)
     {
-        return $structure->descendants()->get();
+        return $this->service->getAllSousStructures($structure, $request);
     }
 
 
@@ -115,11 +115,13 @@ class StructureController extends BaseController
         return Structure::descendantsAndSelf($structure);
     }
 
-    public function update(Request $request, Structure $structure)
+    public function update(Request $request,  $id)
     {
-        $this->isValid($request);
+        $request->validate($this->validation);
 
-        if (!$this->isAdmin($this->inscription, $request->structure)) {
+        $structure = Structure::findOrFail($id);
+
+        if (!$this->isAdmin(Auth::id(), $request->structure)) {
             return $this->responseError("Non autorisé", 401);
         }
 
@@ -127,9 +129,11 @@ class StructureController extends BaseController
         return $structure->refresh();
     }
 
-    public function destroy(Structure $structure)
+    public function destroy($id)
     {
-        if (!$this->isAdmin($this->inscription, $structure->id)) {
+        $structure = Structure::findOrFail($id);
+
+        if (!$this->isAdmin(Auth::id(), $structure->id)) {
             return $this->responseError("Non autorisé", 401);
         }
 

@@ -8,16 +8,25 @@ use App\Models\Messagerie\CorrespondancePersonne;
 use App\Models\Messagerie\CorrespondancePersonneStructure;
 use App\Models\Messagerie\DeletedDiscussion;
 use App\Models\Messagerie\Discussion;
+use App\Services\BaseService;
 use App\Traits\Messagerie\AutorisationDiscussionTrait;
 use Carbon\Carbon;
 use CreateDossierTable;
 use GuzzleHttp\Psr7\Request;
 use Illuminate\Support\Facades\Auth;
 
-class DiscussionService
+class DiscussionService extends BaseService
 {
 
     use AutorisationDiscussionTrait;
+
+    public function __construct(Discussion $model)
+    {
+        parent::__construct($model);
+    }
+
+
+
     /***
      *
      *
@@ -26,19 +35,23 @@ class DiscussionService
      */
     public function getByUser(DiscussionApiRequest $request, $user)
     {
-        return Discussion::whereNotDeleted($user)
+        return $this->model::whereNotDeleted($user)
             ->whereCorrespondant($user)
             ->whereReaction()
             ->orderBy('touched_at', 'DESC')
             ->consume($request);
     }
 
-    public function getByStructure($structure)
+    public function getByStructure(DiscussionApiRequest $request, $structure)
     {
         if (!$this->isUserHasAutorisationFromStructure($structure, Auth::id(), 'consulter_messagerie'))
             abort(401, "Vous n'êtes pas autorisé à effectuer cette action");
 
-        return Discussion::whereNotDeletedStructure($structure)->whereStructure($structure)->orderBy('touched_at', 'DESC')->get();
+        return $this->model::whereNotDeletedStructure($structure)
+            ->whereStructure($structure)
+            ->whereReaction()
+            ->orderBy('touched_at', 'DESC')
+            ->consume($request);
     }
 
 
@@ -50,12 +63,18 @@ class DiscussionService
             abort(422, "La discussion existe déjà");
         }
 
-        $discussion = Discussion::create(['type' => $data['type'], 'inscription' => Auth::id(), 'touched_at' => Carbon::now()]);
+        $discussion = $this->model::create(['type' => $data['type'], 'inscription' => Auth::id(), 'touched_at' => Carbon::now()]);
 
         $this->createCorrespondance($data['type'], $discussion->id, $correspondants);
 
         return $discussion->refresh();
     }
+
+
+    // public function show(int $id)
+    // {
+    //     return $this->model::with(['affectation_structure.poste', 'affectation_structure.fonction'])->findOrFail($id);
+    // }
 
 
     public function delete(Discussion $discussion, $structure)
@@ -130,13 +149,13 @@ class DiscussionService
 
     public function getDiscussionPersonnes($correspondant, $autre_correspondant)
     {
-        return  Discussion::whereCorrespondants($correspondant, $autre_correspondant)->first();
+        return  $this->model::whereCorrespondants($correspondant, $autre_correspondant)->first();
     }
 
 
     public function getDiscussionPersonneStructure($personne, $structure)
     {
-        return  Discussion::whereCorrespondantStructure($personne, $structure)->first();
+        return  $this->model::whereCorrespondantStructure($personne, $structure)->first();
     }
 
 
@@ -193,7 +212,7 @@ class DiscussionService
         DeletedDiscussion::create([
             'discussion' => $discussion,
             'structure' => $structure,
-            'inscription' => Auth::id()
+            'inscription' => Auth::id(),
         ]);
     }
 }

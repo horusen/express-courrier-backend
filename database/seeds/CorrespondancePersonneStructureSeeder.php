@@ -2,6 +2,7 @@
 
 use App\Models\Messagerie\CorrespondancePersonneStructure;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Auth;
 
 class CorrespondancePersonneStructureSeeder extends Seeder
 {
@@ -12,6 +13,10 @@ class CorrespondancePersonneStructureSeeder extends Seeder
      */
     public function run()
     {
-        factory(CorrespondancePersonneStructure::class, 9)->create();
+        CorrespondancePersonneStructure::create([
+            'user' => 1, 'structure' => 2, 'discussion' => 24, 'inscription' => 1
+        ]);
+
+        factory(CorrespondancePersonneStructure::class, 8)->create();
     }
 }

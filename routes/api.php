@@ -2,15 +2,18 @@
 
 use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\ConditionsUtilisationController;
+use App\Http\Controllers\CourrierController;
 use App\Http\Controllers\Ged\DossierController;
 use App\Http\Controllers\InscriptionController;
 use App\Http\Controllers\Messagerie\DiscussionController;
 use App\Http\Controllers\Messagerie\ReactionController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\Structure\EmployeController;
 use App\Http\Controllers\Structure\FonctionController;
 use App\Http\Controllers\Structure\PosteController;
 use App\Http\Controllers\Structure\StructureController;
 use App\Http\Controllers\Structure\TypeStructureController;
+use App\Http\Controllers\TestController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -32,7 +35,7 @@ Route::get('structures/all', [StructureController::class, 'all']);
 
 Route::get('conditions-utilisations', [ConditionsUtilisationController::class, 'show']);
 
-Route::put('users/{id}', [InscriptionController::class, 'update']);
+// Route::put('users/{id}', [InscriptionController::class, 'update']);
 
 Route::post('auth/login', [AuthenticationController::class, 'login']);
 
@@ -52,8 +55,15 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('postes/all', [PosteController::class, 'all']);
     Route::get('fonctions/all', [FonctionController::class, 'all']);
 
+    Route::get('courriers', [CourrierController::class, 'index']);
+    Route::get('users/{user}/courriers', [CourrierController::class, 'getByUser']);
+    Route::get('test', [TestController::class, 'sendCourrierEvent']);
+
+    Route::get('notifications', [NotificationController::class, 'getByUser']);
+
 
     Route::apiResource('affectation-structures', 'Structures\AffectationStructureController')->except(['index', 'show']);
+    Route::apiResource('notifications', 'NotificationController')->except(['index', 'create']);
     Route::post('dossiers/checkpassword/{id}', 'Ged\DossierController@checkPassword');
     Route::post('fichiers/checkpassword/{id}', 'Ged\FichierController@checkPassword');
 
@@ -95,12 +105,15 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::customResource('validators', 'Courrier\CrFormFieldValidatorController');
     });
 
-    Route::post('employes', [EmployeController::class, 'store']);
+    Route::get('employes/{id}', [EmployeController::class, 'show']);
     Route::put('employes/{employe}/validate', [EmployeController::class, 'validateEmploye']);
+    Route::put('employes/{employe}', [EmployeController::class, 'update']);
+    Route::post('employes', [EmployeController::class, 'store']);
     Route::get('structures/{structure}/employes', [EmployeController::class, 'getByStructure']);
     Route::get('structures/{structure}/responsables', [EmployeController::class, 'getResponsablesByStructure']);
 
 
+    Route::put('users/password', [InscriptionController::class, 'updatePassword']);
     Route::post('users', [InscriptionController::class, 'store']);
 
 

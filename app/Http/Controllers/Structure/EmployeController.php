@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Structure;
 
+use App\ApiRequest\Structure\EmployeApiRequest;
 use App\Exceptions\NotAllowedException;
-use App\Http\Controllers\Controller;
-use App\Http\Controllers\InscriptionController;
 use App\Models\Structure\AffectationStructure;
-use App\Models\Structure\Inscription;
 use App\Models\Structure\Structure;
+use App\Services\InscriptionService;
+use App\Services\Structure\AffectationStructureService;
 use App\Services\Structure\EmployeService;
 use App\Shared\Controllers\BaseController;
 use App\Traits\Structure\AdminTrait;
@@ -19,32 +19,26 @@ class EmployeController extends BaseController
 {
     use AdminTrait;
     protected $service;
-    // Don't forget to extends BaseController
+    protected InscriptionService $inscriptionService;
+    protected AffectationStructureService $affectationStructureService;
     protected $model = AffectationStructure::class;
     protected $validation = [
-        // 'field_name' => 'field_validation'
+        'poste' => 'required|integer|exists:postes,id',
+        'fonction' => 'required|integer|exists:fonctions,id',
+        'structure' => 'required|integer|exists:structures,id',
     ];
 
 
-    public function __construct(EmployeService $employeService)
+    public function __construct(EmployeService $employeService, InscriptionService $inscriptionService, AffectationStructureService $affectationStructureService)
     {
-        parent::__construct($this->model, $this->validation);
-        $this->service = $employeService;
+        parent::__construct($this->validation, $employeService);
+        $this->inscriptionService = $inscriptionService;
+        $this->affectationStructureService = $affectationStructureService;
     }
 
-    public function getByStructure(Request $request, Structure $structure)
+    public function getByStructure(EmployeApiRequest $request,  $structure)
     {
-        $status = $request->query('status');
-
-        if (!isset($status) || !in_array($status, ['valid', 'unactivated', 'unverified'])) {
-            $status = 'valid';
-        }
-
-        if ($status != 'valid') {
-            if (!($this->isModerateur(Auth::id(), 10) || $this->isAdmin(Auth::id(), 10))) throw new NotAllowedException();
-        }
-
-        return $this->model::status($status)->where('structure', 10)->with(['fonction', 'poste', 'user'])->get();
+        return $this->service->getByStructure($request, $structure);
     }
 
     public function getResponsablesByStructure(Structure $structure)
@@ -65,17 +59,33 @@ class EmployeController extends BaseController
             'structure' => 'required|integer|exists:structures,id',
         ]);
 
+        $this->inscriptionService->validate($request);
+
+
         try {
-            $user = (new InscriptionController())->store($request);
+            $user = $this->inscriptionService->add($request);
         } catch (Swift_TransportException $e) {
             return $this->responseError('L\'email de confirmation n\'a pu être envoyé à l\'utilisteur. Veuillez ressayer ulterieurement.', 500);
         }
 
         $request->request->add(['user' => $user->id, 'inscription' => Auth::id()]);
 
-        $affectation = (new AffectationStructureController())->store($request);
+        $affectation = $this->affectationStructureService->store($request->all());
 
         return $affectation->load(['poste', 'fonction', 'user']);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate($this->validation);
+
+        // Update user details
+        if ($request->has('prenom') && $request->has('email')) {
+            $this->inscriptionService->validate($request);
+            $this->inscriptionService->edit($request, $request->user);
+        }
+
+        return $this->service->update($id, $request->all());
     }
 
 
@@ -88,5 +98,11 @@ class EmployeController extends BaseController
         $employe = $this->service->validateEmploye($employe);
 
         return $employe->refresh();
+    }
+
+
+    public function show($id)
+    {
+        return $this->service->show($id);
     }
 }

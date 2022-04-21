@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Structure;
 
+use App\ApiRequest\ApiRequest;
 use App\Http\Controllers\Controller;
 use App\Models\Structure\TypeStructure;
+use App\Services\Structure\TypeStructureService;
 use App\Shared\Controllers\BaseController;
 use Illuminate\Http\Request;
 
@@ -15,14 +17,14 @@ class TypeStructureController extends BaseController
     ];
 
 
-    public function __construct()
+    public function __construct(TypeStructureService $service)
     {
-        parent::__construct($this->model, $this->validation);
+        parent::__construct($this->validation, $service);
     }
 
 
-    public function all()
+    public function all(ApiRequest $request)
     {
-        return $this->model::all();
+        return $this->model::consume($request);
     }
 }

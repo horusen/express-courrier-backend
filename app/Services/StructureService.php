@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\ApiRequest\ApiRequest;
+use App\ApiRequest\Structure\StructureApiRequest;
 use App\Exceptions\ActionNotAllowedException;
 use App\Filters\Structure\StructureFilter as StructureStructureFilter;
 use App\Filters\StructureFilter;
@@ -13,11 +15,30 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
-class StructureService
+class StructureService extends BaseService
 {
     use AdminTrait;
 
+    public function __construct(Structure $model)
+    {
+        parent::__construct($model);
+    }
 
+    public function list(ApiRequest $request = null)
+    {
+        return $this->model::whereHas('affectation_structures', function ($q) {
+            $q->where('user', Auth::id());
+        })->orWhereHas('admins', function ($q) {
+            $q->where('user', Auth::id());
+        })->consume($request);
+    }
+
+    public function getAutresStructures(StructureApiRequest $request)
+    {
+        return $this->model::whereDoesntHave('affectation_structures', function ($q) {
+            $q->where('user', Auth::id());
+        })->consume($request);
+    }
 
 
     public function store($data)
@@ -28,7 +49,7 @@ class StructureService
         }
 
 
-        $structure = Structure::create($data + ['inscription' => Auth::id()]);
+        $structure = $this->model::create($data + ['inscription' => Auth::id()]);
 
         if (Arr::has($data, 'image')) {
             $file = $data['image'];
@@ -39,5 +60,13 @@ class StructureService
     }
 
 
-    // private function isAdmin
+    public function getSousStructures(Structure $structure, StructureApiRequest $request)
+    {
+        return $structure->sous_structures()->consume($request);
+    }
+
+    public function getAllSousStructures(Structure $structure, StructureApiRequest $request)
+    {
+        return $structure->descendants()->consume($request);
+    }
 }

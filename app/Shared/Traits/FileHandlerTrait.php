@@ -79,7 +79,7 @@ trait FileHandlerTrait
             'extension' => $idExtension,
             // 'size' => $file->getSize(),
             'path' => $this->baseURL . $pathToFile . '/' . $file_new_name,
-            'inscription' => $this->inscription
+            'inscription' => Auth::id()
         ]);
 
         return $newFile;

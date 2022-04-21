@@ -6,14 +6,14 @@ use App\ApiRequest\ApiRequest;
 
 class StructureApiRequest extends ApiRequest
 {
-    public function type($value = null, $operateur = '=')
+    public function filter_by_type($builder, $value)
     {
-        return $this->builder->where('type', $operateur, $value);
+        return $this->simpleFilter($builder, 'type', $value);
     }
 
 
-    public function search($keyword)
+    public function search($builder, $keyword)
     {
-        return $this->builder->where('libelle', 'like', '%' . $keyword . '%');
+        return $builder->where('libelle', 'like', '%' . $keyword . '%')->orWhere('cigle', 'like', '%' . $keyword . '%');
     }
 }
