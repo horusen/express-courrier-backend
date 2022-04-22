@@ -54,4 +54,5 @@ Broadcast::channel('online', function ($user) {
     if (isset($user)) {
         return ['id' => $user->id, 'nom_complet' => $user->nom_complet];
     }
+    return [];
 });

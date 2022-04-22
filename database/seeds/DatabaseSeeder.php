@@ -50,6 +50,6 @@ class DatabaseSeeder extends Seeder
         // $this->call(CrCoordonneeSeeder::class);
         // $this->call(CrCourrierEntrantSeeder::class);
         // $this->call(CrCourrierSortantSeeder::class);
-        $this->call(CrDestinataireSortantSeeder::class);
+        // $this->call(CrDestinataireSortantSeeder::class);
     }
 }
