@@ -150,36 +150,62 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('discussions', [DiscussionController::class, 'store']);
     Route::delete('discussions/{discussion}', [DiscussionController::class, 'delete']);
     Route::delete('discussions/{discussion}/structures/{structure}', [DiscussionController::class, 'delete']);
+
+    Route::customResource('dossiers', 'Ged\DossierController');
+    Route::customResource('users', 'UserController');
+    Route::customResource('fichiers', 'Ged\FichierController');
+    Route::customResource('fichier-types', 'Ged\FichierTypeController');
+    Route::customResource('ged-conservations', 'Ged\GedConservationRuleController');
+    Route::customResource('ged-elements', 'Ged\GedElementController');
+    Route::customResource('ged-partages', 'Ged\GedPartageController');
+
+    Route::prefix('courrier')->group(function () {
+        Route::customResource('actions', 'Courrier\CrActionController');
+        Route::customResource('ampiliations', 'Courrier\CrAmpiliationController');
+        Route::customResource('coordonnees', 'Courrier\CrCoordonneeController');
+        Route::customResource('courriers', 'Courrier\CrCourrierController');
+        Route::customResource('courrier-entrants', 'Courrier\CrCourrierEntrantController');
+        Route::customResource('courrier-internes', 'Courrier\CrCourrierInterneController');
+        Route::customResource('destinataires', 'Courrier\CrDestinataireController');
+        Route::customResource('etapes', 'Courrier\CrEtapeController');
+        Route::customResource('fichiers', 'Courrier\CrFichierController');
+        Route::customResource('moyen-suivis', 'Courrier\CrMoyenSuiviController');
+        Route::customResource('natures', 'Courrier\CrNatureController');
+        Route::customResource('reaffectations', 'Courrier\CrReaffectationController');
+        Route::customResource('statuts', 'Courrier\CrStatutController');
+        Route::customResource('structure-copies', 'Courrier\CrStructureCopieController');
+        Route::customResource('suivis', 'Courrier\CrSuiviController');
+        Route::customResource('traitements', 'Courrier\CrTraitementController');
+        Route::customResource('types', 'Courrier\CrTypeController');
+        Route::customResource('urgences', 'Courrier\CrUrgenceController');
+    });
+
+    //Evenement
+Route::resource('evenement','Evenement\EvenementController');
+Route::get('eventbyobjet/{id}','Evenement\EvenementController@eventbyobjet');
+Route::resource('fichierevent','Evenement\FileevenementController');
+Route::get('filebyevent/{id}','Evenement\FileevenementController@filebyevent');
+Route::resource('commentevent','Evenement\CommentevenementController');
+Route::get('commentbyevent/{id}','Evenement\CommentevenementController@commentbyevenement');
+Route::resource('participevent','Evenement\ParticipevenementController');
+Route::resource('sharedevent','Evenement\SharedevenementController');
+Route::get('getAlluserLikename/{name}','Evenement\UsereventController@getAlluserLikename');
+//Tableau d'objectif
+Route::resource('tabobjectif','Tableauobjectif\TableauobjectifController');
+Route::get('tabobjectbyobjet/{id}','Tableauobjectif\TableauobjectifController@tabbyobjet');
+Route::resource('sharedtabobj','Tableauobjectif\SharedtabobjectifController');
+Route::resource('commenttabobj','Tableauobjectif\CommenttabobjectifController');
+Route::get('commentbytabobj/{id}','Tableauobjectif\CommenttabobjectifController@commentbyobjectif');
+
+//Mur d'idée
+Route::resource('muridee','Muridee\MurideeController');
+Route::resource('commentmuridee','Muridee\CommentmurideeController');
+Route::get('commentbymuridee/{id}','Muridee\CommentmurideeController@commentbymur');
+Route::resource('sharedmuridee','Muridee\SharedmurideeController');
+Route::resource('likemuridee','Muridee\LikemurideeController');
+
 });
 
-Route::customResource('dossiers', 'Ged\DossierController');
-Route::customResource('users', 'UserController');
-Route::customResource('fichiers', 'Ged\FichierController');
-Route::customResource('fichier-types', 'Ged\FichierTypeController');
-Route::customResource('ged-conservations', 'Ged\GedConservationRuleController');
-Route::customResource('ged-elements', 'Ged\GedElementController');
-Route::customResource('ged-partages', 'Ged\GedPartageController');
-
-Route::prefix('courrier')->group(function () {
-    Route::customResource('actions', 'Courrier\CrActionController');
-    Route::customResource('ampiliations', 'Courrier\CrAmpiliationController');
-    Route::customResource('coordonnees', 'Courrier\CrCoordonneeController');
-    Route::customResource('courriers', 'Courrier\CrCourrierController');
-    Route::customResource('courrier-entrants', 'Courrier\CrCourrierEntrantController');
-    Route::customResource('courrier-internes', 'Courrier\CrCourrierInterneController');
-    Route::customResource('destinataires', 'Courrier\CrDestinataireController');
-    Route::customResource('etapes', 'Courrier\CrEtapeController');
-    Route::customResource('fichiers', 'Courrier\CrFichierController');
-    Route::customResource('moyen-suivis', 'Courrier\CrMoyenSuiviController');
-    Route::customResource('natures', 'Courrier\CrNatureController');
-    Route::customResource('reaffectations', 'Courrier\CrReaffectationController');
-    Route::customResource('statuts', 'Courrier\CrStatutController');
-    Route::customResource('structure-copies', 'Courrier\CrStructureCopieController');
-    Route::customResource('suivis', 'Courrier\CrSuiviController');
-    Route::customResource('traitements', 'Courrier\CrTraitementController');
-    Route::customResource('types', 'Courrier\CrTypeController');
-    Route::customResource('urgences', 'Courrier\CrUrgenceController');
-});
 
 //Dashboard
 Route::get('sumaccueildash', 'Dash\CourrierdashController@getsum');
