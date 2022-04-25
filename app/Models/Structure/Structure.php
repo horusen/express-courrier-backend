@@ -123,13 +123,14 @@ class Structure extends Model
     //     return env('IMAGE_PREFIX_URL') . '/storage/' . $value;
     // }
 
-    public function getImageAttribute(){
-		if($this->attributes['image']){
-			$document_scanne = "http://dev.expressfile/".$this->attributes['image'];
-			return $document_scanne;
-		}
-		return 0;
-	}
+    public function getImageAttribute()
+    {
+        if ($this->attributes['image']) {
+            $document_scanne = "http://localhost:8000/storage/" . $this->attributes['image'];
+            return $document_scanne;
+        }
+        return 0;
+    }
 
     public function affectation_courrier()
     {

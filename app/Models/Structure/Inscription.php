@@ -31,13 +31,14 @@ class Inscription extends Authenticatable implements MustVerifyEmail
     //     return env('IMAGE_PREFIX_URL') . '/storage/' . $value;
     // }
 
-    public function getPhotoAttribute(){
-		if($this->attributes['photo']){
-			$document_scanne = "http://dev.expressfile/".$this->attributes['photo'];
-			return $document_scanne;
-		}
-		return 0;
-	}
+    public function getPhotoAttribute()
+    {
+        if ($this->attributes['photo']) {
+            $document_scanne = "http://localhost:8000/storage/" . $this->attributes['photo'];
+            return $document_scanne;
+        }
+        return 0;
+    }
     public function estDansStructures()
     {
         return $this->belongsToMany(Structure::class, AffectationStructure::class, 'user', 'structure');

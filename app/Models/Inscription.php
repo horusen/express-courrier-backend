@@ -66,216 +66,217 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
  */
 class Inscription extends Eloquent
 {
-	use \Illuminate\Database\Eloquent\SoftDeletes;
-	protected $table = 'inscription';
+    use \Illuminate\Database\Eloquent\SoftDeletes;
+    protected $table = 'inscription';
 
-	protected $casts = [
-		'inscription' => 'int'
-	];
+    protected $casts = [
+        'inscription' => 'int'
+    ];
 
-	protected $dates = [
-		'date_naissance'
-	];
+    protected $dates = [
+        'date_naissance'
+    ];
 
-	protected $fillable = [
-		'prenom',
-		'nom',
-		'date_naissance',
-		'lieu_naissance',
-		'identifiant',
-		'telephone',
-		'photo',
-		'sexe',
-		'inscription'
-	];
+    protected $fillable = [
+        'prenom',
+        'nom',
+        'date_naissance',
+        'lieu_naissance',
+        'identifiant',
+        'telephone',
+        'photo',
+        'sexe',
+        'inscription'
+    ];
 
-    public function getPhotoAttribute(){
-		if($this->attributes['photo']){
-			$document_scanne = "http://dev.expressfile/".$this->attributes['photo'];
-			return $document_scanne;
-		}
-		return 0;
-	}
+    public function getPhotoAttribute()
+    {
+        if ($this->attributes['photo']) {
+            $document_scanne = "http://localhost:8000/" . $this->attributes['photo'];
+            return $document_scanne;
+        }
+        return 0;
+    }
 
-	public function inscription()
-	{
-		return $this->belongsTo(\App\Models\Inscription::class, 'inscription');
-	}
+    public function inscription()
+    {
+        return $this->belongsTo(\App\Models\Inscription::class, 'inscription');
+    }
 
-	public function admins()
-	{
-		return $this->hasMany(\App\Models\Admin::class, 'user');
-	}
+    public function admins()
+    {
+        return $this->hasMany(\App\Models\Admin::class, 'user');
+    }
 
-	public function affectation_structures()
-	{
-		return $this->hasMany(\App\Models\AffectationStructure::class, 'user');
-	}
+    public function affectation_structures()
+    {
+        return $this->hasMany(\App\Models\AffectationStructure::class, 'user');
+    }
 
-	public function cr_actions()
-	{
-		return $this->hasMany(\App\Models\CrAction::class, 'inscription');
-	}
+    public function cr_actions()
+    {
+        return $this->hasMany(\App\Models\CrAction::class, 'inscription');
+    }
 
-	public function cr_ampiliations()
-	{
-		return $this->hasMany(\App\Models\CrAmpiliation::class, 'inscription');
-	}
+    public function cr_ampiliations()
+    {
+        return $this->hasMany(\App\Models\CrAmpiliation::class, 'inscription');
+    }
 
-	public function cr_autorisation_personne_structures()
-	{
-		return $this->hasMany(\App\Models\CrAutorisationPersonneStructure::class, 'personne');
-	}
+    public function cr_autorisation_personne_structures()
+    {
+        return $this->hasMany(\App\Models\CrAutorisationPersonneStructure::class, 'personne');
+    }
 
-	public function cr_coordonnees()
-	{
-		return $this->hasMany(\App\Models\CrCoordonnee::class, 'inscription');
-	}
+    public function cr_coordonnees()
+    {
+        return $this->hasMany(\App\Models\CrCoordonnee::class, 'inscription');
+    }
 
-	public function cr_courriers()
-	{
-		return $this->hasMany(\App\Models\CrCourrier::class, 'suivi_par');
-	}
+    public function cr_courriers()
+    {
+        return $this->hasMany(\App\Models\CrCourrier::class, 'suivi_par');
+    }
 
-	public function cr_courrier_entrants()
-	{
-		return $this->hasMany(\App\Models\CrCourrierEntrant::class, 'responsable');
-	}
+    public function cr_courrier_entrants()
+    {
+        return $this->hasMany(\App\Models\CrCourrierEntrant::class, 'responsable');
+    }
 
-	public function cr_courrier_internes()
-	{
-		return $this->hasMany(\App\Models\CrCourrierInterne::class, 'inscription');
-	}
+    public function cr_courrier_internes()
+    {
+        return $this->hasMany(\App\Models\CrCourrierInterne::class, 'inscription');
+    }
 
-	public function cr_courrier_sortants()
-	{
-		return $this->hasMany(\App\Models\CrCourrierSortant::class, 'inscription');
-	}
+    public function cr_courrier_sortants()
+    {
+        return $this->hasMany(\App\Models\CrCourrierSortant::class, 'inscription');
+    }
 
-	public function cr_destinataires()
-	{
-		return $this->hasMany(\App\Models\CrDestinataire::class, 'inscription');
-	}
+    public function cr_destinataires()
+    {
+        return $this->hasMany(\App\Models\CrDestinataire::class, 'inscription');
+    }
 
-	public function cr_fichiers()
-	{
-		return $this->hasMany(\App\Models\CrFichier::class, 'inscription');
-	}
+    public function cr_fichiers()
+    {
+        return $this->hasMany(\App\Models\CrFichier::class, 'inscription');
+    }
 
-	public function cr_moyen_suivis()
-	{
-		return $this->hasMany(\App\Models\CrMoyenSuivi::class, 'inscription');
-	}
+    public function cr_moyen_suivis()
+    {
+        return $this->hasMany(\App\Models\CrMoyenSuivi::class, 'inscription');
+    }
 
-	public function cr_natures()
-	{
-		return $this->hasMany(\App\Models\CrNature::class, 'inscription');
-	}
+    public function cr_natures()
+    {
+        return $this->hasMany(\App\Models\CrNature::class, 'inscription');
+    }
 
-	public function cr_reaffectations()
-	{
-		return $this->hasMany(\App\Models\CrReaffectation::class, 'suivi_par');
-	}
+    public function cr_reaffectations()
+    {
+        return $this->hasMany(\App\Models\CrReaffectation::class, 'suivi_par');
+    }
 
-	public function cr_structure_copies()
-	{
-		return $this->hasMany(\App\Models\CrStructureCopie::class, 'inscription');
-	}
+    public function cr_structure_copies()
+    {
+        return $this->hasMany(\App\Models\CrStructureCopie::class, 'inscription');
+    }
 
-	public function cr_suivis()
-	{
-		return $this->hasMany(\App\Models\CrSuivi::class, 'inscription');
-	}
+    public function cr_suivis()
+    {
+        return $this->hasMany(\App\Models\CrSuivi::class, 'inscription');
+    }
 
-	public function cr_traitements()
-	{
-		return $this->hasMany(\App\Models\CrTraitement::class, 'inscription');
-	}
+    public function cr_traitements()
+    {
+        return $this->hasMany(\App\Models\CrTraitement::class, 'inscription');
+    }
 
-	public function cr_types()
-	{
-		return $this->hasMany(\App\Models\CrType::class, 'inscription');
-	}
+    public function cr_types()
+    {
+        return $this->hasMany(\App\Models\CrType::class, 'inscription');
+    }
 
-	public function cr_urgences()
-	{
-		return $this->hasMany(\App\Models\CrUrgence::class, 'inscription');
-	}
+    public function cr_urgences()
+    {
+        return $this->hasMany(\App\Models\CrUrgence::class, 'inscription');
+    }
 
-	public function dossiers()
-	{
-		return $this->hasMany(\App\Models\Dossier::class, 'inscription');
-	}
+    public function dossiers()
+    {
+        return $this->hasMany(\App\Models\Dossier::class, 'inscription');
+    }
 
-	public function droit_acces()
-	{
-		return $this->hasMany(\App\Models\DroitAcce::class, 'inscription');
-	}
+    public function droit_acces()
+    {
+        return $this->hasMany(\App\Models\DroitAcce::class, 'inscription');
+    }
 
-	public function fichiers()
-	{
-		return $this->hasMany(\App\Models\Fichier::class, 'inscription');
-	}
+    public function fichiers()
+    {
+        return $this->hasMany(\App\Models\Fichier::class, 'inscription');
+    }
 
-	public function fichier_types()
-	{
-		return $this->hasMany(\App\Models\FichierType::class, 'inscription');
-	}
+    public function fichier_types()
+    {
+        return $this->hasMany(\App\Models\FichierType::class, 'inscription');
+    }
 
-	public function fonctions()
-	{
-		return $this->hasMany(\App\Models\Fonction::class, 'inscription');
-	}
+    public function fonctions()
+    {
+        return $this->hasMany(\App\Models\Fonction::class, 'inscription');
+    }
 
-	public function ged_conservation_rules()
-	{
-		return $this->hasMany(\App\Models\GedConservationRule::class, 'inscription');
-	}
+    public function ged_conservation_rules()
+    {
+        return $this->hasMany(\App\Models\GedConservationRule::class, 'inscription');
+    }
 
-	public function ged_element_personnes()
-	{
-		return $this->hasMany(\App\Models\GedElementPersonne::class, 'personne');
-	}
+    public function ged_element_personnes()
+    {
+        return $this->hasMany(\App\Models\GedElementPersonne::class, 'personne');
+    }
 
-	public function ged_element_structures()
-	{
-		return $this->hasMany(\App\Models\GedElementStructure::class, 'inscription');
-	}
+    public function ged_element_structures()
+    {
+        return $this->hasMany(\App\Models\GedElementStructure::class, 'inscription');
+    }
 
-	public function ged_favoris()
-	{
-		return $this->hasMany(\App\Models\GedFavori::class, 'inscription');
-	}
+    public function ged_favoris()
+    {
+        return $this->hasMany(\App\Models\GedFavori::class, 'inscription');
+    }
 
-	public function ged_partages()
-	{
-		return $this->hasMany(\App\Models\GedPartage::class, 'personne');
-	}
+    public function ged_partages()
+    {
+        return $this->hasMany(\App\Models\GedPartage::class, 'personne');
+    }
 
-	public function inscriptions()
-	{
-		return $this->hasMany(\App\Models\Inscription::class, 'inscription');
-	}
+    public function inscriptions()
+    {
+        return $this->hasMany(\App\Models\Inscription::class, 'inscription');
+    }
 
-	public function log_activities()
-	{
-		return $this->hasMany(\App\Models\LogActivity::class, 'inscription');
-	}
+    public function log_activities()
+    {
+        return $this->hasMany(\App\Models\LogActivity::class, 'inscription');
+    }
 
-	public function structures()
-	{
-		return $this->hasMany(\App\Models\Structure::class, 'inscription');
-	}
+    public function structures()
+    {
+        return $this->hasMany(\App\Models\Structure::class, 'inscription');
+    }
 
-	public function type_admins()
-	{
-		return $this->hasMany(\App\Models\TypeAdmin::class, 'inscription');
-	}
+    public function type_admins()
+    {
+        return $this->hasMany(\App\Models\TypeAdmin::class, 'inscription');
+    }
 
-	public function type_structures()
-	{
-		return $this->hasMany(\App\Models\TypeStructure::class, 'inscription');
-	}
+    public function type_structures()
+    {
+        return $this->hasMany(\App\Models\TypeStructure::class, 'inscription');
+    }
 
     public function affectation_courrier()
     {

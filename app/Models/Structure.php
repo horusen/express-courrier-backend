@@ -38,87 +38,88 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
  */
 class Structure extends Eloquent
 {
-	use \Illuminate\Database\Eloquent\SoftDeletes;
+    use \Illuminate\Database\Eloquent\SoftDeletes;
 
-	protected $casts = [
-		'type' => 'int',
-		'parent' => 'int',
-		'inscription' => 'int'
-	];
+    protected $casts = [
+        'type' => 'int',
+        'parent' => 'int',
+        'inscription' => 'int'
+    ];
 
-	protected $fillable = [
-		'libelle',
-		'cigle',
-		'description',
-		'type',
-		'parent',
-		'inscription'
-	];
+    protected $fillable = [
+        'libelle',
+        'cigle',
+        'description',
+        'type',
+        'parent',
+        'inscription'
+    ];
 
-    public function getImageAttribute(){
-		if($this->attributes['image']){
-			$document_scanne = "http://dev.expressfile/".$this->attributes['image'];
-			return $document_scanne;
-		}
-		return 0;
-	}
+    public function getImageAttribute()
+    {
+        if ($this->attributes['image']) {
+            $document_scanne = "http://localhost:8000/storage/" . $this->attributes['image'];
+            return $document_scanne;
+        }
+        return 0;
+    }
 
-	public function inscription()
-	{
-		return $this->belongsTo(\App\Models\Inscription::class, 'inscription');
-	}
+    public function inscription()
+    {
+        return $this->belongsTo(\App\Models\Inscription::class, 'inscription');
+    }
 
-	public function structure()
-	{
-		return $this->belongsTo(\App\Models\Structure::class, 'parent');
-	}
+    public function structure()
+    {
+        return $this->belongsTo(\App\Models\Structure::class, 'parent');
+    }
 
-	public function type_structure()
-	{
-		return $this->belongsTo(\App\Models\TypeStructure::class, 'type');
-	}
+    public function type_structure()
+    {
+        return $this->belongsTo(\App\Models\TypeStructure::class, 'type');
+    }
 
-	public function admins()
-	{
-		return $this->hasMany(\App\Models\Admin::class, 'structure');
-	}
+    public function admins()
+    {
+        return $this->hasMany(\App\Models\Admin::class, 'structure');
+    }
 
-	public function affectation_structures()
-	{
-		return $this->hasMany(\App\Models\AffectationStructure::class, 'structure');
-	}
+    public function affectation_structures()
+    {
+        return $this->hasMany(\App\Models\AffectationStructure::class, 'structure');
+    }
 
-	public function cr_autorisation_personne_structures()
-	{
-		return $this->hasMany(\App\Models\CrAutorisationPersonneStructure::class, 'structure');
-	}
+    public function cr_autorisation_personne_structures()
+    {
+        return $this->hasMany(\App\Models\CrAutorisationPersonneStructure::class, 'structure');
+    }
 
-	public function cr_courriers()
-	{
-		return $this->hasMany(\App\Models\CrCourrier::class, 'structure');
-	}
+    public function cr_courriers()
+    {
+        return $this->hasMany(\App\Models\CrCourrier::class, 'structure');
+    }
 
-	public function cr_reaffectations()
-	{
-		return $this->hasMany(\App\Models\CrReaffectation::class, 'structure');
-	}
+    public function cr_reaffectations()
+    {
+        return $this->hasMany(\App\Models\CrReaffectation::class, 'structure');
+    }
 
-	public function cr_structure_copies()
-	{
-		return $this->hasMany(\App\Models\CrStructureCopie::class, 'structure');
-	}
+    public function cr_structure_copies()
+    {
+        return $this->hasMany(\App\Models\CrStructureCopie::class, 'structure');
+    }
 
-	public function ged_elements()
-	{
-		return $this->belongsToMany(\App\Models\GedElement::class, 'ged_element_structure', 'structure', 'element')
-					->withPivot('id', 'inscription', 'deleted_at')
-					->withTimestamps();
-	}
+    public function ged_elements()
+    {
+        return $this->belongsToMany(\App\Models\GedElement::class, 'ged_element_structure', 'structure', 'element')
+            ->withPivot('id', 'inscription', 'deleted_at')
+            ->withTimestamps();
+    }
 
-	public function structures()
-	{
-		return $this->hasMany(\App\Models\Structure::class, 'parent');
-	}
+    public function structures()
+    {
+        return $this->hasMany(\App\Models\Structure::class, 'parent');
+    }
 
     public function _employes()
     {
