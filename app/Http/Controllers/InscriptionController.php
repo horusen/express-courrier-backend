@@ -65,4 +65,23 @@ class InscriptionController extends Controller
 
         return $inscription;
     }
+
+
+    public function updatePassword(Request $request)
+    {
+
+        $this->validate($request, [
+            'ancien_mdp' => 'required',
+            'nouveau_mdp' => 'required|confirmed:confirmation_nouveau_mdp'
+        ]);
+
+        $user = Inscription::find(Auth::id());
+
+        if (password_verify($request->ancien_mdp, $user->password)) {
+            $user->update(['password' => $request->nouveau_mdp]);
+            return $user;
+        }
+
+        return response()->json(['message' => 'Erreur mot de passe'], 422);
+    }
 }

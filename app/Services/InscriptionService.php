@@ -63,7 +63,7 @@ class InscriptionService extends BaseService
 
     public function show(int $id)
     {
-        return Inscription::findOrFail($id);
+        return $this->model::with(['affectation_structure.structure', 'affectation_structure.fonction', 'affectation_structure.poste'])->findOrFail($id);
     }
 
 

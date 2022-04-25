@@ -38,7 +38,7 @@ class AuthenticationController extends Controller
 
             return response()->json([
                 'access_token' => $token->plainTextToken,
-                'user' => $user,
+                'user' => array_merge($user->toArray(), ['affectation_structure' => $user->affectation_structure()->with('structure:id,libelle,image,type', 'poste:id,libelle', 'fonction:id,libelle')->get()->first()->toArray()]),
                 'structures' => $user->estDansStructures()->without('type', 'parent')->pluck('structures.id'),
                 'token_type' => 'Bearer',
             ]);

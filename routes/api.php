@@ -181,47 +181,52 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     //Evenement
-Route::resource('evenement','Evenement\EvenementController');
-Route::get('eventbyobjet/{id}','Evenement\EvenementController@eventbyobjet');
-Route::resource('fichierevent','Evenement\FileevenementController');
-Route::get('filebyevent/{id}','Evenement\FileevenementController@filebyevent');
-Route::resource('commentevent','Evenement\CommentevenementController');
-Route::get('commentbyevent/{id}','Evenement\CommentevenementController@commentbyevenement');
-Route::resource('participevent','Evenement\ParticipevenementController');
-Route::resource('sharedevent','Evenement\SharedevenementController');
-Route::get('getAlluserLikename/{name}','Evenement\UsereventController@getAlluserLikename');
-//Tableau d'objectif
-Route::resource('tabobjectif','Tableauobjectif\TableauobjectifController');
-Route::get('tabobjectbyobjet/{id}','Tableauobjectif\TableauobjectifController@tabbyobjet');
-Route::resource('sharedtabobj','Tableauobjectif\SharedtabobjectifController');
-Route::resource('commenttabobj','Tableauobjectif\CommenttabobjectifController');
-Route::get('commentbytabobj/{id}','Tableauobjectif\CommenttabobjectifController@commentbyobjectif');
+    Route::resource('evenement', 'Evenement\EvenementController');
+    Route::get('eventbyobjet/{id}', 'Evenement\EvenementController@eventbyobjet');
+    Route::resource('fichierevent', 'Evenement\FileevenementController');
+    Route::get('filebyevent/{id}', 'Evenement\FileevenementController@filebyevent');
+    Route::resource('commentevent', 'Evenement\CommentevenementController');
+    Route::get('commentbyevent/{id}', 'Evenement\CommentevenementController@commentbyevenement');
+    Route::resource('participevent', 'Evenement\ParticipevenementController');
+    Route::resource('sharedevent', 'Evenement\SharedevenementController');
+    Route::get('getAlluserLikename/{name}', 'Evenement\UsereventController@getAlluserLikename');
+    //Tableau d'objectif
+    Route::resource('tabobjectif', 'Tableauobjectif\TableauobjectifController');
+    Route::get('tabobjectbyobjet/{id}', 'Tableauobjectif\TableauobjectifController@tabbyobjet');
+    Route::resource('sharedtabobj', 'Tableauobjectif\SharedtabobjectifController');
+    Route::resource('commenttabobj', 'Tableauobjectif\CommenttabobjectifController');
+    Route::get('commentbytabobj/{id}', 'Tableauobjectif\CommenttabobjectifController@commentbyobjectif');
 
-//Mur d'idée
-Route::resource('muridee','Muridee\MurideeController');
-Route::resource('commentmuridee','Muridee\CommentmurideeController');
-Route::get('commentbymuridee/{id}','Muridee\CommentmurideeController@commentbymur');
-Route::resource('sharedmuridee','Muridee\SharedmurideeController');
-Route::resource('likemuridee','Muridee\LikemurideeController');
+    //Mur d'idée
+    Route::resource('muridee', 'Muridee\MurideeController');
+    Route::resource('commentmuridee', 'Muridee\CommentmurideeController');
+    Route::get('commentbymuridee/{id}', 'Muridee\CommentmurideeController@commentbymur');
+    Route::resource('sharedmuridee', 'Muridee\SharedmurideeController');
+    Route::resource('likemuridee', 'Muridee\LikemurideeController');
 
+
+
+    //Dashboard
+    Route::get('sumaccueildash', 'Dash\CourrierdashController@getsum');
+    Route::get('structdash/{rela}', 'Dash\CourrierdashController@getstruct');
+    Route::get('natudash/{rela}', 'Dash\CourrierdashController@getnature');
+    Route::get('typedash/{rela}', 'Dash\CourrierdashController@gettype');
+    Route::get('statutdash/{rela}', 'Dash\CourrierdashController@getstatut');
+    Route::get('allstructdash', 'Dash\CourrierdashController@getallstruct');
+    Route::get('crbystructdash/{id}', 'Dash\CourrierdashController@courrierbystruct');
+    Route::get('diffcrdash', 'Dash\CourrierdashController@diffcr');
+    Route::get('diffcrbymonthdash/{id}', 'Dash\CourrierdashController@diffcrbymonth');
+    Route::get('timingdash', 'Dash\CourrierdashController@timing');
+    Route::get('expediteurdash', 'Dash\CourrierdashController@expediteurcr');
+
+    // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    //     return $request->user();
+    // });
+
+    Route::customResource('users', 'UserController');
+
+    Route::put('password/users', [InscriptionController::class, 'updatePassword']);
+
+    // User show
+    Route::get('users/{id}', [InscriptionController::class, 'show']);
 });
-
-
-//Dashboard
-Route::get('sumaccueildash', 'Dash\CourrierdashController@getsum');
-Route::get('structdash/{rela}', 'Dash\CourrierdashController@getstruct');
-Route::get('natudash/{rela}', 'Dash\CourrierdashController@getnature');
-Route::get('typedash/{rela}', 'Dash\CourrierdashController@gettype');
-Route::get('statutdash/{rela}', 'Dash\CourrierdashController@getstatut');
-Route::get('allstructdash', 'Dash\CourrierdashController@getallstruct');
-Route::get('crbystructdash/{id}', 'Dash\CourrierdashController@courrierbystruct');
-Route::get('diffcrdash', 'Dash\CourrierdashController@diffcr');
-Route::get('diffcrbymonthdash/{id}', 'Dash\CourrierdashController@diffcrbymonth');
-Route::get('timingdash', 'Dash\CourrierdashController@timing');
-Route::get('expediteurdash', 'Dash\CourrierdashController@expediteurcr');
-
-// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
-
-Route::customResource('users', 'UserController');
