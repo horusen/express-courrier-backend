@@ -96,6 +96,8 @@ class CrCourrierEntrantController extends LaravelController
                 'inscription_id' => Auth::id(),
                 'date_arrive' => $request->date_arrive,
                 'courrier_id' => $courrier->id,
+                'provenance' => $request->provenance,
+                'expediteur_type' => $request->expediteur_type,
                 'expediteur_id' => $request->expediteur_id,
                 'responsable_id' => $request->responsable_id
             ]);
@@ -129,10 +131,13 @@ class CrCourrierEntrantController extends LaravelController
 
         return response()
         ->json($item->load([
+
+            'cr_courrier.cr_statut',
             'cr_courrier.cr_type',
-            'cr_courrier.cr_nature',
-            'cr_courrier.cr_urgence',
-            'cr_coordonnee'
+          'cr_courrier.cr_nature',
+          'cr_courrier.cr_urgence',
+          'cr_courrier.cr_cloture',
+          'cr_provenance'
           ]));
     }
 
@@ -171,10 +176,12 @@ class CrCourrierEntrantController extends LaravelController
 
         return response()
         ->json($item->load([
+            'cr_courrier.cr_statut',
             'cr_courrier.cr_type',
-            'cr_courrier.cr_nature',
-            'cr_courrier.cr_urgence',
-            'cr_coordonnee'
+          'cr_courrier.cr_nature',
+          'cr_courrier.cr_urgence',
+          'cr_courrier.cr_cloture',
+          'cr_provenance'
           ]));
     }
 

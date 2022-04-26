@@ -6,11 +6,11 @@ use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Builder as myBuilder;
 use App\Http\Shared\Optimus\Bruno\EloquentBuilderTrait;
 use App\Http\Shared\Optimus\Bruno\LaravelController;
-use App\Models\Courrier\CrTache;
+use App\Models\Courrier\CrProvenance;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-class CrTacheController extends LaravelController
+class CrProvenanceController extends LaravelController
 {
     use EloquentBuilderTrait;
 
@@ -20,7 +20,7 @@ class CrTacheController extends LaravelController
         // Parse the resource options given by GET parameters
         $resourceOptions = $this->parseResourceOptions();
 
-        $query = CrTache::query();
+        $query = CrProvenance::query();
         $this->applyResourceOptions($query, $resourceOptions);
 
         if(isset($request->paginate)) {
@@ -52,51 +52,35 @@ class CrTacheController extends LaravelController
         }
     }
 
-    public function filterParentInsc(myBuilder $query, $method, $clauseOperator, $value, $in)
-    {
-        if ($value) {
-            $query->whereHas('responsables', function($query) use ($value){
-                $query->where('inscription.id', Auth::id() );
-             });
-            $query->orWhereHas('structures._employes', function($query) use ($value){
-                $query->where('inscription.id', Auth::id() );
-            });
-            $query->orWhere('cr_tache.inscription_id', Auth::id() );
-        }
-    }
-
     public function store(Request $request)
     {
 
-        $data = $request->all();
-
-        $item = CrTache::create([
+        $item = CrProvenance::create([
             'inscription_id' => Auth::id(),
             'libelle' => $request->libelle,
-            'description' => $request->description,
-            'courrier_id' => $request->courrier_id,
+            'externe' => $request->externe,
         ]);
 
         return response()
-        ->json($item->load(['responsables', 'structures', 'courrier']));
+        ->json($item);
     }
 
     public function update(Request $request, $id)
     {
 
-        $item = CrTache::findOrFail($id);
+        $item = CrProvenance::findOrFail($id);
 
         $data = $request->all();
 
         $item->fill($data)->save();
 
         return response()
-        ->json($item->load(['responsables', 'structures', 'courrier']));
+        ->json($item);
     }
 
     public function destroy($id)
     {
-        $item = CrTache::findOrFail($id);
+        $item = CrProvenance::findOrFail($id);
 
         $item->delete();
 
@@ -110,7 +94,7 @@ class CrTacheController extends LaravelController
         $item_id = $request->id;
         $relation_name = $request->relation_name;
         $relation_id = $request->relation_id;
-        $item = CrTache::find($item_id);
+        $item = CrProvenance::find($item_id);
         $item->{$relation_name}()->syncWithoutDetaching([$relation_id => ['inscription_id'=> Auth::id()]]);
 
         return response()->json([
@@ -123,7 +107,7 @@ class CrTacheController extends LaravelController
         $item_id = $request->id;
         $relation_name = $request->relation_name;
         $relation_id = $request->relation_id;
-        $item = CrTache::find($item_id);
+        $item = CrProvenance::find($item_id);
         $item->{$relation_name}()->detach($relation_id);
 
         return response()->json([
@@ -140,7 +124,7 @@ class CrTacheController extends LaravelController
 
         try {
 
-            $item = CrTache::find($item_id);
+            $item = CrProvenance::find($item_id);
 
             foreach($request->affectation as $key=>$value)
             {
@@ -161,7 +145,7 @@ class CrTacheController extends LaravelController
         ]);
     }
 
-    public function getAffectation(CrTache $CrTache)
+    public function getAffectation(CrProvenance $CrProvenance)
     {
 
         return response()

@@ -90,6 +90,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::customResource('fichiers', 'Courrier\CrFichierController');
         Route::customResource('moyen-suivis', 'Courrier\CrMoyenSuiviController');
         Route::customResource('natures', 'Courrier\CrNatureController');
+        Route::customResource('provenances', 'Courrier\CrProvenanceController');
         Route::customResource('reaffectations', 'Courrier\CrReaffectationController');
         Route::customResource('statuts', 'Courrier\CrStatutController');
         Route::customResource('structure-copies', 'Courrier\CrStructureCopieController');
@@ -166,6 +167,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::customResource('courriers', 'Courrier\CrCourrierController');
         Route::customResource('courrier-entrants', 'Courrier\CrCourrierEntrantController');
         Route::customResource('courrier-internes', 'Courrier\CrCourrierInterneController');
+        Route::customResource('courrier-sortants', 'Courrier\CrCourrierSortantController');
         Route::customResource('destinataires', 'Courrier\CrDestinataireController');
         Route::customResource('etapes', 'Courrier\CrEtapeController');
         Route::customResource('fichiers', 'Courrier\CrFichierController');

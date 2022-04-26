@@ -268,10 +268,15 @@ class Inscription extends Eloquent
         return $this->hasMany(\App\Models\Structure::class, 'inscription');
     }
 
-    public function type_admins()
+    public function estDansStructures()
     {
-        return $this->hasMany(\App\Models\TypeAdmin::class, 'inscription');
+        return $this->belongsToMany(\App\Models\Structure::class, AffectationStructure::class, 'user', 'structure');
     }
+
+	public function type_admins()
+	{
+		return $this->hasMany(\App\Models\TypeAdmin::class, 'inscription');
+	}
 
     public function type_structures()
     {

@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
 
 /**
  * Class CrCourrierSortant
- * 
+ *
  * @property int $id
  * @property \Carbon\Carbon $date_envoie
  * @property string $action_depot
@@ -21,7 +21,7 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
  * @property int $courrier_id
  * @property int $courrier_entrant_id
  * @property int $inscription_id
- * 
+ *
  * @property \App\Models\Courrier\CrCourrierEntrant $cr_courrier_entrant
  * @property \App\Models\Courrier\CrCourrier $cr_courrier
  * @property \App\Models\Inscription $inscription

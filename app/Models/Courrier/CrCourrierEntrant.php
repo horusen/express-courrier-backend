@@ -39,6 +39,7 @@ class CrCourrierEntrant extends Eloquent
 		'courrier_id' => 'int',
 		'expediteur_id' => 'int',
 		'responsable_id' => 'int',
+        'expediteur_interne_id' => 'int',
 		'inscription_id' => 'int'
 	];
 
@@ -50,9 +51,37 @@ class CrCourrierEntrant extends Eloquent
 		'date_arrive',
 		'courrier_id',
 		'expediteur_id',
+		'expediteur_type',
 		'responsable_id',
-		'inscription_id'
+		'inscription_id',
+        'provenance'
 	];
+
+    protected $appends = ['expediteur_externe','expediteur_interne'];
+
+    public function getExpediteurExterneAttribute(){
+		if($this->attributes['expediteur_type']=='App\Models\Courrier\CrCoordonnee'){
+			return $this->expediteur;
+		}
+		return null;
+	}
+
+    public function getExpediteurInterneAttribute(){
+		if($this->attributes['expediteur_type']=='App\Models\Structure'){
+			return $this->expediteur;
+		}
+		return null;
+	}
+
+    public function expediteur()
+    {
+        return $this->morphTo();
+    }
+
+    public function cr_provenance()
+	{
+		return $this->belongsTo(\App\Models\Courrier\CrProvenance::class, 'provenance');
+	}
 
 	public function cr_courrier()
 	{

@@ -95,6 +95,8 @@ class CrCourrier extends Eloquent
         'message_cloture'
     ];
 
+    protected $with = ['structure_copie_traitements', 'structure_copie_informations'];
+
     public function inscription()
     {
         return $this->belongsTo(\App\Models\Inscription::class, 'suivi_par');
@@ -190,5 +192,15 @@ class CrCourrier extends Eloquent
     public function cr_commentaires()
     {
         return $this->belongsToMany(\App\Models\Courrier\CrCourrier::class, 'cr_affectation_commentaire_courrier', 'courrier', 'commentaire');
+    }
+
+    public function structure_copie_informations()
+    {
+        return $this->belongsToMany(\App\Models\Structure::class, 'cr_structure_copie_information', 'courrier_id', 'structure_id');
+    }
+
+    public function structure_copie_traitements()
+    {
+        return $this->belongsToMany(\App\Models\Structure::class, 'cr_structure_copie_traitement', 'courrier_id', 'structure_id');
     }
 }

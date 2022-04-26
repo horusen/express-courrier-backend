@@ -56,12 +56,12 @@ class UserController extends LaravelController
         return response()->json($is_restricted);
     }
 
-    public function filterParrainsId(myBuilder $query, $method, $clauseOperator, $value)
+    public function filterStructureId(myBuilder $query, $method, $clauseOperator, $value)
     {
-        if ($value) {
-            $q = explode(",", $value);
-            $query->whereHas('visi_parrains', function ($query) use ($q) {
-                $query->whereIn('id_inscription', $q);
+        if($value) {
+            $q = $value;
+            $query->whereHas('estDansStructures', function ($query) use ($q) {
+                $query->where('structures.id', $q);
             });
         }
     }

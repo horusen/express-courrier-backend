@@ -6,9 +6,14 @@ use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Builder as myBuilder;
 use App\Http\Shared\Optimus\Bruno\EloquentBuilderTrait;
 use App\Http\Shared\Optimus\Bruno\LaravelController;
+use App\Models\Courrier\CrAmpiliation;
+use App\Models\Courrier\CrCourrier;
+use App\Models\Courrier\CrCourrierEtape;
 use App\Models\Courrier\CrCourrierSortant;
+use App\Models\Courrier\CrDestinataire;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class CrCourrierSortantController extends LaravelController
 {
@@ -37,10 +42,17 @@ class CrCourrierSortantController extends LaravelController
         return $this->response($parsedData);
     }
 
-    public function filterIsIns(myBuilder $query, $method, $clauseOperator, $value, $in)
+    public function filterIsAffected(myBuilder $query, $method, $clauseOperator, $value)
     {
-        if ($value) {
-            $query->where('inscription_id', Auth::id());
+        if($value) {
+            $query->whereHas('cr_courrier.cr_reaffectations');
+        }
+    }
+
+    public function filterIsNotAffected(myBuilder $query, $method, $clauseOperator, $value)
+    {
+        if($value) {
+            $query->doesntHave('cr_courrier.cr_reaffectations');
         }
     }
 
@@ -48,23 +60,109 @@ class CrCourrierSortantController extends LaravelController
     public function filterSearchString(myBuilder $query, $method, $clauseOperator, $value)
     {
         if($value) {
-            $query->orWhere('libelle', 'like', "%" .$value . "%");
+            $query->whereHas('cr_courrier', function($query) use ($value) {
+                $query->where(DB::raw('lower(cr_courrier.libelle)'), 'like', "%" .Str::lower($value). "%");
+                $query->orWhere(DB::raw('lower(cr_courrier.objet)'), 'like', "%" .Str::lower($value). "%");
+            });
         }
     }
 
     public function store(Request $request)
     {
 
-        $item = CrCourrierSortant::create([
-            'inscription_id' => Auth::id(),
-            'date_envoie' => $request->date_envoie,
-            'courrier_id' => $request->courrier_id,
-            'action_depot' => $request->action_depot,
-            'courrier_entrant' => $request->courrier_entrant,
-        ]);
+        DB::beginTransaction();
+
+        try {
+            $courrier = CrCourrier::create([
+                'inscription_id' => Auth::id(),
+                'libelle' => $this->generateUniqueToken(),
+                'objet' => $request->objet,
+                'date_redaction' => $request->date_redaction,
+                'commentaire' => $request->commentaire,
+                'type_id' => $request->type_id,
+                'urgence_id' => $request->urgence_id,
+                'statut_id' => 1,
+                'nature_id' => $request->nature_id,
+                'structure_id' => $request->structure_id,
+                'suivi_par' => Auth::id(),
+            ]);
+
+            $item = CrCourrierSortant::create([
+                'inscription_id' => Auth::id(),
+                'date_envoie' => $request->date_envoie,
+                'courrier_id' => $courrier->id,
+                'action_depot' => $request->action_depot,
+                'courrier_entrant_id' => $request->courrier_entrant_id
+            ]);
+
+            if($request->exists('ampiliations'))
+            {
+                $json = utf8_encode($request->ampiliations);
+                $data = json_decode($json);
+                if(is_array($data)){
+                    foreach($data as $element) {
+                        CrAmpiliation::create([
+                            'inscription_id' => Auth::id(),
+                            'coordonnee_id' => $element->id,
+                            'courrier_id' => $item->id
+                        ]);
+                    }
+                }
+            }
+
+            if($request->exists('destinataires'))
+            {
+                $json = utf8_encode($request->destinataires);
+                $data = json_decode($json);
+                if(is_array($data)){
+                    foreach($data as $element) {
+                        CrDestinataire::create([
+                            'inscription_id' => Auth::id(),
+                            'coordonnee_id' => $element->id,
+                            'courrier_id' => $item->id
+                        ]);
+                    }
+                }
+            }
+
+            if($request->exists('etapes'))
+            {
+                $json = utf8_encode($request->etapes);
+                $data = json_decode($json);
+                if(is_array($data)){
+                    foreach($data as $element) {
+                        CrCourrierEtape::create([
+                            'inscription_id' => Auth::id(),
+                            'libelle' => $element->libelle,
+                            'description' => $element->description,
+                            'duree' => $element->duree,
+                            'etape' => $element->etape,
+                            'responsable_id' => $element->responsable_id,
+                            'structure_id' => $element->structure_id,
+                            'courrier_id' => $courrier->id
+                        ]);
+                    }
+                }
+            }
+
+            DB::commit();
+        } catch (\Throwable $e) {
+
+            DB::rollback();
+            throw $e;
+        }
 
         return response()
-        ->json($item);
+        ->json($item->load([
+            'cr_courrier.cr_type',
+            'cr_courrier.cr_nature',
+            'cr_courrier.cr_urgence',
+            'cr_courrier.cr_statut',
+            'cr_destinataires.cr_coordonnee',
+            'cr_ampiliations.cr_coordonnee',
+            'cr_courrier.cr_cloture'
+          ]));
+
     }
 
     public function update(Request $request, $id)
@@ -74,11 +172,81 @@ class CrCourrierSortantController extends LaravelController
 
         $data = $request->all();
 
+        $data = $request->all();
         $item->fill($data)->save();
+        $item->cr_courrier->fill($data)->save();
+
+        $item->fill($data)->save();
+        if($request->exists('ampiliations'))
+            {
+                $json = utf8_encode($request->ampiliations);
+                $data = json_decode($json);
+                if(is_array($data)){
+                    foreach($data as $element) {
+                        CrAmpiliation::createOrUpdate([
+                                'id' => $element->id,
+                            ],[
+                            'inscription_id' => Auth::id(),
+                            'coordonnee_id' => $element->coordonnee_id,
+                            'courrier_id' => $item->id
+                        ]);
+                    }
+                }
+            }
+
+            if($request->exists('destinataires'))
+            {
+                $json = utf8_encode($request->destinataires);
+                $data = json_decode($json);
+                if(is_array($data)){
+                    foreach($data as $element) {
+                        CrDestinataire::createOrUpdate([
+                            'id' => $element->id,
+                        ],[
+                            'inscription_id' => Auth::id(),
+                            'coordonnee_id' => $element->coordonnee_id,
+                            'courrier_id' => $item->id
+                        ]);
+                    }
+                }
+            }
 
         return response()
-        ->json($item);
+        ->json($item->load([
+            'cr_courrier.cr_type',
+            'cr_courrier.cr_nature',
+            'cr_courrier.cr_urgence',
+            'cr_courrier.cr_statut',
+            'cr_destinataires.cr_coordonnee',
+            'cr_ampiliations.cr_coordonnee',
+            'cr_courrier.cr_cloture'
+          ]));;
     }
+
+    public function getToken($length, $prefix){
+        $token = "";
+        $codeAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        $codeAlphabet.= "0123456789";
+
+        mt_srand();
+
+        for($i=0;$i<$length;$i++){
+            $token .= $codeAlphabet[mt_rand(0,strlen($codeAlphabet)-1)];
+        }
+
+        $token = $prefix. $token . substr(strftime("%Y", time()),2);
+        return $token;
+    }
+
+    public function generateUniqueToken()
+    {
+        do {
+           $code = $this->getToken(6, 'CS');
+        } while (CrCourrier::where("libelle", "=", $code)->first());
+
+        return $code;
+    }
+
 
     public function destroy($id)
     {
