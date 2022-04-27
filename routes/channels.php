@@ -27,10 +27,10 @@ Broadcast::channel('test', function ($user) {
 
 Broadcast::channel('discussion-{discussion}-channel', function ($user, $discussion) {
     $autorisation = Discussion::where('id', $discussion)->where(function ($q) use ($user, $discussion) {
-        $q->whereCorrespondant($user->id)
-            ->orWhereHas('correspondance_personne_structure.structure.autorisations', function ($q) use ($user) {
-                $q->where('personne_id', $user->id)->where('ecrire_messagerie', true);
-            });
+        $q->whereCorrespondant($user->id);
+        // ->orWhereHas('correspondance_personne_structure.structure.autorisations', function ($q) use ($user) {
+        //     $q->where('personne_id', $user->id)->where('ecrire_messagerie', true);
+        // });
     })->first();
     return isset($autorisation);
 });
