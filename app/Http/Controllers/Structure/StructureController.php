@@ -149,4 +149,9 @@ class StructureController extends BaseController
 
         return $this->responseSuccess();
     }
+
+    public function getByUser(StructureApiRequest $request, $user)
+    {
+        return $this->service->getByUser($request, $user);
+    }
 }

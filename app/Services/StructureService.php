@@ -69,4 +69,11 @@ class StructureService extends BaseService
     {
         return $structure->descendants()->consume($request);
     }
+
+    public function getByUser(StructureApiRequest $request,  $user)
+    {
+        return $this->model::whereHas('_employes', function ($q) use ($user) {
+            $q->where('inscription.id', $user);
+        })->consume($request);
+    }
 }

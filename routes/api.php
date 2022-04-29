@@ -122,6 +122,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('structures/types/all', [TypeStructureController::class, 'all']);
 
     // Route::get('structures/all', [StructureController::class, 'all']);
+    Route::get('users/{user}/structures', [StructureController::class, 'getByUser']);
     Route::get('structures/autres', [StructureController::class, 'getAutresStructures']);
     Route::get('structures/{structure}/oldest', [StructureController::class, 'getOldestAncestor']);
     Route::apiResource('structures', 'Structure\StructureController');
