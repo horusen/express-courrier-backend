@@ -127,6 +127,19 @@ class FichierController extends LaravelController
         }
     }
 
+    public function filterCacher(myBuilder $query, $method, $clauseOperator, $value)
+    {
+        if ($value) {
+            $query->whereHas('ged_element', function($query) {
+                $query->whereNull('ged_element.cacher');
+            });
+        } else {
+            $query->whereHas('ged_element', function($query) {
+                $query->whereNotNull('ged_element.cacher');
+            });
+        }
+    }
+
     public function store(Request $request)
     {
         DB::beginTransaction();

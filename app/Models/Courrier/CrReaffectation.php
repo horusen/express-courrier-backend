@@ -38,15 +38,25 @@ class CrReaffectation extends Eloquent
         'courrier_id' => 'int',
         'structure_id' => 'int',
         'suivi_par' => 'int',
-        'inscription_id' => 'int'
+        'inscription_id' => 'int',
+        'confirmation' => 'int',
+        'annulation' => 'int',
     ];
 
     protected $fillable = [
         'libelle',
         'courrier_id',
         'structure_id',
+        'confirmation',
+        'annulation',
         'suivi_par',
         'inscription_id'
+    ];
+
+    protected $with = [
+        'inscription',
+        'suivi_par_inscription',
+        'structure'
     ];
 
     public function cr_courrier()
@@ -56,7 +66,7 @@ class CrReaffectation extends Eloquent
 
     public function inscription()
     {
-        return $this->belongsTo(\App\Models\Inscription::class, 'suivi_par');
+        return $this->belongsTo(\App\Models\Inscription::class, 'inscription_id');
     }
 
     public function structure()
@@ -64,7 +74,7 @@ class CrReaffectation extends Eloquent
         return $this->belongsTo(\App\Models\Structure::class);
     }
 
-    public function suivi_par()
+    public function suivi_par_inscription()
     {
         return $this->belongsTo(Inscription::class, 'suivi_par');
     }

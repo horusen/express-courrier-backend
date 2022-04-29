@@ -73,6 +73,7 @@ class CrCourrier extends Eloquent
 
     protected $dates = [
         'date_redaction',
+        'date_limit',
         'date_cloture'
     ];
 
@@ -92,12 +93,47 @@ class CrCourrier extends Eloquent
         'current_etape_id',
         'cloture_id',
         'date_cloture',
-        'message_cloture'
+        'message_cloture',
+        'date_limit'
     ];
 
-    protected $with = ['structure_copie_traitements', 'structure_copie_informations'];
+    protected $with = [
+        'cr_statut',
+        'cr_type',
+        'cr_nature',
+        'cr_urgence',
+        'cr_cloture',
+        'cr_courrier_etapes',
+        'structure_copie_traitements',
+        'structure_copie_informations',
+    ];
+
+    protected $appends = ['structure','suivi_par_inscription'];
+
+    public function getStructureAttribute()
+    {
+        $reaffectation = $this->cr_reaffected_structures()->where('confirmation',1)->orderBy('id', 'desc')->first();
+        if ($reaffectation) {
+            return $reaffectation;
+        }
+        return $this->structure()->first();
+    }
+
+    public function getSuiviParInscriptionAttribute()
+    {
+        $reaffectation = $this->cr_reaffected_inscriptions()->where('confirmation',1)->orderBy('id', 'desc')->first();
+        if ($reaffectation) {
+            return $reaffectation;
+        }
+        return $this->suivi_par_inscription()->first();
+    }
 
     public function inscription()
+    {
+        return $this->belongsTo(\App\Models\Inscription::class, 'inscription_id');
+    }
+
+    public function suivi_par_inscription()
     {
         return $this->belongsTo(\App\Models\Inscription::class, 'suivi_par');
     }
@@ -121,6 +157,11 @@ class CrCourrier extends Eloquent
     public function cr_reaffected_structures()
     {
         return $this->belongsToMany(\App\Models\Structure::class, 'cr_reaffectation', 'courrier_id', 'structure_id');
+    }
+
+    public function cr_reaffected_inscriptions()
+    {
+        return $this->belongsToMany(\App\Models\Inscription::class, 'cr_reaffectation', 'courrier_id', 'suivi_par');
     }
 
     public function cr_reaffected_structure()

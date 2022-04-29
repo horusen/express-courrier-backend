@@ -74,6 +74,7 @@ class CrTacheController extends LaravelController
             'inscription_id' => Auth::id(),
             'libelle' => $request->libelle,
             'description' => $request->description,
+            'date_limit' => $request->date_limit,
             'courrier_id' => $request->courrier_id,
         ]);
 

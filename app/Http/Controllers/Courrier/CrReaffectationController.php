@@ -59,12 +59,18 @@ class CrReaffectationController extends LaravelController
             'inscription_id' => Auth::id(),
             'libelle' => $request->libelle,
             'courrier_id' => $request->courrier_id,
+            'confirmation' => $request->confirmation,
+            'annulation' => $request->annulation,
             'structure_id' => $request->structure_id,
             'suivi_par' => $request->suivi_par,
         ]);
 
         return response()
-        ->json($item->load('structure'));
+        ->json($item->load([
+            'inscription',
+        'suivi_par_inscription',
+        'structure'
+        ]));
     }
 
     public function update(Request $request, $id)
@@ -77,7 +83,11 @@ class CrReaffectationController extends LaravelController
         $item->fill($data)->save();
 
         return response()
-        ->json($item);
+        ->json($item->load([
+            'inscription',
+        'suivi_par_inscription',
+        'structure'
+        ]));
     }
 
     public function destroy($id)

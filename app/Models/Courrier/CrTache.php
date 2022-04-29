@@ -41,6 +41,10 @@ class CrTache extends Eloquent
 		'courrier_id' => 'int'
 	];
 
+    protected $dates = [
+        'date_limit',
+    ];
+
 	protected $fillable = [
 		'libelle',
 		'description',
@@ -49,6 +53,7 @@ class CrTache extends Eloquent
         'statut_color',
         'statut_icon',
         'statut',
+        'date_limit'
 	];
 
     public function getCommentsCountAttribute()

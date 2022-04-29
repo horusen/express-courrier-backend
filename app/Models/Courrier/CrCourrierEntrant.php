@@ -58,7 +58,10 @@ class CrCourrierEntrant extends Eloquent
 	];
 
     protected $appends = ['expediteur_externe','expediteur_interne'];
-
+    protected $with = [
+        'cr_provenance',
+        'cr_courrier',
+    ];
     public function getExpediteurExterneAttribute(){
 		if($this->attributes['expediteur_type']=='App\Models\Courrier\CrCoordonnee'){
 			return $this->expediteur;

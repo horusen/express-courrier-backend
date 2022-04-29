@@ -92,7 +92,7 @@ class Inscription extends Eloquent
     public function getPhotoAttribute()
     {
         if ($this->attributes['photo']) {
-            $document_scanne = "http://localhost:8000/" . $this->attributes['photo'];
+            $document_scanne = "http://localhost:8000/storage/" . $this->attributes['photo'];
             return $document_scanne;
         }
         return 0;

@@ -69,10 +69,20 @@ class CrCourrierController extends LaravelController
             'nature_id' => $request->nature_id,
             'structure_id' => $request->structure_id,
             'suivi_par' => $request->suivi_par,
+            'date_limit' => $request->date_limit,
         ]);
 
         return response()
-        ->json($item);
+        ->json($item->load([
+            'cr_statut',
+        'cr_type',
+        'cr_nature',
+        'cr_urgence',
+        'cr_cloture',
+        'cr_courrier_etapes',
+        'structure_copie_traitements',
+        'structure_copie_informations',
+        ]));
     }
 
     public function update(Request $request, $id)
@@ -85,7 +95,16 @@ class CrCourrierController extends LaravelController
         $item->fill($data)->save();
 
         return response()
-        ->json($item);
+        ->json($item->load([
+            'cr_statut',
+        'cr_type',
+        'cr_nature',
+        'cr_urgence',
+        'cr_cloture',
+        'cr_courrier_etapes',
+        'structure_copie_traitements',
+        'structure_copie_informations',
+        ]));
     }
 
     public function destroy($id)
