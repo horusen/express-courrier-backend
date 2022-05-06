@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
 
 /**
  * Class CrAutorisationPersonneStructure
- * 
+ *
  * @property int $id
  * @property bool $envoyer_courrier
  * @property bool $consulter_entrant
@@ -25,7 +25,7 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property string $deleted_at
- * 
+ *
  * @property \App\Models\Inscription $inscription
  * @property \App\Models\Structure $structure
  *
@@ -40,7 +40,8 @@ class CrAutorisationPersonneStructure extends Eloquent
 		'envoyer_courrier' => 'bool',
 		'consulter_entrant' => 'bool',
 		'consulter_sortant' => 'bool',
-		'ajouter_personne' => 'bool',
+		'consulter_messagerie' => 'bool',
+        'ajouter_personne' => 'bool',
 		'retirer_personne' => 'bool',
 		'affecter_courrier' => 'bool',
 		'structure_id' => 'int',
@@ -52,6 +53,7 @@ class CrAutorisationPersonneStructure extends Eloquent
 		'envoyer_courrier',
 		'consulter_entrant',
 		'consulter_sortant',
+        'consulter_messagerie',
 		'ajouter_personne',
 		'retirer_personne',
 		'affecter_courrier',

@@ -7,6 +7,7 @@
 
 namespace App\Models;
 
+use App\Models\Ged\Dossier;
 use Illuminate\Database\Eloquent\Model as Eloquent;
 
 /**
@@ -62,6 +63,15 @@ class Structure extends Eloquent
             return $document_scanne;
         }
         return 0;
+    }
+    protected $appends = ['dossiers'];
+
+    public function getDossiersAttribute()
+    {
+        $id = $this->attributes['id'];
+        return Dossier::whereHas('ged_element.structures', function($query) use ($id) {
+            $query->where('structures.id', $id);
+        })->with('dossiers')->get();
     }
 
     public function inscription()
@@ -125,7 +135,6 @@ class Structure extends Eloquent
     {
         return $this->belongsToMany(Inscription::class, AffectationStructure::class, 'structure', 'user');
     }
-
 
     public function affectation_courrier()
     {

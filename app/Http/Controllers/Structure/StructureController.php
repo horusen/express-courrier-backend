@@ -12,6 +12,7 @@ use App\Traits\Structure\AdminTrait;
 use App\Traits\Structure\StructureTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Structure as StructureWDossier;
 
 class StructureController extends BaseController
 {
@@ -153,5 +154,10 @@ class StructureController extends BaseController
     public function getByUser(StructureApiRequest $request, $user)
     {
         return $this->service->getByUser($request, $user);
+    }
+
+    public function getByUserWDossier(StructureApiRequest $request, $user)
+    {
+        return $this->service->getByUserWDossier($request, $user);
     }
 }

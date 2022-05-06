@@ -52,6 +52,10 @@ class Fichier extends Eloquent
      */
     public function setClassifiedVisibility($permitted = false)
     {
+        if(!$this->ged_element) {
+            return;
+        }
+
         if ((!$this->ged_element->attributes['bloquer']) || Auth::check() && $this->attributes['inscription_id'] === Auth::id()) {
             $permitted = true;
         }
@@ -85,6 +89,16 @@ class Fichier extends Eloquent
 		}
 		return 0;
 	}
+
+    public function toJson($options = 0) {
+        $this->setClassifiedVisibility();
+        return parent::toJson();
+    }
+
+    public function toArray() {
+        $this->setClassifiedVisibility();
+        return parent::toArray();
+    }
 
 
 	public function inscription()

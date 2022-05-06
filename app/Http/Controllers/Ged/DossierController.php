@@ -42,6 +42,7 @@ class DossierController extends LaravelController
     {
         if ($value) {
             $query->where('inscription_id', Auth::id());
+            $query->doesnthave('ged_element.structures');
         }
     }
 
@@ -68,6 +69,16 @@ class DossierController extends LaravelController
              });
         }
     }
+
+    public function filterStructures(myBuilder $query, $method, $clauseOperator, $value, $in)
+    {
+        if ($value) {
+            $query->whereHas('ged_element.structures', function($query) use ($value) {
+                $query->where('structures.id', $value);
+             });
+        }
+    }
+
 
     public function filterBelongToStructureId(myBuilder $query, $method, $clauseOperator, $value, $in)
     {
@@ -138,11 +149,24 @@ class DossierController extends LaravelController
 
     public function update(Request $request, $id)
     {
-
         $item = Dossier::findOrFail($id);
 
-        if($request->has('dossier_id') && !$request->dossier_id) {
-            $request->merge(['dossier_id' => null]);
+        if($request->has('dossier_id')) {
+            if(!$request->dossier_id) {
+                $request->merge(['dossier_id' => null]);
+            } else if(str_contains(strval($request->dossier_id), 'structure')) {
+              $idStructure =  str_replace('structure', '', $request->dossier_id);
+              $item->ged_element()->first()->structures()->sync([$idStructure => ['inscription_id'=> Auth::id()]]);
+              $request->merge(['dossier_id' => null]);
+            } else {
+                $parent = Dossier::findOrFail($request->dossier_id);
+                if ($parent->ged_element()->first()->structures()->count()) {
+                    $idStructure = $parent->ged_element()->first()->structures()->take(1)->first()->id;
+                    $item->ged_element()->first()->structures()->sync([$idStructure => ['inscription_id'=> Auth::id()]]);
+                } else {
+                    $item->ged_element()->first()->structures()->sync([]);
+                };
+            }
         }
 
         $data = $request->all();

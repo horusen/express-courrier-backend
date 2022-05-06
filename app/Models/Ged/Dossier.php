@@ -47,6 +47,8 @@ class Dossier extends Eloquent
 
 	protected $appends = ['nb_element', 'size', 'is_user'];
 
+    protected $with = ['ged_element'];
+
     public function getSizeAttribute()
 	{
         $sum = 0; //This specific models count

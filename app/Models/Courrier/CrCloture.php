@@ -30,11 +30,14 @@ class CrCloture extends Eloquent
 	protected $table = 'cr_cloture';
 
 	protected $casts = [
-		'inscription_id' => 'int'
+		'inscription_id' => 'int',
+		'valider' => 'bool'
+
 	];
 
 	protected $fillable = [
 		'libelle',
+        'valider',
 		'inscription_id'
 	];
 

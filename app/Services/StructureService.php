@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use App\Models\Structure as StructureWDossier;
 
 class StructureService extends BaseService
 {
@@ -76,4 +77,13 @@ class StructureService extends BaseService
             $q->where('inscription.id', $user);
         })->consume($request);
     }
+
+    public function getByUserWDossier(StructureApiRequest $request,  $user)
+    {
+        return StructureWDossier::whereHas('_employes', function ($q) use ($user) {
+            $q->where('inscription.id', $user);
+        })->get();
+    }
+
+
 }
