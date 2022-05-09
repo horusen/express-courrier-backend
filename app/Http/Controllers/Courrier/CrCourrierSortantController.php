@@ -78,6 +78,8 @@ class CrCourrierSortantController extends LaravelController
                 'libelle' => $this->generateUniqueToken(),
                 'objet' => $request->objet,
                 'date_redaction' => $request->date_redaction,
+                'date_cloture' => $request->date_cloture,
+                'date_limit' => $request->date_limit,
                 'commentaire' => $request->commentaire,
                 'type_id' => $request->type_id,
                 'urgence_id' => $request->urgence_id,
@@ -153,15 +155,7 @@ class CrCourrierSortantController extends LaravelController
         }
 
         return response()
-        ->json($item->load([
-            'cr_courrier.cr_type',
-            'cr_courrier.cr_nature',
-            'cr_courrier.cr_urgence',
-            'cr_courrier.cr_statut',
-            'cr_destinataires.cr_coordonnee',
-            'cr_ampiliations.cr_coordonnee',
-            'cr_courrier.cr_cloture'
-          ]));
+        ->json($item);
 
     }
 
@@ -212,15 +206,7 @@ class CrCourrierSortantController extends LaravelController
             }
 
         return response()
-        ->json($item->load([
-            'cr_courrier.cr_type',
-            'cr_courrier.cr_nature',
-            'cr_courrier.cr_urgence',
-            'cr_courrier.cr_statut',
-            'cr_destinataires.cr_coordonnee',
-            'cr_ampiliations.cr_coordonnee',
-            'cr_courrier.cr_cloture'
-          ]));;
+        ->json($item->load());
     }
 
     public function getToken($length, $prefix){

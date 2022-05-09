@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
 
 /**
  * Class CrDestinataire
- * 
+ *
  * @property int $id
  * @property int $coordonnee_id
  * @property int $inscription_id
@@ -19,7 +19,7 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property string $deleted_at
- * 
+ *
  * @property \App\Models\Courrier\CrCoordonnee $cr_coordonnee
  * @property \App\Models\Courrier\CrCourrierSortant $cr_courrier_sortant
  * @property \App\Models\Inscription $inscription
@@ -42,6 +42,10 @@ class CrDestinataire extends Eloquent
 		'inscription_id',
 		'courrier_id'
 	];
+
+    protected $with = [
+        'cr_coordonnee'
+    ];
 
 	public function cr_coordonnee()
 	{

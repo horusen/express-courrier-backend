@@ -53,6 +53,13 @@ class CrCourrierSortant extends Eloquent
 		'inscription_id'
 	];
 
+    protected $with = [
+        'cr_courrier',
+        'cr_destinataires',
+        'cr_ampiliations',
+        'cr_courrier.cr_cloture'
+    ];
+
 	public function cr_courrier_entrant()
 	{
 		return $this->belongsTo(\App\Models\Courrier\CrCourrierEntrant::class, 'courrier_entrant_id');

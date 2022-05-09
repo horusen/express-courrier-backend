@@ -60,6 +60,7 @@ class CrCourrierController extends LaravelController
             'libelle' => $request->libelle,
             'objet' => $request->objet,
             'date_redaction' => $request->date_redaction,
+            'date_cloture' => $request->date_cloture,
             'commentaire' => $request->commentaire,
             'valider' => $request->valider,
             'numero_facture' => $request->numero_facture,
@@ -91,6 +92,12 @@ class CrCourrierController extends LaravelController
         $item = CrCourrier::findOrFail($id);
 
         $data = $request->all();
+
+        if($request->reopenCourrier) {
+            $data['cloture_id'] = null;
+            $data['date_cloture']  = null;
+            $data['message_cloture'] = null;
+        }
 
         $item->fill($data)->save();
 

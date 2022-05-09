@@ -83,6 +83,8 @@ class CrCourrierEntrantController extends LaravelController
                 'objet' => $request->objet,
                 'date_redaction' => $request->date_redaction,
                 'commentaire' => $request->commentaire,
+                'date_cloture' => $request->date_cloture,
+                'date_limit' => $request->date_limit,
                 'valider' => $request->valider,
                 'type_id' => $request->type_id,
                 'urgence_id' => $request->urgence_id,
@@ -130,15 +132,7 @@ class CrCourrierEntrantController extends LaravelController
         }
 
         return response()
-        ->json($item->load([
-
-            'cr_courrier.cr_statut',
-            'cr_courrier.cr_type',
-          'cr_courrier.cr_nature',
-          'cr_courrier.cr_urgence',
-          'cr_courrier.cr_cloture',
-          'cr_provenance'
-          ]));
+        ->json($item);
     }
 
     public function getToken($length, $prefix){
@@ -175,14 +169,7 @@ class CrCourrierEntrantController extends LaravelController
         $item->cr_courrier->fill($data)->save();
 
         return response()
-        ->json($item->load([
-            'cr_courrier.cr_statut',
-            'cr_courrier.cr_type',
-          'cr_courrier.cr_nature',
-          'cr_courrier.cr_urgence',
-          'cr_courrier.cr_cloture',
-          'cr_provenance'
-          ]));
+        ->json($item);
     }
 
     public function destroy($id)
