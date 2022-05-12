@@ -67,6 +67,59 @@ class CrCourrierSortantController extends LaravelController
         }
     }
 
+    public function filterSuiviParId(myBuilder $query, $method, $clauseOperator, $value)
+    {
+        if($value) {
+            $query->whereHas('cr_courrier', function($query) use ($value) {
+                $query->where('suivi_par', $value);
+            });
+        }
+    }
+
+    public function filterStructureId(myBuilder $query, $method, $clauseOperator, $value)
+    {
+        if($value) {
+            $query->whereHas('cr_courrier', function($query) use ($value) {
+                $query->where('structure_id', $value);
+            });
+        }
+    }
+
+    public function filterTypeId(myBuilder $query, $method, $clauseOperator, $value)
+    {
+        if($value) {
+            $query->whereHas('cr_courrier', function($query) use ($value) {
+                $query->where('type_id', $value);
+            });
+        }
+    }
+
+    public function filterUrgenceId(myBuilder $query, $method, $clauseOperator, $value)
+    {
+        if($value) {
+            $query->whereHas('cr_courrier', function($query) use ($value) {
+                $query->where('urgence_id', $value);
+            });
+        }
+    }
+
+    public function filterNatureId(myBuilder $query, $method, $clauseOperator, $value)
+    {
+        if($value) {
+            $query->whereHas('cr_courrier', function($query) use ($value) {
+                $query->where('nature_id', $value);
+            });
+        }
+    }
+
+    public function filterDestinataireId(myBuilder $query, $method, $clauseOperator, $value)
+    {
+        if($value) {
+            $query->whereHas('cr_destinataires', function($query) use ($value) {
+                $query->where('cr_destinataire.coordonnee_id', $value);
+            });
+        }
+    }
     public function store(Request $request)
     {
 

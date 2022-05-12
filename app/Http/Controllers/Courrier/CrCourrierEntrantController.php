@@ -6,9 +6,12 @@ use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Builder as myBuilder;
 use App\Http\Shared\Optimus\Bruno\EloquentBuilderTrait;
 use App\Http\Shared\Optimus\Bruno\LaravelController;
+use App\Models\Courrier\CrCoordonnee;
 use App\Models\Courrier\CrCourrier;
 use App\Models\Courrier\CrCourrierEntrant;
 use App\Models\Courrier\CrCourrierEtape;
+use App\Models\Structure;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -68,6 +71,69 @@ class CrCourrierEntrantController extends LaravelController
             $query->whereHas('cr_courrier', function($query) use ($value) {
                 $query->where(DB::raw('lower(cr_courrier.libelle)'), 'like', "%" .Str::lower($value). "%");
                 $query->orWhere(DB::raw('lower(cr_courrier.objet)'), 'like', "%" .Str::lower($value). "%");
+            });
+        }
+    }
+
+    public function filterSuiviParId(myBuilder $query, $method, $clauseOperator, $value)
+    {
+        if($value) {
+            $query->whereHas('cr_courrier', function($query) use ($value) {
+                $query->where('suivi_par', $value);
+            });
+        }
+    }
+
+    public function filterStructureId(myBuilder $query, $method, $clauseOperator, $value)
+    {
+        if($value) {
+            $query->whereHas('cr_courrier', function($query) use ($value) {
+                $query->where('structure_id', $value);
+            });
+        }
+    }
+
+    public function filterTypeId(myBuilder $query, $method, $clauseOperator, $value)
+    {
+        if($value) {
+            $query->whereHas('cr_courrier', function($query) use ($value) {
+                $query->where('type_id', $value);
+            });
+        }
+    }
+
+    public function filterUrgenceId(myBuilder $query, $method, $clauseOperator, $value)
+    {
+        if($value) {
+            $query->whereHas('cr_courrier', function($query) use ($value) {
+                $query->where('urgence_id', $value);
+            });
+        }
+    }
+
+    public function filterNatureId(myBuilder $query, $method, $clauseOperator, $value)
+    {
+        if($value) {
+            $query->whereHas('cr_courrier', function($query) use ($value) {
+                $query->where('nature_id', $value);
+            });
+        }
+    }
+
+    public function filterExpediteurInterneId(myBuilder $query, $method, $clauseOperator, $value)
+    {
+        if($value) {
+            $query->whereHasMorph('expediteur', [Structure::class], function($query) use ($value){
+                $query->where('structures.id', $value );
+            });
+        }
+    }
+
+    public function filterExpediteurExterneId(myBuilder $query, $method, $clauseOperator, $value)
+    {
+        if($value) {
+            $query->whereHasMorph('expediteur', [CrCoordonnee::class], function($query) use ($value){
+                $query->where('cr_coordonnee.id', $value );
             });
         }
     }

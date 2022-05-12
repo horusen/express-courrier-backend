@@ -56,6 +56,10 @@ class CrEtape extends Eloquent
 		'structure_id'
 	];
 
+    protected $with = [
+        'responsable', 'structure'
+    ];
+
 	public function inscription()
 	{
 		return $this->belongsTo(\App\Models\Inscription::class, 'inscription_id');

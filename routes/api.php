@@ -88,6 +88,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::customResource('destinataires', 'Courrier\CrDestinataireController');
         Route::customResource('etapes', 'Courrier\CrEtapeController');
         Route::customResource('fichiers', 'Courrier\CrFichierController');
+        Route::customResource('mails', 'Courrier\CrMailController');
         Route::customResource('moyen-suivis', 'Courrier\CrMoyenSuiviController');
         Route::customResource('natures', 'Courrier\CrNatureController');
         Route::customResource('provenances', 'Courrier\CrProvenanceController');
