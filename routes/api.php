@@ -74,7 +74,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::customResource('ged-elements', 'Ged\GedElementController');
     Route::customResource('ged-partages', 'Ged\GedPartageController');
 
+
     Route::prefix('courrier')->group(function () {
+
+        Route::get('mails/markasread/{CrMail}', 'CrMailController@markasread');
+
         Route::customResource('actions', 'Courrier\CrActionController');
         Route::customResource('affectation-courriers', 'Courrier\CrAffectationCourrierController');
         Route::customResource('ampiliations', 'Courrier\CrAmpiliationController');
@@ -89,6 +93,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::customResource('etapes', 'Courrier\CrEtapeController');
         Route::customResource('fichiers', 'Courrier\CrFichierController');
         Route::customResource('mails', 'Courrier\CrMailController');
+        Route::customResource('mail-tags', 'Courrier\CrMailController');
         Route::customResource('moyen-suivis', 'Courrier\CrMoyenSuiviController');
         Route::customResource('natures', 'Courrier\CrNatureController');
         Route::customResource('provenances', 'Courrier\CrProvenanceController');

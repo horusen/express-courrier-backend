@@ -74,7 +74,6 @@ class Fichier extends Eloquent
 
     public function getIsUserAttribute()
 	{
-        return true;
 		if(Auth::check() && $this->attributes['inscription_id'] === Auth::id())
 		{
 			return true;
@@ -89,6 +88,10 @@ class Fichier extends Eloquent
 		}
 		return 0;
 	}
+
+    protected $with = [
+        'fichier_type', 'inscription', 'ged_element'
+    ];
 
     public function toJson($options = 0) {
         $this->setClassifiedVisibility();
@@ -139,5 +142,10 @@ class Fichier extends Eloquent
     public function cr_commentaires()
 	{
 		return $this->belongsToMany(\App\Models\Courrier\CrCommentaire::class, 'cr_affectation_commentaire_fichier', 'fichier', 'commentaire');
+	}
+
+    public function cr_mails()
+	{
+		return $this->belongsToMany(\App\Models\Courrier\CrMail::class, 'cr_affectation_mail_fichier', 'fichier', 'mail');
 	}
 }

@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Builder as myBuilder;
 use App\Http\Shared\Optimus\Bruno\EloquentBuilderTrait;
 use App\Http\Shared\Optimus\Bruno\LaravelController;
 use App\Models\Courrier\CrMail;
+use App\Models\Ged\Fichier;
+use App\Models\Ged\FichierType;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -40,7 +42,7 @@ class CrMailController extends LaravelController
     public function filterIsIns(myBuilder $query, $method, $clauseOperator, $value, $in)
     {
         if ($value) {
-            $query->where('inscription_id', Auth::id());
+            $query->where('inscription', Auth::id());
         }
     }
 
@@ -52,16 +54,92 @@ class CrMailController extends LaravelController
         }
     }
 
+    public function filterInboxIns(myBuilder $query, $method, $clauseOperator, $value, $in)
+    {
+        if ($value) {
+            $query->whereHas('destinataire_personnes', function($query) use ($value){
+                $query->where('inscription.id',  Auth::id() );
+            });
+        }
+    }
+
+    public function filterHasNotRead(myBuilder $query, $method, $clauseOperator, $value, $in)
+    {
+        if($value) {
+            $query->whereDoesntHave('vues', function ($query) use ($value) {
+                $query->where('id_inscription', Auth::id());
+            });
+        }
+    }
+
     public function store(Request $request)
     {
+        DB::beginTransaction();
 
-        $item = CrMail::create([
-            'inscription_id' => Auth::id(),
-            'libelle' => $request->libelle,
-            'contenu' => $request->contenu,
-            'mail' => $request->mail,
-            'draft' => $request->draft,
-        ]);
+        try {
+
+            $item = CrMail::create([
+                'inscription' => Auth::id(),
+                'libelle' => $request->libelle,
+                'contenu' => $request->contenu,
+                'mail' => $request->mail,
+                'draft' => $request->draft,
+            ]);
+            if($request->fichier_count) {
+                for($i =0; $i<$request->fichier_count; $i++) {
+                    if($request->hasFile('fichier'.$i))
+                    {
+                        $path = $request->file('fichier'.$i)->store('document/'.date('Y').'/'.date('F'));
+                        $nameonly=preg_replace('/\..+$/', '', $request->file('fichier'.$i)->getClientOriginalName());
+                        $n = strrpos($path,".");
+                        $extension = ($n===false) ? "" : substr($path,$n+1);
+                        $file = FichierType::where('extension','like', '%'.$extension.'%')->first();
+
+                        $fichier = Fichier::create([
+                            'inscription_id' => Auth::id(),
+                            'libelle' => $nameonly,
+                            'type_id' => $file->id,
+                            'fichier' => $path,
+                        ]);
+
+                        $fichier->cr_mails()->attach([$item->id => ['inscription_id'=> Auth::id()]]);
+                    }
+                }
+            }
+
+            if($request->exists('destinataire_personnes'))
+            {
+                $json = utf8_encode($request->destinataire_personnes);
+                $destinataire_personnes = json_decode($json);
+                if(!is_array($destinataire_personnes))
+                {
+                    $destinataire_personnes = explode(',', $destinataire_personnes);
+                }
+                $pivotData = array_fill(0, count($destinataire_personnes), ['inscription_id'=> 1]);
+                $attachData  = array_combine($destinataire_personnes, $pivotData);
+                $item->destinataire_personnes()->attach($attachData);
+            }
+
+            if($request->exists('destinataire_structures'))
+            {
+                $json = utf8_encode($request->destinataire_structures);
+                $destinataire_structures = json_decode($json);
+                if(!is_array($destinataire_structures))
+                {
+                    $destinataire_structures = explode(',', $destinataire_structures);
+                }
+                $pivotData = array_fill(0, count($destinataire_structures), ['inscription_id'=> 1]);
+                $attachData  = array_combine($destinataire_structures, $pivotData);
+                $item->destinataire_structures()->attach($attachData);
+            }
+
+
+            DB::commit();
+        } catch (\Throwable $e) {
+
+            DB::rollback();
+            throw $e;
+        }
 
         return response()
         ->json($item);
@@ -88,6 +166,20 @@ class CrMailController extends LaravelController
 
         return response()
         ->json(['msg' => 'Suppression effectué']);
+    }
+
+    public function markasread($id)
+    {
+        $item = CrMail::findOrFail($id);
+
+        $item->vues()->syncWithoutDetaching(Auth::id());
+        if($item->child()->count()) {
+            foreach($item->child as $message) {
+                $message->vues()->syncWithoutDetaching(Auth::id());
+            }
+        }
+        return response()
+        ->json(true);
     }
 
     public function attachAffectation(Request $request)
@@ -149,8 +241,8 @@ class CrMailController extends LaravelController
 
     public function getAffectation(CrMail $CrMail)
     {
-
+        $data['tags'] = $CrMail->tags()->where('cr_mail_tag',Auth::id())->get();
         return response()
-        ->json(['data' => 'need to update it']);
+        ->json(['data' => $data]);
     }
 }

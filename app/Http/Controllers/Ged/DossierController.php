@@ -118,13 +118,13 @@ class DossierController extends LaravelController
 
     public function filterCacher(myBuilder $query, $method, $clauseOperator, $value)
 {
-    if ($value) {
+    if ($value && $value !='') {
         $query->whereHas('ged_element', function($query) {
-            $query->whereNull('ged_element.cacher');
+            $query->where('ged_element.cacher', 1);
         });
     } else {
         $query->whereHas('ged_element', function($query) {
-            $query->whereNotNull('ged_element.cacher');
+            $query->where('ged_element.cacher', '!=', 1);
         });
     }
 }
@@ -190,8 +190,10 @@ class DossierController extends LaravelController
         $item = Dossier::findOrFail($id)->makeVisible(['password']);
         if(Hash::check($request->password, $item->ged_element->password)) {
             $item->bloquer = 0;
+            $item->ged_element->bloquer = 0;
+
             return response()
-            ->json($item->load('ged_element'));
+            ->json($item);
         }
 
         return response()

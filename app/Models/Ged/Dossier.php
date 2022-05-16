@@ -47,7 +47,7 @@ class Dossier extends Eloquent
 
 	protected $appends = ['nb_element', 'size', 'is_user'];
 
-    protected $with = ['ged_element'];
+    protected $with = ['inscription', 'ged_element'];
 
     public function getSizeAttribute()
 	{
