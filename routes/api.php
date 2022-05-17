@@ -228,10 +228,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // User show
     Route::get('users/{id}', [InscriptionController::class, 'show']);
-});
 
-
-//Dashboard
+    //Dashboard
 Route::get('sumaccueildash', 'Dash\CourrierdashController@getsum');
 Route::get('structdash/{rela}', 'Dash\CourrierdashController@getstruct');
 Route::get('natudash/{rela}', 'Dash\CourrierdashController@getnature');
@@ -243,3 +241,7 @@ Route::get('diffcrdash', 'Dash\CourrierdashController@diffcr');
 Route::get('diffcrbymonthdash/{id}', 'Dash\CourrierdashController@diffcrbymonth');
 Route::get('timingdash', 'Dash\CourrierdashController@timing');
 Route::get('expediteurdash', 'Dash\CourrierdashController@expediteurcr');
+});
+
+
+

@@ -198,7 +198,10 @@ class CrCourrierEntrantController extends LaravelController
         }
 
         return response()
-        ->json($item);
+        ->json($item->load([
+            'cr_provenance',
+            'cr_courrier',
+        ]));
     }
 
     public function getToken($length, $prefix){
@@ -235,7 +238,10 @@ class CrCourrierEntrantController extends LaravelController
         $item->cr_courrier->fill($data)->save();
 
         return response()
-        ->json($item);
+        ->json($item->load([
+            'cr_provenance',
+            'cr_courrier',
+        ]));
     }
 
     public function destroy($id)

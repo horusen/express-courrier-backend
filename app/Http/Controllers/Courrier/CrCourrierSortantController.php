@@ -208,7 +208,10 @@ class CrCourrierSortantController extends LaravelController
         }
 
         return response()
-        ->json($item);
+        ->json($item->load(['cr_courrier',
+        'cr_destinataires',
+        'cr_ampiliations',
+        'cr_courrier.cr_cloture']));
 
     }
 
@@ -259,7 +262,10 @@ class CrCourrierSortantController extends LaravelController
             }
 
         return response()
-        ->json($item->load());
+        ->json($item->load(['cr_courrier',
+        'cr_destinataires',
+        'cr_ampiliations',
+        'cr_courrier.cr_cloture']));
     }
 
     public function getToken($length, $prefix){
