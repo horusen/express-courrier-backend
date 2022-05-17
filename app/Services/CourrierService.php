@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\Courrier\CrCourrier;
+use App\Models\Dash\CrCourrier;
 use App\Services\BaseService;
 
 

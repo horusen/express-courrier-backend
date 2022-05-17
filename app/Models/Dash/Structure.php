@@ -10,7 +10,7 @@ class Structure extends Model
 
      public function cr_courriers()
     {
-        return $this->hasMany(\App\Models\Courrier\CrCourrier::class, 'structure_id');
+        return $this->hasMany(\App\Models\Dash\CrCourrier::class, 'structure_id');
     }
     public function type_structure()
     {

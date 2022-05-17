@@ -88,10 +88,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::customResource('courriers', 'Courrier\CrCourrierController');
         Route::customResource('courrier-entrants', 'Courrier\CrCourrierEntrantController');
         Route::customResource('courrier-etapes', 'Courrier\CrCourrierEtapeController');
-        Route::customResource('courrier-internes', 'Courrier\CrCourrierInterneController');
+        Route::customResource('courrier-sortants', 'Courrier\CrCourrierSortantController');
         Route::customResource('destinataires', 'Courrier\CrDestinataireController');
         Route::customResource('etapes', 'Courrier\CrEtapeController');
-        Route::customResource('fichiers', 'Courrier\CrFichierController');
+        // Route::customResource('fichiers', 'Courrier\CrFichierController');
         Route::customResource('mails', 'Courrier\CrMailController');
         Route::customResource('mail-tags', 'Courrier\CrMailController');
         Route::customResource('moyen-suivis', 'Courrier\CrMoyenSuiviController');
@@ -160,36 +160,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('discussions/{discussion}', [DiscussionController::class, 'delete']);
     Route::delete('discussions/{discussion}/structures/{structure}', [DiscussionController::class, 'delete']);
 
-    Route::customResource('dossiers', 'Ged\DossierController');
-    Route::customResource('users', 'UserController');
-    Route::customResource('fichiers', 'Ged\FichierController');
-    Route::customResource('fichier-types', 'Ged\FichierTypeController');
-    Route::customResource('ged-conservations', 'Ged\GedConservationRuleController');
-    Route::customResource('ged-elements', 'Ged\GedElementController');
-    Route::customResource('ged-partages', 'Ged\GedPartageController');
-
-    Route::prefix('courrier')->group(function () {
-        Route::customResource('actions', 'Courrier\CrActionController');
-        Route::customResource('ampiliations', 'Courrier\CrAmpiliationController');
-        Route::customResource('coordonnees', 'Courrier\CrCoordonneeController');
-        Route::customResource('courriers', 'Courrier\CrCourrierController');
-        Route::customResource('courrier-entrants', 'Courrier\CrCourrierEntrantController');
-        Route::customResource('courrier-internes', 'Courrier\CrCourrierInterneController');
-        Route::customResource('courrier-sortants', 'Courrier\CrCourrierSortantController');
-        Route::customResource('destinataires', 'Courrier\CrDestinataireController');
-        Route::customResource('etapes', 'Courrier\CrEtapeController');
-        Route::customResource('fichiers', 'Courrier\CrFichierController');
-        Route::customResource('moyen-suivis', 'Courrier\CrMoyenSuiviController');
-        Route::customResource('natures', 'Courrier\CrNatureController');
-        Route::customResource('reaffectations', 'Courrier\CrReaffectationController');
-        Route::customResource('statuts', 'Courrier\CrStatutController');
-        Route::customResource('structure-copies', 'Courrier\CrStructureCopieController');
-        Route::customResource('suivis', 'Courrier\CrSuiviController');
-        Route::customResource('traitements', 'Courrier\CrTraitementController');
-        Route::customResource('types', 'Courrier\CrTypeController');
-        Route::customResource('urgences', 'Courrier\CrUrgenceController');
-    });
-
     //Evenement
     Route::resource('evenement', 'Evenement\EvenementController');
     Route::get('eventbyobjet/{id}', 'Evenement\EvenementController@eventbyobjet');
@@ -228,18 +198,18 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // User show
     Route::get('users/{id}', [InscriptionController::class, 'show']);
+
+    //Dashboard
+    Route::get('sumaccueildash', 'Dash\CourrierdashController@getsum');
+    Route::get('structdash/{rela}', 'Dash\CourrierdashController@getstruct');
+    Route::get('natudash/{rela}', 'Dash\CourrierdashController@getnature');
+    Route::get('typedash/{rela}', 'Dash\CourrierdashController@gettype');
+    Route::get('statutdash/{rela}', 'Dash\CourrierdashController@getstatut');
+    Route::get('allstructdash', 'Dash\CourrierdashController@getallstruct');
+    Route::get('crbystructdash/{id}', 'Dash\CourrierdashController@courrierbystruct');
+    Route::get('diffcrdash', 'Dash\CourrierdashController@diffcr');
+    Route::get('diffcrbymonthdash/{id}', 'Dash\CourrierdashController@diffcrbymonth');
+    Route::get('timingdash', 'Dash\CourrierdashController@timing');
+    Route::get('expediteurdash', 'Dash\CourrierdashController@expediteurcr');
+
 });
-
-
-//Dashboard
-Route::get('sumaccueildash', 'Dash\CourrierdashController@getsum');
-Route::get('structdash/{rela}', 'Dash\CourrierdashController@getstruct');
-Route::get('natudash/{rela}', 'Dash\CourrierdashController@getnature');
-Route::get('typedash/{rela}', 'Dash\CourrierdashController@gettype');
-Route::get('statutdash/{rela}', 'Dash\CourrierdashController@getstatut');
-Route::get('allstructdash', 'Dash\CourrierdashController@getallstruct');
-Route::get('crbystructdash/{id}', 'Dash\CourrierdashController@courrierbystruct');
-Route::get('diffcrdash', 'Dash\CourrierdashController@diffcr');
-Route::get('diffcrbymonthdash/{id}', 'Dash\CourrierdashController@diffcrbymonth');
-Route::get('timingdash', 'Dash\CourrierdashController@timing');
-Route::get('expediteurdash', 'Dash\CourrierdashController@expediteurcr');

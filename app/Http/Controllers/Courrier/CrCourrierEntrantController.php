@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Courrier;
 
+use App\Events\CourrierTraiterEvent;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Builder as myBuilder;
 use App\Http\Shared\Optimus\Bruno\EloquentBuilderTrait;
@@ -11,6 +12,7 @@ use App\Models\Courrier\CrCourrier;
 use App\Models\Courrier\CrCourrierEntrant;
 use App\Models\Courrier\CrCourrierEtape;
 use App\Models\Structure;
+use App\Models\Notification;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
