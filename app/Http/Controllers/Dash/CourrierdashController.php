@@ -202,8 +202,9 @@ class CourrierdashController extends Controller
     public function timing()
     {
         return CrCourrierSortant::with('cr_courrier.structure','cr_courrier_entrant.cr_coordonnee')
-        ->Orderby('id','desc')->get();
+        ->whereHas('cr_courrier.structure')->whereHas('cr_courrier_entrant.cr_coordonnee')->Orderby('id','desc')->get();
     }
+
     //Expediteur with courrier
     public function expediteurcr()
     {
