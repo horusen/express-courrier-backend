@@ -5,7 +5,7 @@
  * Date: Fri, 07 Jan 2022 03:13:45 +0000.
  */
 
-namespace App\Models\Courrier;
+namespace App\Models\Dash;
 
 use Illuminate\Database\Eloquent\Model as Eloquent;
 
@@ -58,24 +58,6 @@ class CrCourrierEntrant extends Eloquent
         'provenance'
 	];
 
-    protected $appends = ['expediteur_externe','expediteur_interne'];
-    protected $with = [
-        'cr_provenance',
-        'cr_courrier',
-    ];
-    public function getExpediteurExterneAttribute(){
-		if($this->attributes['expediteur_type']=='App\Models\Courrier\CrCoordonnee'){
-			return $this->expediteur;
-		}
-		return null;
-	}
-
-    public function getExpediteurInterneAttribute(){
-		if($this->attributes['expediteur_type']=='App\Models\Structure'){
-			return $this->expediteur;
-		}
-		return null;
-	}
 
     public function expediteur()
     {
@@ -89,7 +71,7 @@ class CrCourrierEntrant extends Eloquent
 
 	public function cr_courrier()
 	{
-		return $this->belongsTo(\App\Models\Courrier\CrCourrier::class, 'courrier_id');
+		return $this->belongsTo(\App\Models\Dash\CrCourrier::class, 'courrier_id');
 	}
 
 	public function cr_coordonnee()
@@ -109,7 +91,7 @@ class CrCourrierEntrant extends Eloquent
 
 	public function cr_courrier_sortants()
 	{
-		return $this->hasMany(\App\Models\Courrier\CrCourrierSortant::class, 'courrier_entrant_id');
+		return $this->hasMany(\App\Models\Dash\CrCourrierSortant::class, 'courrier_entrant_id');
 	}
 
 	public function cr_structure_copies()

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Courrier;
 
+use App\Events\CourrierTraiterEvent;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Builder as myBuilder;
 use App\Http\Shared\Optimus\Bruno\EloquentBuilderTrait;
@@ -227,6 +228,11 @@ class CrCourrierSortantController extends LaravelController
         $item->cr_courrier->fill($data)->save();
 
         $item->fill($data)->save();
+
+        if($request->exists('cloture_id') && $request->cloture_id) {
+            broadcast(new CourrierTraiterEvent($item->cr_courrier))->toOthers();
+        }
+
         if($request->exists('ampiliations'))
             {
                 $json = utf8_encode($request->ampiliations);

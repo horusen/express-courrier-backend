@@ -37,12 +37,15 @@ class DatabaseSeeder extends Seeder
         // $this->call(ExtensionFichierSeeder::class);
         // $this->call(FichierSeeder::class);
 
-        $this->call(TypeDiscussionSeeder::class);
-        $this->call(DiscussionSeeder::class);
-        $this->call(CorrespondancePersonneSeeder::class);
-        $this->call(CorrespondancePersonneStructureSeeder::class);
-        $this->call(ReactionSeeder::class);
-        $this->call(ReactionStructureSeeder::class);
+        // $this->call(TypeDiscussionSeeder::class);
+        // $this->call(DiscussionSeeder::class);
+        // $this->call(CorrespondancePersonneSeeder::class);
+        // $this->call(CorrespondancePersonneStructureSeeder::class);
+        // $this->call(ReactionSeeder::class);
+        // $this->call(ReactionStructureSeeder::class);
+
+        $this->call(CrMailSeed::class);
+
         // $this->call(IntervenantDiscussionSeeder::class);
         // $this->call(ReactionSeeder::class);
 

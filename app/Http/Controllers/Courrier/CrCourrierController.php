@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Courrier;
 
+use App\Events\CourrierTraiterEvent;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Builder as myBuilder;
 use App\Http\Shared\Optimus\Bruno\EloquentBuilderTrait;
@@ -9,6 +10,7 @@ use App\Http\Shared\Optimus\Bruno\LaravelController;
 use App\Models\Courrier\CrCourrier;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Models\Notification;
 
 class CrCourrierController extends LaravelController
 {
@@ -100,6 +102,38 @@ class CrCourrierController extends LaravelController
         }
 
         $item->fill($data)->save();
+
+        if($request->exists('cloture_id')) {
+
+            $link ="";
+            if($item->cr_courrier_entrants()->count()) {
+                $link = 'courrier/entrant/'.$item->cr_courrier_entrants()->first()->id;
+            } else if($item->cr_courrier_sortants()->count()) {
+                $link = 'courrier/sortant/'.$item->cr_courrier_sortants()->first()->id;
+            }
+            Notification::create([
+                'message' => 'Le traitement du courrier <b>'.$item->libelle.'</b> est terminé',
+                'element' => 'courrier traiter',
+                'element_id' => $item->id,
+                'inscription' => Auth::id(),
+                'user' => Auth::id(),
+                'link' => $link,
+            ]);
+
+            $inscriptions = $item->cr_reaffected_inscriptions()->where('inscription','!=', Auth::id())->get();
+            $inscriptions->unique()->each(function($inscript) use ($item,$link)  {
+                Notification::create([
+                    'message' => 'Le traitement du courrier <b>'.$item->libelle.'</b> est terminé',
+                    'element' => 'courrier traiter',
+                    'element_id' => $item->id,
+                    'inscription' => Auth::id(),
+                    'user' => $inscript->id,
+                    'link' => $link,
+                ]);
+            });
+
+            broadcast(new CourrierTraiterEvent($item))->toOthers();
+        }
 
         return response()
         ->json($item->load([

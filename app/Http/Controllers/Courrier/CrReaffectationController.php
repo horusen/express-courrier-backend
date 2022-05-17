@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Courrier;
 
+use App\Events\CourrierTranfererEvent;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Builder as myBuilder;
 use App\Http\Shared\Optimus\Bruno\EloquentBuilderTrait;
@@ -9,6 +10,7 @@ use App\Http\Shared\Optimus\Bruno\LaravelController;
 use App\Models\Courrier\CrReaffectation;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Models\Notification;
 
 class CrReaffectationController extends LaravelController
 {
@@ -65,6 +67,25 @@ class CrReaffectationController extends LaravelController
             'suivi_par' => $request->suivi_par,
         ]);
 
+        $item->load(['cr_courrier', 'suivi_par_inscription']);
+
+        $link ="";
+        if($item->cr_courrier->cr_courrier_entrants()->count()) {
+            $link = 'courrier/entrant/'.$item->cr_courrier->cr_courrier_entrants()->first()->id;
+        } else if($item->cr_courrier->cr_courrier_sortants()->count()) {
+            $link = 'courrier/sortant/'.$item->cr_courrier->cr_courrier_sortants()->first()->id;
+        }
+
+        Notification::create([
+            'message' => 'Le courrier <b>'.$item->cr_courrier->libelle.'</b> a est en cours de transfert vers '.$item->suivi_par_inscription->prenom.' '.$item->suivi_par_inscription->nom,
+            'element' => 'courrier transferer',
+            'element_id' => $item->cr_courrier->id,
+            'inscription' => Auth::id(),
+            'user' => $request->suivi_par,
+            'link' => $link,
+        ]);
+
+
         return response()
         ->json($item->load([
             'inscription',
@@ -82,12 +103,38 @@ class CrReaffectationController extends LaravelController
 
         $item->fill($data)->save();
 
+$item->load(['cr_courrier', 'suivi_par_inscription']);
+
+        $link ="";
+        if($item->cr_courrier->cr_courrier_entrants()->count()) {
+            $link = 'courrier/entrant/'.$item->cr_courrier->cr_courrier_entrants()->first()->id;
+        } else if($item->cr_courrier->cr_courrier_sortants()->count()) {
+            $link = 'courrier/sortant/'.$item->cr_courrier->cr_courrier_sortants()->first()->id;
+        }
+
+        $message = '';
+        if($item->confirmation) {
+           $message = 'Le courrier <b>'.$item->cr_courrier->libelle.'</b>  a été tranféré à '.$item->suivi_par_inscription->prenom.' '.$item->suivi_par_inscription->nom;
+        } else {
+           $message = 'Le transfet du courrier <b>'.$item->cr_courrier->libelle.'</b>  à '.$item->suivi_par_inscription->prenom.' '.$item->suivi_par_inscription->nom.' a été annuler';
+        }
+        Notification::create([
+            'message' => $message,
+            'element' => 'courrier transferer',
+            'element_id' => $item->cr_courrier->id,
+            'inscription' => Auth::id(),
+            'user' => $request->suivi_par,
+            'link' => $link,
+        ]);
+
+
         return response()
         ->json($item->load([
             'inscription',
         'suivi_par_inscription',
         'structure'
         ]));
+
     }
 
     public function destroy($id)

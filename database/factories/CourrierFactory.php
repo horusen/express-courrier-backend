@@ -14,6 +14,5 @@ $factory->define(Model::class, function (Faker $faker) {
         'type_id' => $faker->numberBetween(1, 5),
         'urgence_id' => $faker->numberBetween(1, 5),
         'structure_id' => $faker->numberBetween(1, 2),
-
     ];
 });
