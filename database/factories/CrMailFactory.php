@@ -17,10 +17,10 @@ $factory->define(CrMail::class, function (Faker $faker) {
 
 
 $factory->afterCreating(CrMail::class, function ($mail, $faker) {
-    // $listInscription = Inscription::inRandomOrder()->limit(3)->get();
-    // $listInscription->each(function($item) use ($mail) {
-    //     $mail->destinataire_personnes()->attach([$item->id => ['inscription_id'=> $item->id]]);
-    // });
+    $listInscription = Inscription::inRandomOrder()->limit(3)->get();
+    $listInscription->each(function($item) use ($mail) {
+        $mail->destinataire_personnes()->attach([$item->id => ['inscription_id'=> $item->id]]);
+    });
 
-    $mail->destinataire_personnes()->attach([1 => ['inscription_id'=> 1]]);
+    // $mail->destinataire_personnes()->attach([1 => ['inscription_id'=> 1]]);
 });

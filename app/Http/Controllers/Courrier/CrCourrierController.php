@@ -132,7 +132,6 @@ class CrCourrierController extends LaravelController
                 ]);
             });
 
-            broadcast(new CourrierTraiterEvent($item))->toOthers();
         }
 
         return response()
