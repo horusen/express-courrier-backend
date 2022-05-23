@@ -68,7 +68,7 @@ class Fichier extends Eloquent
     //implement the attribute
 	public function getSizeAttribute()
 	{
-        return Storage::disk('local')->size($this->attributes['fichier']);
+        return Storage::disk('public')->size($this->attributes['fichier']);
         return filesize("http://127.0.0.1:8000/".$this->attributes['fichier']);
 	}
 

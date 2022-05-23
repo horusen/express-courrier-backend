@@ -18,6 +18,6 @@ use Illuminate\Support\Facades\Route;
 //     return view('welcome');
 // });
 
-Route::get('/storage', function () {
-    Artisan::call('storage:link');
-});
+// Route::get('/storage', function () {
+//     Artisan::call('storage:link');
+// });
