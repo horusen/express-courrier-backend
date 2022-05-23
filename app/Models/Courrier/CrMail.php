@@ -48,7 +48,7 @@ class CrMail extends Eloquent
 	];
 
     //Make it available in the json response
-	protected $appends = ['auteur','reply_number','is_user_mail' ,'user_has_read', 'has_new_response'];
+	protected $appends = ['auteur','reply_number','is_user_mail' ,'user_has_read', 'has_new_response', 'user_favoris'];
 
 	//implement the attribute
 	public function getAuteurAttribute()
@@ -89,6 +89,15 @@ class CrMail extends Eloquent
 		}
 		return false;
 	}
+
+    public function getUserFavorisAttribute()
+	{
+		if(Auth::check())
+		{
+			return $this->favoris()->where('inscription.id', Auth::id())->count();
+		}
+		return false;
+    }
 
     protected $with = [
         'destinataire_personnes',
@@ -141,4 +150,10 @@ class CrMail extends Eloquent
 	{
 		return $this->belongsToMany(\App\Models\Inscription::class, 'cr_affectation_mail_vue', 'mail', 'personne');
 	}
+
+    public function favoris()
+	{
+		return $this->belongsToMany(\App\Models\Inscription::class, 'cr_affectation_mail_like', 'mail', 'personne');
+    }
+
 }

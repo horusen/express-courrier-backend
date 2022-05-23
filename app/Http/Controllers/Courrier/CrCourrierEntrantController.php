@@ -122,6 +122,19 @@ class CrCourrierEntrantController extends LaravelController
         }
     }
 
+    public function filterIsClosed(myBuilder $query, $method, $clauseOperator, $value)
+    {
+        if($value) {
+            $query->whereHas('cr_courrier', function($query) {
+                $query->whereNotNull('cloture_id');
+            });
+        } else {
+            $query->whereHas('cr_courrier', function($query) {
+                $query->whereNull('cloture_id');
+            });
+        }
+    }
+
     public function filterExpediteurInterneId(myBuilder $query, $method, $clauseOperator, $value)
     {
         if($value) {
