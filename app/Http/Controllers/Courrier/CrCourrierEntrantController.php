@@ -135,6 +135,19 @@ class CrCourrierEntrantController extends LaravelController
         }
     }
 
+    public function filterExterne(myBuilder $query, $method, $clauseOperator, $value)
+    {
+        if($value) {
+            $query->whereHas('cr_provenance', function($query) {
+                $query->where('cr_provenance.externe',1);
+            });
+        } else {
+            $query->whereHas('cr_provenance', function($query) {
+                $query->where('cr_provenance.externe',0);
+            });
+        }
+    }
+
     public function filterExpediteurInterneId(myBuilder $query, $method, $clauseOperator, $value)
     {
         if($value) {
