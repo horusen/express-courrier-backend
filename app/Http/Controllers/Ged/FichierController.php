@@ -82,6 +82,15 @@ class FichierController extends LaravelController
         }
     }
 
+    public function filterTypeId(myBuilder $query, $method, $clauseOperator, $value, $in)
+    {
+        if ($value) {
+            $query->whereHas('fichier_type', function($query) use ($value){
+                $query->where('fichier_type.id', $value);
+             });
+        }
+    }
+
     public function filterUserFavoris(myBuilder $query, $method, $clauseOperator, $value, $in)
     {
         if ($value) {
@@ -126,6 +135,7 @@ class FichierController extends LaravelController
              });
         }
     }
+    
 
     public function filterCacher(myBuilder $query, $method, $clauseOperator, $value)
     {
@@ -149,7 +159,7 @@ class FichierController extends LaravelController
             // $nameonly=preg_replace('/\..+$/', '', $request->file('fichier')->getClientOriginalName());
             $n = strrpos($path,".");
             $extension = ($n===false) ? "" : substr($path,$n+1);
-            $file = FichierType::where('extension','like', '%'.$extension.'%')->first();
+            $file = FichierType::where('extension','like', '%'.$extension.'%')->orWhere('extension','other')->first();
             $item = Fichier::create([
                 'inscription_id' => Auth::id(),
                 'libelle' => $request->libelle,
@@ -186,7 +196,7 @@ class FichierController extends LaravelController
                         // $nameonly=preg_replace('/\..+$/', '', $request->file('fichier'.$i)->getClientOriginalName());
                         $n = strrpos($path,".");
                         $extension = ($n===false) ? "" : substr($path,$n+Auth::id());
-                        $file = FichierType::where('extension','like', '%'.$extension.'%')->first();
+                        $file = FichierType::where('extension','like', '%'.$extension.'%')->orWhere('extension','other')->first();
                         $fichier = Fichier::create([
                             'inscription' => Auth::id(),
                             'libelle' => $request->libelle,

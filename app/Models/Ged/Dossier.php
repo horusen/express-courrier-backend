@@ -55,6 +55,9 @@ class Dossier extends Eloquent
         foreach($this->fichiers as $child){
             $sum += $child->size; //Sum up the count
         }
+		foreach($this->dossiers as $child){
+            $sum += $child->size; //Sum up the count
+        }
 		return $sum;
     }
 
