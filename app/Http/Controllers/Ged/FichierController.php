@@ -135,8 +135,23 @@ class FichierController extends LaravelController
              });
         }
     }
-    
 
+    public function filterUserAsAccess(myBuilder $query, $method, $clauseOperator, $value, $in)
+    {
+        if ($value) {
+            $query->orWhereHas('ged_element.ged_element_personnes', function($query) {
+                $query->where('ged_element_personne.personne', Auth::id());
+             });
+             $query->orWhereHas('dossiers.ged_element.ged_element_personnes', function($query) use ($value){
+                $query->where('ged_element_personne.personne', Auth::id());
+             });
+             $query->orWhereHas('ged_element.structures._employes', function($query) use ($value) {
+                $query->where('inscription.id', Auth::id());
+             });
+        }
+    }
+    
+    
     public function filterCacher(myBuilder $query, $method, $clauseOperator, $value)
     {
         if ($value && $value !='') {
