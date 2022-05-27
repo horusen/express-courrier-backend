@@ -140,4 +140,9 @@ class Structure extends Eloquent
     {
         return $this->morphOne(\App\Models\Courrier\CrAffectationCourrier::class, 'objet');
     }
+
+    public function responsables()
+    {
+        return $this->belongsToMany(Inscription::class, ResponsableStructure::class, 'structure', 'responsable')->select(['inscription.id', 'prenom', 'nom', 'photo']);
+    }
 }
