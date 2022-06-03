@@ -119,7 +119,7 @@ class CrTypeController extends LaravelController
     public function setAffectation(Request $request)
     {
         $item_id = $request->id;
-
+        $result = null;
         DB::beginTransaction();
 
         try {
