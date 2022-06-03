@@ -127,7 +127,7 @@ class CrCourrierEtapeController extends LaravelController
     public function setAffectation(Request $request)
     {
         $item_id = $request->id;
-
+        $result = null;
         DB::beginTransaction();
 
         try {
@@ -139,6 +139,7 @@ class CrCourrierEtapeController extends LaravelController
                 $pivotData = array_fill(0, count($value), ['inscription_id'=> Auth::id()]);
                 $syncData  = array_combine($value, $pivotData);
                 $item->{$key}()->sync($syncData);
+                $result = $item->{$key}()->sync($syncData);
             }
 
             DB::commit();
@@ -149,7 +150,8 @@ class CrCourrierEtapeController extends LaravelController
         }
 
         return response()->json([
-            'message' => 'Affectation mis à jour'
+            'message' => 'Affectation mis à jour',
+            'result'=>$result
         ]);
     }
 

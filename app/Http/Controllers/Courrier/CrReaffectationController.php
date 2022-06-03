@@ -178,7 +178,7 @@ $item->load(['cr_courrier', 'suivi_par_inscription']);
     public function setAffectation(Request $request)
     {
         $item_id = $request->id;
-
+        $result = null;
         DB::beginTransaction();
 
         try {
@@ -190,6 +190,7 @@ $item->load(['cr_courrier', 'suivi_par_inscription']);
                 $pivotData = array_fill(0, count($value), ['inscription_id'=> Auth::id()]);
                 $syncData  = array_combine($value, $pivotData);
                 $item->{$key}()->sync($syncData);
+                $result = $item->{$key}()->sync($syncData);
             }
 
             DB::commit();
@@ -200,7 +201,8 @@ $item->load(['cr_courrier', 'suivi_par_inscription']);
         }
 
         return response()->json([
-            'message' => 'Affectation mis à jour'
+            'message' => 'Affectation mis à jour',
+            'result'=>$result
         ]);
     }
 
