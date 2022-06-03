@@ -241,7 +241,7 @@ class CrMailController extends LaravelController
 
     public function getAffectation(CrMail $CrMail)
     {
-        $data['tags'] = $CrMail->tags()->where('cr_mail_tag',Auth::id())->get();
+        $data['tags'] = $CrMail->tags()->where('cr_mail_tag.inscription_id',Auth::id())->get();
         return response()
         ->json(['data' => $data]);
     }
