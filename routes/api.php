@@ -149,6 +149,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('reactions/{reaction}', [ReactionController::class, 'delete']);
     Route::delete('reactions/{reaction}/structure/{structure}', [ReactionController::class, 'delete']);
     Route::get('discussions/{discussion}/reactions', [ReactionController::class, 'getByDiscussion']);
+    Route::get('discussions/{discussion}/fichiers', [ReactionController::class, 'getFichierByDiscussion']);
     Route::get('discussions/{discussion}', [DiscussionController::class, 'show']);
 
     // Messagerie

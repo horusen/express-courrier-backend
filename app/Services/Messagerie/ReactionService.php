@@ -15,6 +15,7 @@ use App\Traits\Messagerie\AutorisationDiscussionTrait;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ReactionService extends BaseService
 {
@@ -57,6 +58,10 @@ class ReactionService extends BaseService
         else $this->marquerCommeLuParUser($reactions->items(), Auth::id());
 
         return $reactions;
+    }
+
+    public function getFichierByDiscussion(ReactionApiRequest $request, $discussion) {
+       return DB::table('reactions')->select(DB::raw("CONCAT('http://localhost:8000/storage/', fichier) as fichier_url, fichier,discussion"))->whereNotNull('fichier')->where('discussion', $discussion)->get();
     }
 
     public function marquerDiscussionLu($discussion)

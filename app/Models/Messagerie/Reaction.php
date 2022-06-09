@@ -28,10 +28,10 @@ class Reaction extends Model
     }
 
 
-    public function fichier()
-    {
-        return $this->belongsTo(Fichier::class, 'fichier');
-    }
+    // public function fichier()
+    // {
+    //     return $this->belongsTo(Fichier::class, 'fichier');
+    // }
 
 
     public function inscription()
@@ -72,10 +72,13 @@ class Reaction extends Model
         });
     }
 
-    protected function getFichierAttribute($value)
-    {
-        if (isset($value)) return env("IMAGE_PREFIX_URL") . Storage::url($value);
-    }
+    public function getFichierAttribute(){
+		if($this->attributes['fichier']){
+			$document_scanne = "http://localhost:8000/storage/".$this->attributes['fichier'];
+			return $document_scanne;
+		}
+		return 0;
+	}
 
 
     public function scopeWhereNotReaded($builder, $user_id)

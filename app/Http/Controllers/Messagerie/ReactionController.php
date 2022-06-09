@@ -34,6 +34,11 @@ class ReactionController extends BaseController
         return $this->service->getByDiscussion($request, $discussion);
     }
 
+    public function getFichierByDiscussion(ReactionApiRequest $request, $discussion)
+    {
+        return $this->service->getFichierByDiscussion($request, $discussion);
+    }
+
 
     public function store(Request $request)
     {
