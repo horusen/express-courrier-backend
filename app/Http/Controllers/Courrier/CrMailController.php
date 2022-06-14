@@ -63,6 +63,16 @@ class CrMailController extends LaravelController
         }
     }
 
+    public function filterInboxRespIns(myBuilder $query, $method, $clauseOperator, $value, $in)
+    {
+        if ($value) {
+            $query->whereHas('destinataire_personnes', function($query) use ($value){
+                $query->where('inscription.id',  Auth::id() );
+            });
+            $query->orWhere('cr_mail.inscription',  Auth::id() );
+        }
+    }
+
     public function filterHasNotRead(myBuilder $query, $method, $clauseOperator, $value, $in)
     {
         if($value) {

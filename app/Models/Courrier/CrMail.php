@@ -53,7 +53,7 @@ class CrMail extends Eloquent
 	//implement the attribute
 	public function getAuteurAttribute()
 	{
-		return $this->inscription_personne()->first(['nom','prenom', 'email', 'photo']);
+		return $this->inscription_personne()->first(['nom','prenom', 'email', 'photo', 'id']);
 	}
 
     public function getIsUserMailAttribute()
