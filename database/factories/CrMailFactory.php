@@ -12,6 +12,7 @@ $factory->define(CrMail::class, function (Faker $faker) {
         'contenu' => $faker->realText(10000),
         'draft' => 1,
         'inscription' => Inscription::inRandomOrder()->first()->id,
+        'mail' => CrMail::inRandomOrder()->first()->id
     ];
 });
 

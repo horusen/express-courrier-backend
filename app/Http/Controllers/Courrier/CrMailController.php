@@ -152,7 +152,10 @@ class CrMailController extends LaravelController
         }
 
         return response()
-        ->json($item);
+        ->json($item->load(['destinataire_personnes',
+        'destinataire_structures',
+        'fichiers',
+        'tags']));
     }
 
     public function update(Request $request, $id)
@@ -165,7 +168,10 @@ class CrMailController extends LaravelController
         $item->fill($data)->save();
 
         return response()
-        ->json($item);
+        ->json($item->load(['destinataire_personnes',
+        'destinataire_structures',
+        'fichiers',
+        'tags']));
     }
 
     public function destroy($id)

@@ -12,6 +12,6 @@ class CrMailSeed extends Seeder
      */
     public function run()
     {
-        factory(CrMail::class, 1000)->create();
+        factory(CrMail::class, 5000)->create();
     }
 }
