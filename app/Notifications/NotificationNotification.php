@@ -2,29 +2,23 @@
 
 namespace App\Notifications;
 
-use App\Models\Structure\Inscription;
-use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\URL;
 
-class ValidationInscription extends Notification
+class NotificationNotification extends Notification
 {
     use Queueable;
-
-    private Inscription $sender;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(Inscription $sender)
+    public function __construct()
     {
-        $this->sender = $sender;
+        //
     }
 
     /**
@@ -47,8 +41,9 @@ class ValidationInscription extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->subject("Validation inscription sur SIGECAM")
-            ->markdown('mail.inscription.validation', ['url' => $this->_formatUrl($notifiable), 'sender' => $this->sender]);
+                    ->line('The introduction to the notification.')
+                    ->action('Notification Action', url('/'))
+                    ->line('Thank you for using our application!');
     }
 
     /**
@@ -62,18 +57,5 @@ class ValidationInscription extends Notification
         return [
             //
         ];
-    }
-
-
-    private function _formatUrl($notifiable)
-    {
-        return URL::temporarySignedRoute(
-            'register.update',
-            Carbon::now()->addMinutes(60),
-            [
-                'id' => $notifiable->getKey(),
-                'hash' => Hash::make($notifiable->getEmailForVerification()),
-            ]
-        );
     }
 }

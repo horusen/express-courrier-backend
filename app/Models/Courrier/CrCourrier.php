@@ -10,6 +10,7 @@ namespace App\Models\Courrier;
 use App\ApiRequest\ApiRequestConsumer;
 use Illuminate\Database\Eloquent\Model as Eloquent;
 
+
 /**
  * Class CrCourrier
  *
@@ -50,6 +51,7 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
  * @property \Illuminate\Database\Eloquent\Collection $cr_fichiers
  * @property \Illuminate\Database\Eloquent\Collection $cr_reaffectations
  * @property \Illuminate\Database\Eloquent\Collection $cr_traitements
+ *
  *
  * @package App\Models
  */
@@ -108,11 +110,11 @@ class CrCourrier extends Eloquent
         'structure_copie_informations',
     ];
 
-    protected $appends = ['structure','suivi_par_inscription'];
+    protected $appends = ['structure', 'suivi_par_inscription'];
 
     public function getStructureAttribute()
     {
-        $reaffectation = $this->cr_reaffected_structures()->where('confirmation',1)->orderBy('id', 'desc')->first();
+        $reaffectation = $this->cr_reaffected_structures()->where('confirmation', 1)->orderBy('id', 'desc')->first();
         if ($reaffectation) {
             return $reaffectation;
         }
@@ -121,7 +123,7 @@ class CrCourrier extends Eloquent
 
     public function getSuiviParInscriptionAttribute()
     {
-        $reaffectation = $this->cr_reaffected_inscriptions()->where('confirmation',1)->orderBy('id', 'desc')->first();
+        $reaffectation = $this->cr_reaffected_inscriptions()->where('confirmation', 1)->orderBy('id', 'desc')->first();
         if ($reaffectation) {
             return $reaffectation;
         }
