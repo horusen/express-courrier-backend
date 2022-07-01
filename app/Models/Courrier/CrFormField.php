@@ -32,12 +32,13 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
 class CrFormField extends Eloquent
 {
 	use \Illuminate\Database\Eloquent\SoftDeletes;
-	protected $table = 'cr_form_field';
+	protected $table = 'cr_nature_form_field';
 
 	protected $casts = [
 		'required' => 'bool',
 		'inscription_id' => 'int',
-        'validators_id' => 'int'
+        'validators_id' => 'int',
+        'nature_id'=> 'int'
 	];
 
 	protected $fillable = [
@@ -47,12 +48,18 @@ class CrFormField extends Eloquent
 		'type',
 		'required',
         'validators_id',
-		'inscription_id'
+		'inscription_id',
+        'nature_id'
 	];
 
 	public function inscription()
 	{
 		return $this->belongsTo(\App\Models\Inscription::class);
+	}
+
+    public function cr_nature()
+	{
+		return $this->belongsTo(\App\Models\Courrier\CrNature::class, 'nature_id');
 	}
 
 	public function cr_form_field_validator()

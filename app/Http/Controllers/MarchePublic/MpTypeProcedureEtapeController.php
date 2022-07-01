@@ -1,17 +1,16 @@
 <?php
 
-namespace App\Http\Controllers\Courrier;
+namespace App\Http\Controllers\MarchePublic;
 
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Builder as myBuilder;
 use App\Http\Shared\Optimus\Bruno\EloquentBuilderTrait;
 use App\Http\Shared\Optimus\Bruno\LaravelController;
-use App\Models\Courrier\CrFormField;
-use App\Models\Courrier\CrNature;
+use App\Models\MarchePublic\MpTypeProcedureEtape;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-class CrNatureController extends LaravelController
+class MpTypeProcedureEtapeController extends LaravelController
 {
     use EloquentBuilderTrait;
 
@@ -21,7 +20,7 @@ class CrNatureController extends LaravelController
         // Parse the resource options given by GET parameters
         $resourceOptions = $this->parseResourceOptions();
 
-        $query = CrNature::query();
+        $query = MpTypeProcedureEtape::query();
         $this->applyResourceOptions($query, $resourceOptions);
 
         if(isset($request->paginate)) {
@@ -56,84 +55,34 @@ class CrNatureController extends LaravelController
     public function store(Request $request)
     {
 
-        $item = CrNature::create([
+        $item = MpTypeProcedureEtape::create([
             'inscription_id' => Auth::id(),
             'libelle' => $request->libelle,
             'description' => $request->description,
+            'position' => $request->position,
+            'type_procedure_id' => $request->type_procedure_id,
         ]);
 
-        if($request->exists('form_field'))
-        {
-            // $json = utf8_encode($request->form_field);
-            // $data = json_decode($json);
-            $data = json_decode($request->form_field);
-            if(is_array($data)){
-                foreach($data as $element) {
-                    CrFormField::create([
-                        'inscription_id' => Auth::id(),
-                        'nature_id' => $item->id,
-                        'libelle' => $element->name,
-                        'label' => $element->name,
-                        'type' => $element->type,
-                        'required' => $element->required
-                    ]);
-                }
-            }
-        }
-
         return response()
-        ->json($item->load('cr_form_fields'));
+        ->json($item);
     }
 
     public function update(Request $request, $id)
     {
 
-        $item = CrNature::findOrFail($id);
+        $item = MpTypeProcedureEtape::findOrFail($id);
 
         $data = $request->all();
 
         $item->fill($data)->save();
 
-        if($request->exists('removedFormField'))
-        {
-            $json = utf8_encode($request->removedFormField);
-            $data = json_decode($json);
-            if(is_array($data)){
-                foreach($data as $element) {
-                    $remove = CrFormField::findOrFail($element);
-                    $remove->delete();
-                }
-            }
-        }
-
-        if($request->exists('form_field'))
-        {
-            // $json = utf8_encode($request->form_field);
-            // $data = json_decode($json);
-            $data= json_decode($request->form_field);
-            if(is_array($data)){
-                foreach($data as $element) {
-                    CrFormField::updateOrCreate([
-                        'id' => $element->id,
-                    ],[
-                        'inscription_id' => Auth::id(),
-                        'nature_id' => $item->id,
-                        'libelle' => $element->name,
-                        'label' => $element->name,
-                        'type' => $element->type,
-                        'required' => $element->required
-                    ]);
-                }
-            }
-        }
-
         return response()
-        ->json($item->load('cr_form_fields'));
+        ->json($item);
     }
 
     public function destroy($id)
     {
-        $item = CrNature::findOrFail($id);
+        $item = MpTypeProcedureEtape::findOrFail($id);
 
         $item->delete();
 
@@ -147,7 +96,7 @@ class CrNatureController extends LaravelController
         $item_id = $request->id;
         $relation_name = $request->relation_name;
         $relation_id = $request->relation_id;
-        $item = CrNature::find($item_id);
+        $item = MpTypeProcedureEtape::find($item_id);
         $item->{$relation_name}()->syncWithoutDetaching([$relation_id => ['inscription_id'=> Auth::id()]]);
 
         return response()->json([
@@ -160,7 +109,7 @@ class CrNatureController extends LaravelController
         $item_id = $request->id;
         $relation_name = $request->relation_name;
         $relation_id = $request->relation_id;
-        $item = CrNature::find($item_id);
+        $item = MpTypeProcedureEtape::find($item_id);
         $item->{$relation_name}()->detach($relation_id);
 
         return response()->json([
@@ -177,13 +126,14 @@ class CrNatureController extends LaravelController
 
         try {
 
-            $item = CrNature::find($item_id);
+            $item = MpTypeProcedureEtape::find($item_id);
 
             foreach($request->affectation as $key=>$value)
             {
                 $pivotData = array_fill(0, count($value), ['inscription_id'=> Auth::id()]);
                 $syncData  = array_combine($value, $pivotData);
-                $result = $item->{$key}()->sync($syncData);
+                $item->{$key}()->sync([]);
+                $item->{$key}()->sync($syncData);
             }
 
             DB::commit();
@@ -194,12 +144,11 @@ class CrNatureController extends LaravelController
         }
 
         return response()->json([
-            'message' => 'Affectation mis à jour',
-            'result'=>$result
+            'message' => 'Affectation mis à jour'
         ]);
     }
 
-    public function getAffectation(CrNature $CrNature)
+    public function getAffectation(MpTypeProcedureEtape $MpTypeProcedureEtape)
     {
 
         return response()

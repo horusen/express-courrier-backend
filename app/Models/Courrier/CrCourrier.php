@@ -9,8 +9,7 @@ namespace App\Models\Courrier;
 
 use App\ApiRequest\ApiRequestConsumer;
 use Illuminate\Database\Eloquent\Model as Eloquent;
-
-
+use Illuminate\Support\Facades\Auth;
 /**
  * Class CrCourrier
  *
@@ -110,7 +109,16 @@ class CrCourrier extends Eloquent
         'structure_copie_informations',
     ];
 
-    protected $appends = ['structure', 'suivi_par_inscription'];
+    protected $appends = ['structure', 'suivi_par_inscription', 'is_user'];
+
+    public function getIsUserAttribute()
+	{
+		if(Auth::check() && $this->attributes['inscription_id'] === Auth::id())
+		{
+			return true;
+		}
+		return false;
+	}
 
     public function getStructureAttribute()
     {
@@ -237,6 +245,21 @@ class CrCourrier extends Eloquent
         return $this->belongsToMany(\App\Models\Courrier\CrCourrier::class, 'cr_affectation_commentaire_courrier', 'courrier', 'commentaire');
     }
 
+    public function dossiers()
+	{
+		return $this->belongsToMany(\App\Models\Ged\Dossier::class, 'cr_courrier_dossier', 'courrier_id', 'dossier_id');
+	}
+
+    public function dossier()
+	{
+		return $this->hasOneThrough(\App\Models\Ged\Dossier::class, 'cr_courrier_dossier', 'courrier_id', 'dossier.id', 'cr_courrier.id', 'dossier_id');
+    }
+
+    public function ged_element()
+    {
+        return $this->morphOne(\App\Models\Ged\GedElement::class, 'objet');
+    }
+
     public function structure_copie_informations()
     {
         return $this->belongsToMany(\App\Models\Structure::class, 'cr_structure_copie_information', 'courrier_id', 'structure_id');
@@ -246,4 +269,5 @@ class CrCourrier extends Eloquent
     {
         return $this->belongsToMany(\App\Models\Structure::class, 'cr_structure_copie_traitement', 'courrier_id', 'structure_id');
     }
+
 }

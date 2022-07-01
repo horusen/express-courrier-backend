@@ -38,6 +38,10 @@ class CrNature extends Eloquent
 		'inscription_id'
 	];
 
+    protected $with = [
+        'cr_form_fields'
+    ];
+
 	public function inscription()
 	{
 		return $this->belongsTo(\App\Models\Inscription::class, 'inscription_id');
@@ -46,5 +50,10 @@ class CrNature extends Eloquent
 	public function cr_courriers()
 	{
 		return $this->hasMany(\App\Models\Courrier\CrCourrier::class, 'nature_id');
+	}
+
+    public function cr_form_fields()
+	{
+		return $this->hasMany(\App\Models\Courrier\CrFormField::class, 'nature_id');
 	}
 }

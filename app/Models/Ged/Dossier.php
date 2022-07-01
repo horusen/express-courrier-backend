@@ -38,6 +38,7 @@ class Dossier extends Eloquent
 	];
 
 	protected $fillable = [
+		'couleur',
 		'libelle',
 		'description',
 		'conservation',

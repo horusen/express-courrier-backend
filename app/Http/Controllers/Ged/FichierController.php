@@ -82,6 +82,15 @@ class FichierController extends LaravelController
         }
     }
 
+    public function filterMarcheId(myBuilder $query, $method, $clauseOperator, $value, $in)
+    {
+        if ($value) {
+            $query->whereHas('mp_marche_etapes', function($query) use ($value){
+                $query->where('mp_marche_etape.id', $value);
+             });
+        }
+    }
+
     public function filterTypeId(myBuilder $query, $method, $clauseOperator, $value, $in)
     {
         if ($value) {
@@ -150,8 +159,8 @@ class FichierController extends LaravelController
              });
         }
     }
-    
-    
+
+
     public function filterCacher(myBuilder $query, $method, $clauseOperator, $value)
     {
         if ($value && $value !='') {

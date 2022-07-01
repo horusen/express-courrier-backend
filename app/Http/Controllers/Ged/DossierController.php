@@ -137,7 +137,8 @@ class DossierController extends LaravelController
             'libelle' => $request->libelle,
             'description' => $request->description,
             'conservation_id' => $request->conservation_id,
-            'dossier_id' => $request->dossier_id
+            'dossier_id' => $request->dossier_id,
+            'couleur' => $request->couleur
         ]);
 
         $element = new GedElement();

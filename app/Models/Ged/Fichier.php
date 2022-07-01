@@ -68,7 +68,7 @@ class Fichier extends Eloquent
     //implement the attribute
 	public function getSizeAttribute()
 	{
-		
+
         return Storage::disk(env('SAT_DISC'))->exists($this->attributes['fichier']) ? Storage::disk('public')->size($this->attributes['fichier']) : 0;
 
         // return filesize("http://127.0.0.1:8000/".$this->attributes['fichier']);
@@ -149,5 +149,10 @@ class Fichier extends Eloquent
     public function cr_mails()
 	{
 		return $this->belongsToMany(\App\Models\Courrier\CrMail::class, 'cr_affectation_mail_fichier', 'fichier', 'mail');
+	}
+
+    public function mp_marche_etapes()
+	{
+		return $this->belongsToMany(\App\Models\MarchePublic\MpMarcheEtape::class, 'mp_affectation_marche_fichier', 'fichier', 'marche');
 	}
 }

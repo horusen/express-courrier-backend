@@ -112,6 +112,15 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::customResource('validators', 'Courrier\CrFormFieldValidatorController');
     });
 
+    Route::prefix('marche-public')->group(function () {
+        Route::customResource('marches', 'MarchePublic\MpMarcheController');
+        Route::customResource('etapes', 'MarchePublic\MpEtapeController');
+        Route::customResource('marche-etapes', 'MarchePublic\MpMarcheEtapeController');
+        Route::customResource('type-marches', 'MarchePublic\MpTypeMarcheController');
+        Route::customResource('type-procedures', 'MarchePublic\MpTypeProcedureController');
+        Route::customResource('type-procedure-etapes', 'MarchePublic\MpTypeProcedureEtapeController');
+    });
+
     Route::get('employes/{id}', [EmployeController::class, 'show']);
     Route::put('employes/{employe}/validate', [EmployeController::class, 'validateEmploye']);
     Route::put('employes/{employe}', [EmployeController::class, 'update']);
