@@ -69,7 +69,7 @@ class Fichier extends Eloquent
 	public function getSizeAttribute()
 	{
 
-        return Storage::disk('local')->exists($this->attributes['fichier']) ? Storage::disk('public')->size($this->attributes['fichier']) : 0;
+        return Storage::disk('public')->exists($this->attributes['fichier']) ? Storage::disk('public')->size($this->attributes['fichier']) : 0;
 
         // return filesize("http://127.0.0.1:8000/".$this->attributes['fichier']);
 	}
