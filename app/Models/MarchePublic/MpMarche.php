@@ -41,6 +41,7 @@ class MpMarche extends Eloquent
 		'service_contractant_id' => 'int',
 		'type_procedure_id' => 'int',
 		'type_marche_id' => 'int',
+		'cout' => 'int',
 		'inscription_id' => 'int'
 	];
 
@@ -56,6 +57,8 @@ class MpMarche extends Eloquent
 		'service_contractant_id',
 		'type_procedure_id',
 		'type_marche_id',
+		'cout',
+		'source_financement',
 		'inscription_id'
 	];
 

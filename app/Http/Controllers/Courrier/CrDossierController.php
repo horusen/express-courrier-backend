@@ -2,17 +2,15 @@
 
 namespace App\Http\Controllers\Courrier;
 
-use App\Events\CourrierTraiterEvent;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Builder as myBuilder;
 use App\Http\Shared\Optimus\Bruno\EloquentBuilderTrait;
 use App\Http\Shared\Optimus\Bruno\LaravelController;
-use App\Models\Courrier\CrCourrier;
+use App\Models\Courrier\CrDossier;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use App\Models\Notification;
 
-class CrCourrierController extends LaravelController
+class CrDossierController extends LaravelController
 {
     use EloquentBuilderTrait;
 
@@ -22,7 +20,7 @@ class CrCourrierController extends LaravelController
         // Parse the resource options given by GET parameters
         $resourceOptions = $this->parseResourceOptions();
 
-        $query = CrCourrier::query();
+        $query = CrDossier::query();
         $this->applyResourceOptions($query, $resourceOptions);
 
         if(isset($request->paginate)) {
@@ -57,102 +55,35 @@ class CrCourrierController extends LaravelController
     public function store(Request $request)
     {
 
-        $item = CrCourrier::create([
+        $item = CrDossier::create([
             'inscription_id' => Auth::id(),
             'libelle' => $request->libelle,
             'objet' => $request->objet,
-            'date_redaction' => $request->date_redaction,
             'date_cloture' => $request->date_cloture,
-            'commentaire' => $request->commentaire,
-            'valider' => $request->valider,
-            'numero_facture' => $request->numero_facture,
-            'devise' => $request->devise,
-            'montant' => $request->montant,
-            'type_id' => $request->type_id,
-            'dossier_id' => $request->dossier_id,
-            'nature_id' => $request->nature_id,
+            'responsable_id' => $request->responsable_id,
             'structure_id' => $request->structure_id,
-            'suivi_par' => $request->suivi_par,
-            'date_limit' => $request->date_limit,
         ]);
 
         return response()
-        ->json($item->load([
-            'cr_dossier',
-            'cr_statut',
-            'cr_type',
-            'cr_nature',
-            'cr_urgence',
-            'cr_cloture',
-            'cr_courrier_etapes',
-            'structure_copie_traitements',
-            'structure_copie_informations',
-        ]));
+        ->json($item->load(['cr_courriers','responsable_inscription']));
     }
 
     public function update(Request $request, $id)
     {
 
-        $item = CrCourrier::findOrFail($id);
+        $item = CrDossier::findOrFail($id);
 
         $data = $request->all();
 
-        if($request->reopenCourrier) {
-            $data['cloture_id'] = null;
-            $data['date_cloture']  = null;
-            $data['message_cloture'] = null;
-        }
-
         $item->fill($data)->save();
 
-        if($request->exists('cloture_id')) {
-
-            $link ="";
-            if($item->cr_courrier_entrants()->count()) {
-                $link = 'courrier/entrant/'.$item->cr_courrier_entrants()->first()->id;
-            } else if($item->cr_courrier_sortants()->count()) {
-                $link = 'courrier/sortant/'.$item->cr_courrier_sortants()->first()->id;
-            }
-            Notification::create([
-                'message' => 'Le traitement du courrier <b>'.$item->libelle.'</b> est terminé',
-                'element' => 'courrier traiter',
-                'element_id' => $item->id,
-                'inscription' => Auth::id(),
-                'user' => Auth::id(),
-                'link' => $link,
-            ]);
-
-            $inscriptions = $item->cr_reaffected_inscriptions()->where('inscription','!=', Auth::id())->get();
-            $inscriptions->unique()->each(function($inscript) use ($item,$link)  {
-                Notification::create([
-                    'message' => 'Le traitement du courrier <b>'.$item->libelle.'</b> est terminé',
-                    'element' => 'courrier traiter',
-                    'element_id' => $item->id,
-                    'inscription' => Auth::id(),
-                    'user' => $inscript->id,
-                    'link' => $link,
-                ]);
-            });
-
-        }
-
         return response()
-        ->json($item->load([
-            'cr_dossier',
-            'cr_statut',
-            'cr_type',
-            'cr_nature',
-            'cr_urgence',
-            'cr_cloture',
-            'cr_courrier_etapes',
-            'structure_copie_traitements',
-            'structure_copie_informations',
-        ]));
+        ->json($item->load(['cr_courriers','responsable_inscription']));
     }
 
     public function destroy($id)
     {
-        $item = CrCourrier::findOrFail($id);
+        $item = CrDossier::findOrFail($id);
 
         $item->delete();
 
@@ -166,7 +97,7 @@ class CrCourrierController extends LaravelController
         $item_id = $request->id;
         $relation_name = $request->relation_name;
         $relation_id = $request->relation_id;
-        $item = CrCourrier::find($item_id);
+        $item = CrDossier::find($item_id);
         $item->{$relation_name}()->syncWithoutDetaching([$relation_id => ['inscription_id'=> Auth::id()]]);
 
         return response()->json([
@@ -179,7 +110,7 @@ class CrCourrierController extends LaravelController
         $item_id = $request->id;
         $relation_name = $request->relation_name;
         $relation_id = $request->relation_id;
-        $item = CrCourrier::find($item_id);
+        $item = CrDossier::find($item_id);
         $item->{$relation_name}()->detach($relation_id);
 
         return response()->json([
@@ -196,7 +127,7 @@ class CrCourrierController extends LaravelController
 
         try {
 
-            $item = CrCourrier::find($item_id);
+            $item = CrDossier::find($item_id);
 
             foreach($request->affectation as $key=>$value)
             {
@@ -218,7 +149,7 @@ class CrCourrierController extends LaravelController
         ]);
     }
 
-    public function getAffectation(CrCourrier $CrCourrier)
+    public function getAffectation(CrDossier $CrDossier)
     {
 
         return response()

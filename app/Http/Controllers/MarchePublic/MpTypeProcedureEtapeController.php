@@ -80,6 +80,25 @@ class MpTypeProcedureEtapeController extends LaravelController
         ->json($item);
     }
 
+    public function changePosition(Request $request)
+    {
+
+        if($request->exists('type_procedures'))
+        {
+            $data = json_decode($request->type_procedures);
+            if(is_array($data)){
+                foreach($data as $element) {
+                    MpTypeProcedureEtape::where('id',$element->id)->update([
+                        "position" => $element->position
+                    ]);
+                }
+            }
+        }
+
+        return response()
+        ->json(['msg' => 'mis  a jour effectué']);
+    }
+
     public function destroy($id)
     {
         $item = MpTypeProcedureEtape::findOrFail($id);

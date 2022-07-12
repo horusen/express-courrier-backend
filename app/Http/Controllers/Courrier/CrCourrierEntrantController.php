@@ -186,6 +186,7 @@ class CrCourrierEntrantController extends LaravelController
                 'nature_id' => $request->nature_id,
                 'structure_id' => $request->structure_id,
                 'suivi_par' => $request->suivi_par,
+                'dossier_id' => $request->dossier_id
             ]);
 
             $item = CrCourrierEntrant::create([

@@ -8,6 +8,7 @@ use App\Http\Shared\Optimus\Bruno\EloquentBuilderTrait;
 use App\Http\Shared\Optimus\Bruno\LaravelController;
 use App\Models\MarchePublic\MpMarche;
 use App\Models\MarchePublic\MpMarcheEtape;
+use App\Models\MarchePublic\MpTypeProcedure;
 use App\Models\MarchePublic\MpTypeProcedureEtape;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -53,6 +54,30 @@ class MpMarcheController extends LaravelController
         }
     }
 
+    public function filterServiceContractantsId(myBuilder $query, $method, $clauseOperator, $value)
+    {
+        if ($value) {
+            $ids = explode(",", $value);
+            $query->whereIn('service_contractant_id',$ids);
+        }
+    }
+
+    public function filterTypeProceduresId(myBuilder $query, $method, $clauseOperator, $value)
+    {
+        if ($value) {
+            $ids = explode(",", $value);
+            $query->whereIn('type_procedure_id',$ids);
+        }
+    }
+
+    public function filterTypeMarchesId(myBuilder $query, $method, $clauseOperator, $value)
+    {
+        if ($value) {
+            $ids = explode(",", $value);
+            $query->whereIn('type_marche_id',$ids);
+        }
+    }
+
     public function store(Request $request)
     {
 
@@ -66,14 +91,30 @@ class MpMarcheController extends LaravelController
                 'service_contractant_id' => $request->service_contractant_id,
                 'type_procedure_id' => $request->type_procedure_id,
                 'type_marche_id' => $request->type_marche_id,
+                'cout' => $request->cout,
+                'source_financement' => $request->source_financement,
+                'date_fermeture' => $request->date_fermeture,
+                'date_execution' => $request->date_execution,
             ]);
 
-            $listEtape = MpTypeProcedureEtape::where('type_procedure_id', $request->type_procedure_id)
-            ->orWhereHas('mp_type_procedure.mp_type_procedure_etapes', function ($query) use ($request) {
-                $query->where('id', $request->type_procedure_id);
-            })->orderBy('position', 'asc')->get();
+            $typeProcedure = MpTypeProcedure::where('id', $request->type_procedure_id)->first();
 
-            $listEtape->each(function ($etape) use ($item) {
+            $procedureParent = $typeProcedure->mp_type_procedure()->first();
+            if($procedureParent) {
+                $list2 = $procedureParent->mp_type_procedure_etapes()->get();
+                $list2->each(function ($etape) use ($item) {
+                    MpMarcheEtape::create([
+                    'inscription_id' => Auth::id(),
+                    'libelle' => $etape->libelle,
+                    'description' => $etape->description,
+                    'position' => $etape->position,
+                    'marche_id' =>$item->id]);
+                });
+            }
+
+
+            $list1 = $typeProcedure->mp_type_procedure_etapes()->get();
+            $list1->each(function ($etape) use ($item) {
                 MpMarcheEtape::create([
                 'inscription_id' => Auth::id(),
                 'libelle' => $etape->libelle,

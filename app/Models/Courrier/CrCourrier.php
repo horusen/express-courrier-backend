@@ -66,6 +66,7 @@ class CrCourrier extends Eloquent
         'urgence_id' => 'int',
         'statut_id' => 'int',
         'structure_id' => 'int',
+        'dossier_id' => 'int',
         'suivi_par' => 'int',
         'inscription_id' => 'int',
         'current_etape_id' => 'int',
@@ -84,6 +85,7 @@ class CrCourrier extends Eloquent
         'date_redaction',
         'commentaire',
         'valider',
+        'dossier_id',
         'nature_id',
         'type_id',
         'urgence_id',
@@ -99,6 +101,7 @@ class CrCourrier extends Eloquent
     ];
 
     protected $with = [
+        'cr_dossier',
         'cr_statut',
         'cr_type',
         'cr_nature',
@@ -269,5 +272,10 @@ class CrCourrier extends Eloquent
     {
         return $this->belongsToMany(\App\Models\Structure::class, 'cr_structure_copie_traitement', 'courrier_id', 'structure_id');
     }
+
+    public function cr_dossier()
+	{
+		return $this->belongsTo(\App\Models\Courrier\CrDossier::class, 'dossier_id');
+	}
 
 }

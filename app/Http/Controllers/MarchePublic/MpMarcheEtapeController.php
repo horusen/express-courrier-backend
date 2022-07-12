@@ -80,6 +80,26 @@ class MpMarcheEtapeController extends LaravelController
         ->json($item);
     }
 
+
+    public function changePosition(Request $request)
+    {
+
+        if($request->exists('type_procedures'))
+        {
+            $data = json_decode($request->type_procedures);
+            if(is_array($data)){
+                foreach($data as $element) {
+                    MpMarcheEtape::where('id',$element->id)->update([
+                        "position" => $element->position
+                    ]);
+                }
+            }
+        }
+
+        return response()
+        ->json(['msg' => 'mis  a jour effectué']);
+    }
+
     public function destroy($id)
     {
         $item = MpMarcheEtape::findOrFail($id);

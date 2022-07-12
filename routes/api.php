@@ -91,6 +91,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::customResource('courrier-sortants', 'Courrier\CrCourrierSortantController');
         Route::customResource('destinataires', 'Courrier\CrDestinataireController');
         Route::customResource('etapes', 'Courrier\CrEtapeController');
+        Route::customResource('dossiers', 'Courrier\CrDossierController');
         // Route::customResource('fichiers', 'Courrier\CrFichierController');
         Route::customResource('mails', 'Courrier\CrMailController');
         Route::customResource('mail-tags', 'Courrier\CrMailTagController');
@@ -113,6 +114,9 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::prefix('marche-public')->group(function () {
+        Route::post('marche-etapes/change-position', 'MarchePublic\MpMarcheEtapeController@changePosition');
+        Route::post('type-procedure-etapes/change-position', 'MarchePublic\MpTypeProcedureEtapeController@changePosition');
+
         Route::customResource('marches', 'MarchePublic\MpMarcheController');
         Route::customResource('etapes', 'MarchePublic\MpEtapeController');
         Route::customResource('marche-etapes', 'MarchePublic\MpMarcheEtapeController');
