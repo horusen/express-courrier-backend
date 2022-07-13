@@ -6,11 +6,11 @@ use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Builder as myBuilder;
 use App\Http\Shared\Optimus\Bruno\EloquentBuilderTrait;
 use App\Http\Shared\Optimus\Bruno\LaravelController;
-use App\Models\Courrier\CrNature;
+use App\Models\Courrier\CrStructureCopie;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-class CrNatureController extends LaravelController
+class CrStructureCopieController extends LaravelController
 {
     use EloquentBuilderTrait;
 
@@ -20,7 +20,7 @@ class CrNatureController extends LaravelController
         // Parse the resource options given by GET parameters
         $resourceOptions = $this->parseResourceOptions();
 
-        $query = CrNature::query();
+        $query = CrStructureCopie::query();
         $this->applyResourceOptions($query, $resourceOptions);
 
         if(isset($request->paginate)) {
@@ -55,7 +55,7 @@ class CrNatureController extends LaravelController
     public function store(Request $request)
     {
 
-        $item = CrNature::create([
+        $item = CrStructureCopie::create([
             'inscription_id' => Auth::id(),
             'info' => $request->info,
             'traitement' => $request->traitement,
@@ -69,7 +69,7 @@ class CrNatureController extends LaravelController
     public function update(Request $request, $id)
     {
 
-        $item = CrNature::findOrFail($id);
+        $item = CrStructureCopie::findOrFail($id);
 
         $data = $request->all();
 
@@ -81,7 +81,7 @@ class CrNatureController extends LaravelController
 
     public function destroy($id)
     {
-        $item = CrNature::findOrFail($id);
+        $item = CrStructureCopie::findOrFail($id);
 
         $item->delete();
 
@@ -95,7 +95,7 @@ class CrNatureController extends LaravelController
         $item_id = $request->id;
         $relation_name = $request->relation_name;
         $relation_id = $request->relation_id;
-        $item = CrNature::find($item_id);
+        $item = CrStructureCopie::find($item_id);
         $item->{$relation_name}()->syncWithoutDetaching([$relation_id => ['inscription_id'=> Auth::id()]]);
 
         return response()->json([
@@ -108,7 +108,7 @@ class CrNatureController extends LaravelController
         $item_id = $request->id;
         $relation_name = $request->relation_name;
         $relation_id = $request->relation_id;
-        $item = CrNature::find($item_id);
+        $item = CrStructureCopie::find($item_id);
         $item->{$relation_name}()->detach($relation_id);
 
         return response()->json([
@@ -125,7 +125,7 @@ class CrNatureController extends LaravelController
 
         try {
 
-            $item = CrNature::find($item_id);
+            $item = CrStructureCopie::find($item_id);
 
             foreach($request->affectation as $key=>$value)
             {
@@ -147,7 +147,7 @@ class CrNatureController extends LaravelController
         ]);
     }
 
-    public function getAffectation(CrNature $CrNature)
+    public function getAffectation(CrStructureCopie $CrStructureCopie)
     {
 
         return response()

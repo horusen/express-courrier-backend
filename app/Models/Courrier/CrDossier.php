@@ -80,12 +80,12 @@ class CrDossier extends Eloquent
 
     public function cr_courrier_entrants()
     {
-        return $this->hasManyThrough(\App\Models\Courrier\CrCourrierEntrant::class, \App\Models\Courrier\CrCourrier::class, 'dossier', 'courrier_id');
+        return $this->hasManyThrough(\App\Models\Courrier\CrCourrierEntrant::class, \App\Models\Courrier\CrCourrier::class, 'dossier_id', 'courrier_id');
     }
 
     public function cr_courrier_sortants()
     {
-        return $this->hasManyThrough(\App\Models\Courrier\CrCourrierSortant::class, \App\Models\Courrier\CrCourrier::class, 'dossier', 'courrier_id');
+        return $this->hasManyThrough(\App\Models\Courrier\CrCourrierSortant::class, \App\Models\Courrier\CrCourrier::class, 'dossier_id', 'courrier_id');
     }
 
     public function cr_reaffected_inscriptions()

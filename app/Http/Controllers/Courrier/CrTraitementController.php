@@ -6,11 +6,11 @@ use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Builder as myBuilder;
 use App\Http\Shared\Optimus\Bruno\EloquentBuilderTrait;
 use App\Http\Shared\Optimus\Bruno\LaravelController;
-use App\Models\Courrier\CrSuivi;
+use App\Models\Courrier\CrTraitement;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-class CrSuiviController extends LaravelController
+class CrTraitementController extends LaravelController
 {
     use EloquentBuilderTrait;
 
@@ -20,7 +20,7 @@ class CrSuiviController extends LaravelController
         // Parse the resource options given by GET parameters
         $resourceOptions = $this->parseResourceOptions();
 
-        $query = CrSuivi::query();
+        $query = CrTraitement::query();
         $this->applyResourceOptions($query, $resourceOptions);
 
         if(isset($request->paginate)) {
@@ -55,7 +55,7 @@ class CrSuiviController extends LaravelController
     public function store(Request $request)
     {
 
-        $item = CrSuivi::create([
+        $item = CrTraitement::create([
             'inscription_id' => Auth::id(),
             'action' => $request->action,
             'commentaire' => $request->commentaire,
@@ -69,7 +69,7 @@ class CrSuiviController extends LaravelController
     public function update(Request $request, $id)
     {
 
-        $item = CrSuivi::findOrFail($id);
+        $item = CrTraitement::findOrFail($id);
 
         $data = $request->all();
 
@@ -81,7 +81,7 @@ class CrSuiviController extends LaravelController
 
     public function destroy($id)
     {
-        $item = CrSuivi::findOrFail($id);
+        $item = CrTraitement::findOrFail($id);
 
         $item->delete();
 
@@ -95,7 +95,7 @@ class CrSuiviController extends LaravelController
         $item_id = $request->id;
         $relation_name = $request->relation_name;
         $relation_id = $request->relation_id;
-        $item = CrSuivi::find($item_id);
+        $item = CrTraitement::find($item_id);
         $item->{$relation_name}()->syncWithoutDetaching([$relation_id => ['inscription_id'=> Auth::id()]]);
 
         return response()->json([
@@ -108,7 +108,7 @@ class CrSuiviController extends LaravelController
         $item_id = $request->id;
         $relation_name = $request->relation_name;
         $relation_id = $request->relation_id;
-        $item = CrSuivi::find($item_id);
+        $item = CrTraitement::find($item_id);
         $item->{$relation_name}()->detach($relation_id);
 
         return response()->json([
@@ -125,7 +125,7 @@ class CrSuiviController extends LaravelController
 
         try {
 
-            $item = CrSuivi::find($item_id);
+            $item = CrTraitement::find($item_id);
 
             foreach($request->affectation as $key=>$value)
             {
@@ -147,7 +147,7 @@ class CrSuiviController extends LaravelController
         ]);
     }
 
-    public function getAffectation(CrSuivi $CrSuivi)
+    public function getAffectation(CrTraitement $CrTraitement)
     {
 
         return response()

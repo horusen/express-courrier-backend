@@ -76,69 +76,141 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('notifications', [NotificationController::class, 'getByUser']);
 
-
-    Route::apiResource('affectation-structures', 'Structures\AffectationStructureController')->except(['index', 'show']);
+    // Route::apiResource('affectation-structures', 'Structures\AffectationStructureController')->except(['index', 'show']);
     Route::apiResource('notifications', 'NotificationController')->except(['index', 'create']);
-    Route::post('dossiers/checkpassword/{id}', 'Ged\DossierController@checkPassword');
-    Route::post('fichiers/checkpassword/{id}', 'Ged\FichierController@checkPassword');
 
-    Route::customResource('dossiers', 'Ged\DossierController');
-    Route::customResource('fichiers', 'Ged\FichierController');
-    Route::customResource('fichier-types', 'Ged\FichierTypeController');
-    Route::customResource('ged-conservations', 'Ged\GedConservationRuleController');
-    Route::customResource('ged-elements', 'Ged\GedElementController');
-    Route::customResource('ged-partages', 'Ged\GedPartageController');
+    /* ** *************************************  * **/
+    /* ** SAT Ecriture permission Start * **/
+    /* ** ************************************* * **/
+
+    Route::customResource('dossiers', 'Ged\DossierController',['except' => ['getAll']])->Middleware("ability:courrier-entrant:ECRITURE");
+    Route::customResource('fichiers', 'Ged\FichierController',['except' => ['getAll']])->Middleware("ability:courrier-entrant:ECRITURE");
+    Route::customResource('fichier-types', 'Ged\FichierTypeController',['except' => ['getAll']])->Middleware("ability:courrier-entrant:ECRITURE");
+    Route::customResource('ged-conservations', 'Ged\GedConservationRuleController',['except' => ['getAll']])->Middleware("ability:courrier-entrant:ECRITURE");
+    Route::customResource('ged-elements', 'Ged\GedElementController',['except' => ['getAll']])->Middleware("ability:courrier-entrant:ECRITURE");
+    Route::customResource('ged-partages', 'Ged\GedPartageController',['except' => ['getAll']])->Middleware("ability:courrier-entrant:ECRITURE");
 
 
     Route::prefix('courrier')->group(function () {
 
-        Route::get('mails/markasread/{CrMail}', 'CrMailController@markasread');
 
-        Route::customResource('actions', 'Courrier\CrActionController');
-        Route::customResource('affectation-courriers', 'Courrier\CrAffectationCourrierController');
-        Route::customResource('ampiliations', 'Courrier\CrAmpiliationController');
-        Route::customResource('clotures', 'Courrier\CrClotureController');
-        Route::customResource('commentaires', 'Courrier\CrCommentaireController');
-        Route::customResource('coordonnees', 'Courrier\CrCoordonneeController');
-        Route::customResource('courriers', 'Courrier\CrCourrierController');
-        Route::customResource('courrier-entrants', 'Courrier\CrCourrierEntrantController');
-        Route::customResource('courrier-etapes', 'Courrier\CrCourrierEtapeController');
-        Route::customResource('courrier-sortants', 'Courrier\CrCourrierSortantController');
-        Route::customResource('destinataires', 'Courrier\CrDestinataireController');
-        Route::customResource('etapes', 'Courrier\CrEtapeController');
-        Route::customResource('dossiers', 'Courrier\CrDossierController');
-        // Route::customResource('fichiers', 'Courrier\CrFichierController');
-        Route::customResource('mails', 'Courrier\CrMailController');
-        Route::customResource('mail-tags', 'Courrier\CrMailTagController');
-        Route::customResource('moyen-suivis', 'Courrier\CrMoyenSuiviController');
-        Route::customResource('natures', 'Courrier\CrNatureController');
-        Route::customResource('provenances', 'Courrier\CrProvenanceController');
-        Route::customResource('reaffectations', 'Courrier\CrReaffectationController');
-        Route::customResource('statuts', 'Courrier\CrStatutController');
-        Route::customResource('structure-copies', 'Courrier\CrStructureCopieController');
-        Route::customResource('suivis', 'Courrier\CrSuiviController');
-        Route::customResource('taches', 'Courrier\CrTacheController');
-        Route::customResource('traitements', 'Courrier\CrTraitementController');
-        Route::customResource('types', 'Courrier\CrTypeController');
-        Route::customResource('urgences', 'Courrier\CrUrgenceController');
+        Route::customResource('actions', 'Courrier\CrActionController',['except' => ['getAll']])->Middleware("ability:courrier-entrant:ECRITURE");
+        Route::customResource('affectation-courriers', 'Courrier\CrAffectationCourrierController',['except' => ['getAll']])->Middleware("ability:courrier-entrant:ECRITURE");
+        Route::customResource('ampiliations', 'Courrier\CrAmpiliationController',['except' => ['getAll']])->Middleware("ability:courrier-entrant:ECRITURE");
+        Route::customResource('clotures', 'Courrier\CrClotureController',['except' => ['getAll']])->Middleware("ability:courrier-entrant:ECRITURE");
+        Route::customResource('commentaires', 'Courrier\CrCommentaireController',['except' => ['getAll']])->Middleware("ability:courrier-entrant:ECRITURE");
+        Route::customResource('coordonnees', 'Courrier\CrCoordonneeController',['except' => ['getAll']])->Middleware("ability:courrier-entrant:ECRITURE");
+        Route::customResource('courriers', 'Courrier\CrCourrierController',['except' => ['getAll']])->Middleware("ability:courrier-entrant:ECRITURE");
+        Route::customResource('courrier-entrants', 'Courrier\CrCourrierEntrantController',['except' => ['getAll']])->Middleware("ability:courrier-entrant:ECRITURE");
+        Route::customResource('courrier-etapes', 'Courrier\CrCourrierEtapeController',['except' => ['getAll']])->Middleware("ability:courrier-entrant:ECRITURE");
+        Route::customResource('courrier-sortants', 'Courrier\CrCourrierSortantController',['except' => ['getAll']])->Middleware("ability:courrier-entrant:ECRITURE");
+        Route::customResource('destinataires', 'Courrier\CrDestinataireController',['except' => ['getAll']])->Middleware("ability:courrier-entrant:ECRITURE");
+        Route::customResource('etapes', 'Courrier\CrEtapeController',['except' => ['getAll']])->Middleware("ability:courrier-entrant:ECRITURE");
+        Route::customResource('dossiers', 'Courrier\CrDossierController',['except' => ['getAll']])->Middleware("ability:courrier-entrant:ECRITURE");
+        // Route::customResource('fichiers', 'Courrier\CrFichierController',['except' => ['getAll']])->Middleware("ability:courrier-entrant:ECRITURE");
+        Route::customResource('mails', 'Courrier\CrMailController',['except' => ['getAll']])->Middleware("ability:courrier-entrant:ECRITURE");
+        Route::customResource('mail-tags', 'Courrier\CrMailTagController',['except' => ['getAll']])->Middleware("ability:courrier-entrant:ECRITURE");
+        Route::customResource('moyen-suivis', 'Courrier\CrMoyenSuiviController',['except' => ['getAll']])->Middleware("ability:courrier-entrant:ECRITURE");
+        Route::customResource('natures', 'Courrier\CrNatureController',['except' => ['getAll']])->Middleware("ability:courrier-entrant:ECRITURE");
+        Route::customResource('provenances', 'Courrier\CrProvenanceController',['except' => ['getAll']])->Middleware("ability:courrier-entrant:ECRITURE");
+        Route::customResource('reaffectations', 'Courrier\CrReaffectationController',['except' => ['getAll']])->Middleware("ability:courrier-entrant:ECRITURE");
+        Route::customResource('statuts', 'Courrier\CrStatutController',['except' => ['getAll']])->Middleware("ability:courrier-entrant:ECRITURE");
+        Route::customResource('structure-copies', 'Courrier\CrStructureCopieController',['except' => ['getAll']])->Middleware("ability:courrier-entrant:ECRITURE");
+        Route::customResource('suivis', 'Courrier\CrSuiviController',['except' => ['getAll']])->Middleware("ability:courrier-entrant:ECRITURE");
+        Route::customResource('taches', 'Courrier\CrTacheController',['except' => ['getAll']])->Middleware("ability:courrier-entrant:ECRITURE");
+        Route::customResource('traitements', 'Courrier\CrTraitementController',['except' => ['getAll']])->Middleware("ability:courrier-entrant:ECRITURE");
+        Route::customResource('types', 'Courrier\CrTypeController',['except' => ['getAll']])->Middleware("ability:courrier-entrant:ECRITURE");
+        Route::customResource('urgences', 'Courrier\CrUrgenceController',['except' => ['getAll']])->Middleware("ability:courrier-entrant:ECRITURE");
     });
 
     Route::prefix('json-form')->group(function () {
-        Route::customResource('controls', 'Courrier\CrFormFieldController');
-        Route::customResource('validators', 'Courrier\CrFormFieldValidatorController');
+        Route::customResource('controls', 'Courrier\CrFormFieldController',['except' => ['getAll']])->Middleware("ability:courrier-entrant:ECRITURE");
+        Route::customResource('validators', 'Courrier\CrFormFieldValidatorController',['except' => ['getAll']])->Middleware("ability:courrier-entrant:ECRITURE");
     });
 
     Route::prefix('marche-public')->group(function () {
-        Route::post('marche-etapes/change-position', 'MarchePublic\MpMarcheEtapeController@changePosition');
-        Route::post('type-procedure-etapes/change-position', 'MarchePublic\MpTypeProcedureEtapeController@changePosition');
+        Route::post('marche-etapes/change-position', 'MarchePublic\MpMarcheEtapeController@changePosition')->Middleware("ability:courrier-entrant:ECRITURE");
+        Route::post('type-procedure-etapes/change-position', 'MarchePublic\MpTypeProcedureEtapeController@changePosition')->Middleware("ability:courrier-entrant:ECRITURE");
 
-        Route::customResource('marches', 'MarchePublic\MpMarcheController');
-        Route::customResource('etapes', 'MarchePublic\MpEtapeController');
-        Route::customResource('marche-etapes', 'MarchePublic\MpMarcheEtapeController');
-        Route::customResource('type-marches', 'MarchePublic\MpTypeMarcheController');
-        Route::customResource('type-procedures', 'MarchePublic\MpTypeProcedureController');
-        Route::customResource('type-procedure-etapes', 'MarchePublic\MpTypeProcedureEtapeController');
+        Route::customResource('marches', 'MarchePublic\MpMarcheController',['except' => ['getAll']])->Middleware("ability:courrier-entrant:ECRITURE");
+        Route::customResource('etapes', 'MarchePublic\MpEtapeController',['except' => ['getAll']])->Middleware("ability:courrier-entrant:ECRITURE");
+        Route::customResource('marche-etapes', 'MarchePublic\MpMarcheEtapeController',['except' => ['getAll']])->Middleware("ability:courrier-entrant:ECRITURE");
+        Route::customResource('type-marches', 'MarchePublic\MpTypeMarcheController',['except' => ['getAll']])->Middleware("ability:courrier-entrant:ECRITURE");
+        Route::customResource('type-procedures', 'MarchePublic\MpTypeProcedureController',['except' => ['getAll']])->Middleware("ability:courrier-entrant:ECRITURE");
+        Route::customResource('type-procedure-etapes', 'MarchePublic\MpTypeProcedureEtapeController',['except' => ['getAll']])->Middleware("ability:courrier-entrant:ECRITURE");
     });
+
+    /* ** *************************************  * **/
+    /* ** SAT Ecriture permission END * **/
+    /* ** ************************************* * **/
+
+    /* ** *************************************  * **/
+    /* ** SAT Lecture Only permission Start * **/
+    /* ** ************************************* * **/
+
+    Route::post('dossiers/checkpassword/{id}', 'Ged\DossierController@checkPassword')->Middleware("ability:courrier-entrant:LECTURE");
+    Route::post('fichiers/checkpassword/{id}', 'Ged\FichierController@checkPassword')->Middleware("ability:courrier-entrant:LECTURE");
+
+
+    Route::customResource('dossiers', 'Ged\DossierController',['only' => ['getAll']])->Middleware("ability:courrier-entrant:LECTURE");
+    Route::customResource('fichiers', 'Ged\FichierController',['only' => ['getAll']])->Middleware("ability:courrier-entrant:LECTURE");
+    Route::customResource('fichier-types', 'Ged\FichierTypeController',['only' => ['getAll']])->Middleware("ability:courrier-entrant:LECTURE");
+    Route::customResource('ged-conservations', 'Ged\GedConservationRuleController',['only' => ['getAll']])->Middleware("ability:courrier-entrant:LECTURE");
+    Route::customResource('ged-elements', 'Ged\GedElementController',['only' => ['getAll']])->Middleware("ability:courrier-entrant:LECTURE");
+    Route::customResource('ged-partages', 'Ged\GedPartageController',['only' => ['getAll']])->Middleware("ability:courrier-entrant:LECTURE");
+
+
+    Route::prefix('courrier')->group(function () {
+
+        Route::get('mails/markasread/{CrMail}', 'Courrier\CrMailController@markasread')->Middleware("ability:courrier-entrant:LECTURE");
+
+        Route::customResource('actions', 'Courrier\CrActionController',['only' => ['getAll']])->Middleware("ability:courrier-entrant:LECTURE");
+        Route::customResource('affectation-courriers', 'Courrier\CrAffectationCourrierController',['only' => ['getAll']])->Middleware("ability:courrier-entrant:LECTURE");
+        Route::customResource('ampiliations', 'Courrier\CrAmpiliationController',['only' => ['getAll']])->Middleware("ability:courrier-entrant:LECTURE");
+        Route::customResource('clotures', 'Courrier\CrClotureController',['only' => ['getAll']])->Middleware("ability:courrier-entrant:LECTURE");
+        Route::customResource('commentaires', 'Courrier\CrCommentaireController',['only' => ['getAll']])->Middleware("ability:courrier-entrant:LECTURE");
+        Route::customResource('coordonnees', 'Courrier\CrCoordonneeController',['only' => ['getAll']])->Middleware("ability:courrier-entrant:LECTURE");
+        Route::customResource('courriers', 'Courrier\CrCourrierController',['only' => ['getAll']])->Middleware("ability:courrier-entrant:LECTURE");
+        Route::customResource('courrier-entrants', 'Courrier\CrCourrierEntrantController',['only' => ['getAll']])->Middleware("ability:courrier-entrant:LECTURE");
+        Route::customResource('courrier-etapes', 'Courrier\CrCourrierEtapeController',['only' => ['getAll']])->Middleware("ability:courrier-entrant:LECTURE");
+        Route::customResource('courrier-sortants', 'Courrier\CrCourrierSortantController',['only' => ['getAll']])->Middleware("ability:courrier-entrant:LECTURE");
+        Route::customResource('destinataires', 'Courrier\CrDestinataireController',['only' => ['getAll']])->Middleware("ability:courrier-entrant:LECTURE");
+        Route::customResource('etapes', 'Courrier\CrEtapeController',['only' => ['getAll']])->Middleware("ability:courrier-entrant:LECTURE");
+        Route::customResource('dossiers', 'Courrier\CrDossierController',['only' => ['getAll']])->Middleware("ability:courrier-entrant:LECTURE");
+        // Route::customResource('fichiers', 'Courrier\CrFichierController',['only' => ['getAll']])->Middleware("ability:courrier-entrant:LECTURE");
+        Route::customResource('mails', 'Courrier\CrMailController',['only' => ['getAll']])->Middleware("ability:courrier-entrant:LECTURE");
+        Route::customResource('mail-tags', 'Courrier\CrMailTagController',['only' => ['getAll']])->Middleware("ability:courrier-entrant:LECTURE");
+        Route::customResource('moyen-suivis', 'Courrier\CrMoyenSuiviController',['only' => ['getAll']])->Middleware("ability:courrier-entrant:LECTURE");
+        Route::customResource('natures', 'Courrier\CrNatureController',['only' => ['getAll']])->Middleware("ability:courrier-entrant:LECTURE");
+        Route::customResource('provenances', 'Courrier\CrProvenanceController',['only' => ['getAll']])->Middleware("ability:courrier-entrant:LECTURE");
+        Route::customResource('reaffectations', 'Courrier\CrReaffectationController',['only' => ['getAll']])->Middleware("ability:courrier-entrant:LECTURE");
+        Route::customResource('statuts', 'Courrier\CrStatutController',['only' => ['getAll']])->Middleware("ability:courrier-entrant:LECTURE");
+        Route::customResource('structure-copies', 'Courrier\CrStructureCopieController',['only' => ['getAll']])->Middleware("ability:courrier-entrant:LECTURE");
+        Route::customResource('suivis', 'Courrier\CrSuiviController',['only' => ['getAll']])->Middleware("ability:courrier-entrant:LECTURE");
+        Route::customResource('taches', 'Courrier\CrTacheController',['only' => ['getAll']])->Middleware("ability:courrier-entrant:LECTURE");
+        Route::customResource('traitements', 'Courrier\CrTraitementController',['only' => ['getAll']])->Middleware("ability:courrier-entrant:LECTURE");
+        Route::customResource('types', 'Courrier\CrTypeController',['only' => ['getAll']])->Middleware("ability:courrier-entrant:LECTURE");
+        Route::customResource('urgences', 'Courrier\CrUrgenceController',['only' => ['getAll']])->Middleware("ability:courrier-entrant:LECTURE");
+    });
+
+    Route::prefix('json-form')->group(function () {
+        Route::customResource('controls', 'Courrier\CrFormFieldController',['only' => ['getAll']])->Middleware("ability:courrier-entrant:LECTURE");
+        Route::customResource('validators', 'Courrier\CrFormFieldValidatorController',['only' => ['getAll']])->Middleware("ability:courrier-entrant:LECTURE");
+    });
+
+    // no middleware for marche because outside people can see.
+    Route::prefix('marche-public')->group(function () {
+        Route::customResource('marches', 'MarchePublic\MpMarcheController',['only' => ['getAll']]);
+        Route::customResource('etapes', 'MarchePublic\MpEtapeController',['only' => ['getAll']]);
+        Route::customResource('marche-etapes', 'MarchePublic\MpMarcheEtapeController',['only' => ['getAll']]);
+        Route::customResource('type-marches', 'MarchePublic\MpTypeMarcheController',['only' => ['getAll']]);
+        Route::customResource('type-procedures', 'MarchePublic\MpTypeProcedureController',['only' => ['getAll']]);
+        Route::customResource('type-procedure-etapes', 'MarchePublic\MpTypeProcedureEtapeController',['only' => ['getAll']]);
+    });
+
+    /* ** *************************************  * **/
+    /* ** SAT Lecture Only permission END * **/
+    /* ** ************************************* * **/
 
     Route::get('employes/{id}', [EmployeController::class, 'show']);
     Route::put('employes/{employe}/validate', [EmployeController::class, 'validateEmploye']);

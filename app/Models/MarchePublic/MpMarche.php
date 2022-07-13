@@ -41,6 +41,7 @@ class MpMarche extends Eloquent
 		'service_contractant_id' => 'int',
 		'type_procedure_id' => 'int',
 		'type_marche_id' => 'int',
+		'fournisseur_id',
 		'cout' => 'int',
 		'inscription_id' => 'int'
 	];
@@ -57,6 +58,7 @@ class MpMarche extends Eloquent
 		'service_contractant_id',
 		'type_procedure_id',
 		'type_marche_id',
+		'fournisseur_id',
 		'cout',
 		'source_financement',
 		'inscription_id'
@@ -70,6 +72,11 @@ class MpMarche extends Eloquent
 	public function structure()
 	{
 		return $this->belongsTo(\App\Models\Structure::class, 'service_contractant_id');
+	}
+
+    public function fournisseur()
+	{
+		return $this->belongsTo(\App\Models\Courrier\CrCoordonnee::class, 'fournisseur_id');
 	}
 
 	public function mp_type_marche()

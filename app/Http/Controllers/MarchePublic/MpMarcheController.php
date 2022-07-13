@@ -92,6 +92,7 @@ class MpMarcheController extends LaravelController
                 'type_procedure_id' => $request->type_procedure_id,
                 'type_marche_id' => $request->type_marche_id,
                 'cout' => $request->cout,
+                'fournisseur_id' => $request->fournisseur_id,
                 'source_financement' => $request->source_financement,
                 'date_fermeture' => $request->date_fermeture,
                 'date_execution' => $request->date_execution,
