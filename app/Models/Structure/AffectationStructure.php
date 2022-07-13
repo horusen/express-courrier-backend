@@ -3,6 +3,7 @@
 namespace App\Models\Structure;
 
 use App\ApiRequest\ApiRequestConsumer;
+use App\Models\Authorization\Role;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -12,7 +13,7 @@ class AffectationStructure extends Model
     use SoftDeletes, ApiRequestConsumer;
     protected $table = 'affectation_structures';
     protected $fillable = [
-        'user', 'structure', 'fonction', 'poste', 'inscription', 'activated_at'
+        'user', 'structure', 'fonction', 'poste', 'inscription', 'activated_at', 'role'
     ];
 
     protected $appends = ['status'];
@@ -30,6 +31,12 @@ class AffectationStructure extends Model
     public function fonction()
     {
         return $this->belongsTo(Fonction::class, 'fonction');
+    }
+
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class, 'role');
     }
 
 

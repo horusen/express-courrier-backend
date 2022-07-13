@@ -2,13 +2,24 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Authorization\Role;
 use App\Models\Structure\Inscription;
+use App\Services\Authorization\AuthorisationService;
+use App\Services\InscriptionService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class AuthenticationController extends Controller
 {
+    private InscriptionService $inscriptionService;
+    private AuthorisationService $authorisationService;
+
+    public function __construct(InscriptionService $inscriptionService, AuthorisationService $authorisationService)
+    {
+        $this->inscriptionService = $inscriptionService;
+        $this->authorisationService = $authorisationService;
+    }
     private function validateLoginRequest(Request $request)
     {
         $request->validate([
@@ -21,7 +32,7 @@ class AuthenticationController extends Controller
     public function register(int $id, Request $request)
     {
         $request->validate(['conditions_utilisations' => 'required|accepted']);
-        $user =  (new InscriptionController())->update($request, $id);
+        $user =  $this->inscriptionService->update($id, $request->all());
         $user->markEmailAsVerified();
         return $this->login($request);
     }
@@ -32,13 +43,25 @@ class AuthenticationController extends Controller
         $user = Inscription::where('email', $request->email)->first();
         if (password_verify($request->password, $user->password)) {
             // return response()->json(['message' => 'Erreur de connexionation'], 200);
-            $token = $user->createToken('authToken');
 
+
+            $role = $user->roles()->get()->first();
+
+
+            if (isset($role)) {
+                $authorisations = $this->authorisationService->getByRole($role->id);
+                $authorisationsToken = $this->authorisationService->stringifyAuthorisations($authorisations);
+            } else {
+                $authorisations = $authorisationsToken = [];
+            }
+
+            $token = $user->createToken('authToken', $authorisationsToken);
 
 
             return response()->json([
                 'access_token' => $token->plainTextToken,
-                'user' => array_merge($user->toArray(), ['affectation_structure' => $user->affectation_structure()->with('structure:id,libelle,image,type', 'poste:id,libelle', 'fonction:id,libelle')->get()->first()->toArray()]),
+                'authorisations' => $authorisations,
+                'user' => array_merge($user->toArray(), ['affectation_structure' => $user->affectation_structure()->with('structure:id,libelle,image,type', 'poste:id,libelle', 'fonction:id,libelle', 'role:id,libelle')->get()->first()->toArray()]),
                 'structures' => $user->estDansStructures()->without('type', 'parent')->pluck('structures.id'),
                 'token_type' => 'Bearer',
             ]);
@@ -46,6 +69,7 @@ class AuthenticationController extends Controller
 
         return response()->json(['message' => 'Erreur de connexion'], 401);
     }
+
 
 
     public function logout()

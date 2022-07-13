@@ -3,25 +3,38 @@
 namespace App\Http\Controllers;
 
 use App\Models\Structure\Inscription;
-use Exception;
+use App\Services\InscriptionService;
+use App\Shared\Controllers\BaseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Swift_TransportException;
 
-class InscriptionController extends Controller
+class InscriptionController extends BaseController
 {
 
 
+    public function __construct(InscriptionService $service)
+    {
+        parent::__construct([], $service);
+    }
 
 
     // TODO add image thumbnail to load image faster
-    public function store(Request $request)
+    // public function store(Request $request)
+    // {
+    //     $this->service->validate($request);
+
+    //     return $this->service->store($request);
+    // }
+
+
+
+
+
+
+    public function getByRole($role)
     {
-        $this->service->validate($request);
-
-        return $this->service->store($request);
+        return $this->service->getByRole($role);
     }
-
 
 
     public function show(int $id)

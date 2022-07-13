@@ -14,10 +14,10 @@ class AffectationStructureSeeder extends Seeder
     {
         AffectationStructure::create([
             'user' => 1,
-            'structure' => 1,
-            'poste' => 1,
-            'fonction' => 1,
-            // 'droit_acces' => 1,
+            // 'structure' => 1,
+            // 'poste' => 1,
+            // 'fonction' => 1,
+            'role' => 1,
             'inscription' => 1
         ]);
         AffectationStructure::create([
@@ -25,7 +25,7 @@ class AffectationStructureSeeder extends Seeder
             'structure' => 2,
             'poste' => 1,
             'fonction' => 1,
-            // 'droit_acces' => 1,
+            'role' => 3,
             'inscription' => 1
         ]);
 

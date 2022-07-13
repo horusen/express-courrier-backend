@@ -7,6 +7,7 @@
 
 namespace App\Models;
 
+use App\ApiRequest\ApiRequestConsumer;
 use Illuminate\Database\Eloquent\Model as Eloquent;
 
 /**
@@ -273,10 +274,10 @@ class Inscription extends Eloquent
         return $this->belongsToMany(\App\Models\Structure::class, AffectationStructure::class, 'user', 'structure');
     }
 
-	public function type_admins()
-	{
-		return $this->hasMany(\App\Models\TypeAdmin::class, 'inscription');
-	}
+    public function type_admins()
+    {
+        return $this->hasMany(\App\Models\TypeAdmin::class, 'inscription');
+    }
 
     public function type_structures()
     {

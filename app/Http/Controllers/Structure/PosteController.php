@@ -12,13 +12,19 @@ class PosteController extends BaseController
 {
     protected $model = Poste::class;
     protected $validation = [
-        'libelle' => 'required'
+        'libelle' => 'required',
+        'structure' => 'required|integer|exists:structures,id'
     ];
 
 
     public function __construct(PosteService $service)
     {
         parent::__construct($this->validation, $service);
+    }
+
+    public function getByStructure($structure)
+    {
+        return $this->service->getByStructure($structure);
     }
 
 

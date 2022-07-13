@@ -32,7 +32,7 @@ class EmployeService extends BaseService
             if (!($this->isModerateur(Auth::id(), 10) || $this->isAdmin(Auth::id(), 10))) throw new NotAllowedException();
         }
 
-        return $this->model::status($status)->where('structure', $structure)->with(['fonction', 'poste', 'user'])->consume($request);
+        return $this->model::status($status)->where('structure', $structure)->with(['fonction', 'poste', 'user', 'role'])->consume($request);
     }
 
 
@@ -40,7 +40,7 @@ class EmployeService extends BaseService
     {
         // Update affectation structure details
         $affectation = $this->model::findOrFail($id);
-        $affectation->update(['poste' => $data['poste'], 'fonction' => $data['fonction']]);
+        $affectation->update(['poste' => $data['poste'], 'fonction' => $data['fonction'], 'role' => $data['role']]);
 
         // Return the value
         return $this->show($id);
@@ -56,6 +56,6 @@ class EmployeService extends BaseService
 
     public function show($id)
     {
-        return $this->model::with(['fonction', 'poste', 'user', 'structure:id,libelle,type'])->findOrFail($id);
+        return $this->model::with(['fonction', 'poste', 'user', 'structure:id,libelle,type', 'role'])->findOrFail($id);
     }
 }

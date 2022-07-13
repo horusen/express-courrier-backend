@@ -5,12 +5,10 @@ namespace App\Http\Controllers\Structure;
 use App\Models\Structure\AffectationStructure;
 use App\Services\Structure\AffectationStructureService;
 use App\Shared\Controllers\BaseController;
-use App\Traits\Structure\AdminTrait;
 use Illuminate\Http\Request;
 
 class AffectationStructureController extends BaseController
 {
-    use AdminTrait;
     protected $model = AffectationStructure::class;
     protected $validation = [
         'structure' => 'required|integer|exists:structures,id',

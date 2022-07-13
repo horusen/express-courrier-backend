@@ -2,6 +2,9 @@
 
 namespace App\Models\Structure;
 
+use App\ApiRequest\ApiRequestConsumer;
+use App\Models\Authorization\Role;
+use App\Models\Authorization\RolesUser;
 use App\Notifications\ValidationInscription;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -11,7 +14,7 @@ use Illuminate\Notifications\Notifiable;
 
 class Inscription extends Authenticatable implements MustVerifyEmail
 {
-    use SoftDeletes, Notifiable, \Laravel\Sanctum\HasApiTokens;
+    use SoftDeletes, Notifiable, \Laravel\Sanctum\HasApiTokens, ApiRequestConsumer;
     protected $table = 'inscription';
     protected $fillable = [
         'prenom', 'nom', 'date_naissance', 'lieu_naissance',
@@ -76,7 +79,10 @@ class Inscription extends Authenticatable implements MustVerifyEmail
     }
 
 
-
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class, AffectationStructure::class, 'user', 'role');
+    }
 
     public function sendEmailVerificationNotification()
     {

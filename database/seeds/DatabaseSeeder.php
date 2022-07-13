@@ -1,6 +1,6 @@
 <?php
 
-
+use Authorization\ScopeSeeder;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -44,7 +44,8 @@ class DatabaseSeeder extends Seeder
         // $this->call(ReactionSeeder::class);
         // $this->call(ReactionStructureSeeder::class);
 
-        $this->call(CrMailSeed::class);
+        $this->call(ScopeSeeder::class);
+        $this->call(RoleSeeder::class);
 
         // $this->call(IntervenantDiscussionSeeder::class);
         // $this->call(ReactionSeeder::class);

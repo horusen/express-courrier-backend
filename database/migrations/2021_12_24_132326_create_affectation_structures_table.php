@@ -19,6 +19,7 @@ class CreateAffectationStructuresTable extends Migration
             $table->foreignId('structure')->constrained('structures')->onUpdate('restrict')->onDelete('restrict');
             $table->foreignId('fonction')->nullable()->constrained('fonctions')->onUpdate('restrict')->onDelete('restrict');
             $table->foreignId('poste')->nullable()->constrained('postes')->onUpdate('restrict')->onDelete('restrict');
+            $table->foreignId('role')->nullable()->constrained('roles')->onUpdate('restrict')->onDelete('restrict');
             // $table->foreignId('droit_acces')->constrained('droit_acces')->onUpdate('restrict')->onDelete('restrict');
             $table->foreignId('inscription')->constrained('inscription')->onUpdate('restrict')->onDelete('restrict');
             $table->timestamps();

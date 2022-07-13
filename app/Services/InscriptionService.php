@@ -33,6 +33,13 @@ class InscriptionService extends BaseService
         ]);
     }
 
+    public function getByRole($role)
+    {
+        return $this->model::with(['affectation_structure.fonction', 'affectation_structure.structure'])->whereHas('roles', function ($q) use ($role) {
+            return $q->where('roles.id', $role);
+        })->consume(null);
+    }
+
 
     // TODO add image thumbnail to load image faster
     public function add(Request $request)

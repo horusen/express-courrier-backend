@@ -17,6 +17,7 @@ class CreateFonctionsTable extends Migration
             $table->id();
             $table->string('libelle');
             $table->text('description');
+            $table->foreignId('structure')->constrained('structures')->onUpdate('restrict')->onDelete('restrict');
             $table->foreignId('inscription')->constrained('inscription')->onUpdate('restrict')->onDelete('restrict');
             $table->timestamps();
             $table->softDeletes();

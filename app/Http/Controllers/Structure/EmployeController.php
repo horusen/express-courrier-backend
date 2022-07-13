@@ -26,6 +26,7 @@ class EmployeController extends BaseController
         'poste' => 'required|integer|exists:postes,id',
         'fonction' => 'required|integer|exists:fonctions,id',
         'structure' => 'required|integer|exists:structures,id',
+        'role' => 'required|integer|exists:roles,id',
     ];
 
 
@@ -53,11 +54,7 @@ class EmployeController extends BaseController
 
     public function store(Request $request)
     {
-        $request->validate([
-            'fonction' => 'required|integer|exists:fonctions,id',
-            'poste' => 'required|integer|exists:postes,id',
-            'structure' => 'required|integer|exists:structures,id',
-        ]);
+        $request->validate($this->validation);
 
         $this->inscriptionService->validate($request);
 
@@ -72,7 +69,7 @@ class EmployeController extends BaseController
 
         $affectation = $this->affectationStructureService->store($request->all());
 
-        return $affectation->load(['poste', 'fonction', 'user']);
+        return $affectation->load(['poste', 'fonction', 'user', 'role']);
     }
 
     public function update(Request $request, $id)

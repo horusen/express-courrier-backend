@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthenticationController;
+use App\Http\Controllers\Authorization\RoleController;
 use App\Http\Controllers\ConditionsUtilisationController;
 use App\Http\Controllers\CourrierController;
 use App\Http\Controllers\Ged\DossierController;
@@ -8,6 +9,7 @@ use App\Http\Controllers\InscriptionController;
 use App\Http\Controllers\Messagerie\DiscussionController;
 use App\Http\Controllers\Messagerie\ReactionController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\RoleUserController;
 use App\Http\Controllers\Structure\EmployeController;
 use App\Http\Controllers\Structure\FonctionController;
 use App\Http\Controllers\Structure\PosteController;
@@ -34,6 +36,7 @@ Route::get('structures/all', [StructureController::class, 'all']);
 
 
 Route::get('conditions-utilisations', [ConditionsUtilisationController::class, 'show']);
+Route::put('conditions-utilisations', [ConditionsUtilisationController::class, 'update']);
 
 // Route::put('users/{id}', [InscriptionController::class, 'update']);
 
@@ -52,8 +55,20 @@ Route::get('user/{user}/email/resend', 'VerificationController@resend')->name('e
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('auth/logout', [AuthenticationController::class, 'logout']);
 
-    Route::get('postes/all', [PosteController::class, 'all']);
-    Route::get('fonctions/all', [FonctionController::class, 'all']);
+    Route::get('structures/{structure}/roles', [RoleController::class, 'getByStructure']);
+    Route::get('roles/{role}/users', [InscriptionController::class, 'getByRole']);
+    Route::post('users/roles', [RoleUserController::class, 'store']);
+
+    Route::apiResource('roles', "Authorization\RoleController")->middleware(['ability:ADMIN:ADMIN']);
+
+    Route::apiResource('scopes', "Authorization\ScopeController");
+
+
+    Route::get('structures/{structure}/postes', [PosteController::class, 'getByStructure']);
+    Route::get('structures/{structure}/fonctions', [FonctionController::class, 'getByStructure']);
+
+    Route::apiResource('postes', 'Structure\PosteController');
+    Route::apiResource('fonctions', 'Structure\FonctionController');
 
     Route::get('courriers', [CourrierController::class, 'index']);
     Route::get('users/{user}/courriers', [CourrierController::class, 'getByUser']);
@@ -225,5 +240,4 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('diffcrbymonthdash/{id}', 'Dash\CourrierdashController@diffcrbymonth');
     Route::get('timingdash', 'Dash\CourrierdashController@timing');
     Route::get('expediteurdash', 'Dash\CourrierdashController@expediteurcr');
-
 });
