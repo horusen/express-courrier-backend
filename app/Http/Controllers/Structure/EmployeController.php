@@ -10,14 +10,14 @@ use App\Services\InscriptionService;
 use App\Services\Structure\AffectationStructureService;
 use App\Services\Structure\EmployeService;
 use App\Shared\Controllers\BaseController;
-use App\Traits\Structure\AdminTrait;
+use App\Traits\Structure\AuthorisationTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Swift_TransportException;
 
 class EmployeController extends BaseController
 {
-    use AdminTrait;
+    use AuthorisationTrait;
     protected $service;
     protected InscriptionService $inscriptionService;
     protected AffectationStructureService $affectationStructureService;

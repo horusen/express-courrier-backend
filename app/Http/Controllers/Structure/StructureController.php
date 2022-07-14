@@ -3,12 +3,13 @@
 namespace App\Http\Controllers\Structure;
 
 use App\ApiRequest\Structure\StructureApiRequest;
+use App\Exceptions\NotAllowedException;
 use App\Models\Structure\Structure;
 use App\Services\Structure\AdminService;
 use App\Services\Structure\AffectationStructureService;
 use App\Services\StructureService;
 use App\Shared\Controllers\BaseController;
-use App\Traits\Structure\AdminTrait;
+use App\Traits\Structure\AuthorisationTrait;
 use App\Traits\Structure\StructureTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -17,7 +18,7 @@ use App\Models\Structure as StructureWDossier;
 class StructureController extends BaseController
 {
     use StructureTrait;
-    use AdminTrait;
+    use AuthorisationTrait;
     // use FileHandlerTrait;
     protected AdminService $adminService;
     protected $model = Structure::class;
@@ -123,7 +124,7 @@ class StructureController extends BaseController
         $structure = Structure::findOrFail($id);
 
         if (!$this->isAdmin(Auth::id(), $request->structure)) {
-            return $this->responseError("Non autorisé", 401);
+            return new NotAllowedException();
         }
 
         $structure->update($request->except('image'));
@@ -135,7 +136,7 @@ class StructureController extends BaseController
         $structure = Structure::findOrFail($id);
 
         if (!$this->isAdmin(Auth::id(), $structure->id)) {
-            return $this->responseError("Non autorisé", 401);
+            return new NotAllowedException();
         }
 
         if ($this->hasEquipe($structure)) {

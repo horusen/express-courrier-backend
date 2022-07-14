@@ -2,15 +2,16 @@
 
 namespace App\Services\Structure;
 
+use App\Exceptions\NotAllowedException;
 use App\Models\Structure\AffectationStructure;
 use App\Services\BaseService;
-use App\Traits\Structure\AdminTrait;
+use App\Traits\Structure\AuthorisationTrait;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 
 class AffectationStructureService extends BaseService
 {
-    use AdminTrait;
+    use AuthorisationTrait;
 
     public function __construct(AffectationStructure $model)
     {
@@ -21,7 +22,7 @@ class AffectationStructureService extends BaseService
     {
 
         if (!$this->isAdmin(Auth::id(), $data['structure'])) {
-            throw new Exception("Non autorisé", 401);
+            throw new NotAllowedException();
         }
 
         return $this->model::create($data + ['inscription' => Auth::id()]);

@@ -7,14 +7,14 @@ use App\Exceptions\NotAllowedException;
 use App\Models\Structure\AffectationStructure;
 use App\Models\Structure\Structure;
 use App\Services\BaseService;
-use App\Traits\Structure\AdminTrait;
+use App\Traits\Structure\AuthorisationTrait;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class EmployeService extends BaseService
 {
-    use AdminTrait;
+    use AuthorisationTrait;
 
     public function __construct(AffectationStructure $model)
     {
@@ -29,7 +29,7 @@ class EmployeService extends BaseService
         }
 
         if ($status != 'valid') {
-            if (!($this->isModerateur(Auth::id(), 10) || $this->isAdmin(Auth::id(), 10))) throw new NotAllowedException();
+            if (!$this->isAdmin(Auth::id(), $structure)) throw new NotAllowedException();
         }
 
         return $this->model::status($status)->where('structure', $structure)->with(['fonction', 'poste', 'user', 'role'])->consume($request);

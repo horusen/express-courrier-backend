@@ -80,5 +80,13 @@ class ScopeSeeder extends Seeder
             'description' => 'une description',
             'inscription' => 1
         ]);
+
+
+        Scope::create([
+            'libelle' => 'structure',
+            'ensemble' => 'structure',
+            'description' => 'une description',
+            'inscription' => 1
+        ]);
     }
 }

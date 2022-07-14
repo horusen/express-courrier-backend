@@ -3,6 +3,7 @@
 namespace App\Models\Structure;
 
 use App\ApiRequest\ApiRequestConsumer;
+use App\Models\Authorization\Authorisation;
 use App\Models\Authorization\Role;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;

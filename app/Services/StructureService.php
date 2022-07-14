@@ -5,20 +5,16 @@ namespace App\Services;
 use App\ApiRequest\ApiRequest;
 use App\ApiRequest\Structure\StructureApiRequest;
 use App\Exceptions\ActionNotAllowedException;
-use App\Filters\Structure\StructureFilter as StructureStructureFilter;
-use App\Filters\StructureFilter;
+
 use App\Models\Structure\Structure;
-use App\Traits\Structure\AdminTrait;
-use Exception;
-use Illuminate\Http\Request;
+use App\Traits\Structure\AuthorisationTrait;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 use App\Models\Structure as StructureWDossier;
 
 class StructureService extends BaseService
 {
-    use AdminTrait;
+    use AuthorisationTrait;
 
     public function __construct(Structure $model)
     {
@@ -28,8 +24,6 @@ class StructureService extends BaseService
     public function list(ApiRequest $request = null)
     {
         return $this->model::whereHas('affectation_structures', function ($q) {
-            $q->where('user', Auth::id());
-        })->orWhereHas('admins', function ($q) {
             $q->where('user', Auth::id());
         })->consume($request);
     }
@@ -84,6 +78,4 @@ class StructureService extends BaseService
             $q->where('inscription.id', $user);
         })->get();
     }
-
-
 }
