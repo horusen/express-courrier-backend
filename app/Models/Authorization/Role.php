@@ -55,6 +55,11 @@ class Role extends Model
         return $this->belongsTo(Structure::class, 'structure');
     }
 
+    public function affectation_structures()
+    {
+        return $this->hasMany(AffectationStructure::class, 'role');
+    }
+
     public function getNombreUtilisateursAttribute()
     {
         return $this->users->count();

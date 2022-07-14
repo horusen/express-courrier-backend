@@ -9,6 +9,7 @@ namespace App\Models\Authorization;
 use App\ApiRequest\ApiRequestConsumer;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * Class Authorisation
@@ -32,6 +33,8 @@ class Authorisation extends Model
     //     'inscription' => 'int'
     // ];
 
+    protected $hidden = ['role1'];
+
     protected $fillable = [
         'role',
         'scope',
@@ -52,8 +55,19 @@ class Authorisation extends Model
         return $this->belongsTo(Scope::class, 'scope');
     }
 
+    public function role1()
+    {
+        return $this->belongsTo(Role::class, 'role');
+    }
+
     public function getScopeNameAttribute()
     {
         return $this->scope()->get()->first()->libelle;
+    }
+
+    public function getStructureAttribute()
+    {
+        $affectation_structure = $this->role1->affectation_structures()->where('user', Auth::id())->get()->first();
+        return isset($affectation_structure) ? $affectation_structure->structure : null;
     }
 }

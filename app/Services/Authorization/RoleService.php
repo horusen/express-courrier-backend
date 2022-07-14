@@ -59,6 +59,6 @@ class RoleService extends BaseService
 
     public function show($id)
     {
-        return $this->model::with(['authorisations.scope', 'users'])->find($id);
+        return $this->model::with(['authorisations', 'users'])->find($id);
     }
 }

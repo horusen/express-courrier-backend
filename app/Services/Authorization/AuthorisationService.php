@@ -31,7 +31,7 @@ class AuthorisationService extends BaseService
 
     public function getByRole($role)
     {
-        return $this->model::where('role', $role)->get()->each->append(['scope_name']);
+        return $this->model::where('role', $role)->get()->each->append(['scope_name', 'structure']);
     }
 
 

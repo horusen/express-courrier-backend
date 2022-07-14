@@ -49,7 +49,7 @@ class AuthenticationController extends Controller
 
 
             if (isset($role)) {
-                $authorisations = $this->authorisationService->getByRole($role->id);
+                $authorisations = $this->authorisationService->getByRole($role->id);;
                 $authorisationsToken = $this->authorisationService->stringifyAuthorisations($authorisations);
             } else {
                 $authorisations = $authorisationsToken = [];
