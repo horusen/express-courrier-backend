@@ -30,9 +30,7 @@ class StructureService extends BaseService
 
     public function getAutresStructures(StructureApiRequest $request)
     {
-        return $this->model::whereDoesntHave('affectation_structures', function ($q) {
-            $q->where('user', Auth::id());
-        })->consume($request);
+        return $this->model::consume($request);
     }
 
 
