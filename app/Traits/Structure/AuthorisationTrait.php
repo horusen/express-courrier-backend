@@ -13,10 +13,12 @@ trait AuthorisationTrait
     {
         if ($this->isSuperAdmin($user)) return true;
 
+        if (!isset($structure)) return false;
+
         // ID of the scope with the name structure
         $idScopeStructure = 11;
 
-        $admin = AffectationStructure::where('user', $user)->where('structure', $structure->id)->where('role', 2)->orWhereHas('role.authorisations', function ($q) use ($idScopeStructure) {
+        $admin = AffectationStructure::where('user', $user)->where('structure', $structure)->where('role', 2)->orWhereHas('role.authorisations', function ($q) use ($idScopeStructure) {
             $q->where('scope', $idScopeStructure);
         })->first();
         return isset($admin);
