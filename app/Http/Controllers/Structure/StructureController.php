@@ -20,7 +20,6 @@ class StructureController extends BaseController
     use StructureTrait;
     use AuthorisationTrait;
     // use FileHandlerTrait;
-    protected AdminService $adminService;
     protected $model = Structure::class;
     protected AffectationStructureService $affectationStructureService;
     protected $validation = [
@@ -31,11 +30,10 @@ class StructureController extends BaseController
     ];
 
 
-    public function __construct(StructureService $service, StructureApiRequest $apiRequest, AffectationStructureService $affectationStructureService, AdminService $adminService)
+    public function __construct(StructureService $service, StructureApiRequest $apiRequest, AffectationStructureService $affectationStructureService)
     {
         parent::__construct($this->validation, $service, $apiRequest);
         $this->affectationStructureService = $affectationStructureService;
-        $this->adminService = $adminService;
     }
 
 

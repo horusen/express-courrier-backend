@@ -4,7 +4,6 @@ namespace App\Models\Structure;
 
 use App\ApiRequest\ApiRequestConsumer;
 use App\Models\Courrier\CrAutorisationPersonneStructure;
-use App\Models\Structure\Admin as StructureAdmin;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
@@ -18,7 +17,7 @@ class Structure extends Model
     // protected $hidden = ['parent_id'];
     protected $with = ['type:id,libelle', 'parent'];
 
-    protected $appends = ['has_sous_structures', 'responsable', 'admin_type'];
+    protected $appends = ['has_sous_structures', 'responsable'];
 
     public function type()
     {
@@ -62,21 +61,9 @@ class Structure extends Model
         return isset($sous_structure);
     }
 
-    protected function getAdminTypeAttribute()
-    {
-        $admin = $this->admins()->where('user', Auth::id())->first();
-        if (isset($admin)) {
-            return $admin->type;
-        }
-
-        return 0;
-    }
 
 
-    public function admins()
-    {
-        return $this->hasMany(StructureAdmin::class, 'structure');
-    }
+
 
     public function affectation_structures()
     {
