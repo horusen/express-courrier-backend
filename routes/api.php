@@ -55,20 +55,22 @@ Route::get('user/{user}/email/resend', 'VerificationController@resend')->name('e
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('auth/logout', [AuthenticationController::class, 'logout']);
 
-    Route::get('structures/{structure}/roles', [RoleController::class, 'getByStructure']);
-    Route::get('roles/{role}/users', [InscriptionController::class, 'getByRole']);
-    Route::post('users/roles', [RoleUserController::class, 'store']);
+    Route::middleware('ability:ADMIN:ADMIN,structure:ECRITURE')->group(function () {
+        Route::get('structures/{structure}/roles', [RoleController::class, 'getByStructure']);
+        Route::get('roles/{role}/users', [InscriptionController::class, 'getByRole']);
+        Route::post('users/roles', [RoleUserController::class, 'store']);
 
-    Route::apiResource('roles', "Authorization\RoleController")->middleware(['ability:ADMIN:ADMIN,ADMIN:ADMIN']);
+        Route::apiResource('roles', "Authorization\RoleController")->middleware(['ability:ADMIN:ADMIN,ADMIN:ADMIN']);
 
-    Route::apiResource('scopes', "Authorization\ScopeController");
+        Route::apiResource('scopes', "Authorization\ScopeController");
 
 
-    Route::get('structures/{structure}/postes', [PosteController::class, 'getByStructure']);
-    Route::get('structures/{structure}/fonctions', [FonctionController::class, 'getByStructure']);
+        Route::get('structures/{structure}/postes', [PosteController::class, 'getByStructure']);
+        Route::get('structures/{structure}/fonctions', [FonctionController::class, 'getByStructure']);
 
-    Route::apiResource('postes', 'Structure\PosteController');
-    Route::apiResource('fonctions', 'Structure\FonctionController');
+        Route::apiResource('postes', 'Structure\PosteController');
+        Route::apiResource('fonctions', 'Structure\FonctionController');
+    });
 
     Route::get('courriers', [CourrierController::class, 'index']);
     Route::get('users/{user}/courriers', [CourrierController::class, 'getByUser']);
@@ -213,9 +215,12 @@ Route::middleware('auth:sanctum')->group(function () {
     /* ** ************************************* * **/
 
     Route::get('employes/{id}', [EmployeController::class, 'show']);
-    Route::put('employes/{employe}/validate', [EmployeController::class, 'validateEmploye']);
-    Route::put('employes/{employe}', [EmployeController::class, 'update']);
-    Route::post('employes', [EmployeController::class, 'store']);
+    Route::middleware('ability:ADMIN:ADMIN,structure:ECRITURE')->group(function () {
+        Route::put('employes/{employe}/validate', [EmployeController::class, 'validateEmploye']);
+        Route::put('employes/{employe}', [EmployeController::class, 'update']);
+        Route::post('employes', [EmployeController::class, 'store']);
+    });
+
     Route::get('structures/{structure}/employes', [EmployeController::class, 'getByStructure']);
     Route::get('structures/{structure}/responsables', [EmployeController::class, 'getResponsablesByStructure']);
 
@@ -232,7 +237,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('users/{user}/structuresWdossiers', [StructureController::class, 'getByUserWDossier']);
     Route::get('structures/autres', [StructureController::class, 'getAutresStructures']);
     Route::get('structures/{structure}/oldest', [StructureController::class, 'getOldestAncestor']);
-    Route::apiResource('structures', 'Structure\StructureController');
+    Route::apiResource('structures', 'Structure\StructureController')->except(['store', 'udpated', 'delete']);
+    Route::apiResource('structures', 'Structure\StructureController')->only(['store', 'udpated', 'delete'])->middleware('ability:ADMIN:ADMIN,structure:ECRITURE');
     Route::get('structures/{structure}/sous-structures', [StructureController::class, 'getSousStructures']);
     Route::get('structures/{structure}/sous-structures/all', [StructureController::class, 'getAllSousStructures']);
 
