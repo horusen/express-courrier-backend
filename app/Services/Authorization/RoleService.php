@@ -23,10 +23,16 @@ class RoleService extends BaseService
         return $this->model::consume($request);
     }
 
-
-    public function getByStructure($structure)
+    // Get role of the given structure including the default ones
+    public function getAllByStructure($structure)
     {
         return $this->model::where('structure', $structure)->orWhereNull('structure')->consume(null);
+    }
+
+    // Get only roles related to the given structure
+    public function getByStructure($structure)
+    {
+        return $this->model::where('structure', $structure)->consume(null);
     }
 
     public function store(array $data)

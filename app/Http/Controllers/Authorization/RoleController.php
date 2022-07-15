@@ -27,4 +27,9 @@ class RoleController extends BaseController
     {
         return $this->service->getByStructure($structure);
     }
+
+    public function getAllByStructure($structure)
+    {
+        return $this->service->getAllByStructure($structure);
+    }
 }

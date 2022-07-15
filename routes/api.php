@@ -57,6 +57,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::middleware('ability:ADMIN:ADMIN,structure:ECRITURE')->group(function () {
         Route::get('structures/{structure}/roles', [RoleController::class, 'getByStructure']);
+        Route::get('structures/{structure}/roles/all', [RoleController::class, 'getAllByStructure']);
         Route::get('roles/{role}/users', [InscriptionController::class, 'getByRole']);
         Route::post('users/roles', [RoleUserController::class, 'store']);
 
