@@ -93,4 +93,14 @@ class MpMarche extends Eloquent
 	{
 		return $this->hasMany(\App\Models\MarchePublic\MpMarcheEtape::class, 'marche_id')->orderBy('position', 'asc');
 	}
+
+    public function fournisseurs()
+    {
+        return $this->belongsToMany(\App\Models\Courrier\CrCoordonnee::class, 'mp_affectation_marche_fournisseur', 'marche', 'coordonnee');
+    }
+
+    public function partenaires()
+    {
+        return $this->belongsToMany(\App\Models\Courrier\CrCoordonnee::class, 'mp_affectation_marche_partenaire', 'marche', 'coordonnee');
+    }
 }

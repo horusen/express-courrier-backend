@@ -132,7 +132,7 @@ class MpMarcheController extends LaravelController
         }
 
         return response()
-            ->json($item->load(['mp_type_marche', 'structure', 'mp_type_procedure.mp_type_procedure', 'mp_marche_etapes.fichiers']));
+            ->json($item->load(['mp_type_marche', 'partenaires',  'fournisseurs','structure', 'mp_type_procedure.mp_type_procedure', 'mp_marche_etapes.fichiers']));
     }
 
     public function update(Request $request, $id)
@@ -145,7 +145,7 @@ class MpMarcheController extends LaravelController
         $item->fill($data)->save();
 
         return response()
-            ->json($item->load(['mp_type_marche', 'structure', 'mp_type_procedure.mp_type_procedure', 'mp_marche_etapes.fichiers']));
+            ->json($item->load(['mp_type_marche', 'partenaires',  'fournisseurs','structure', 'mp_type_procedure.mp_type_procedure', 'mp_marche_etapes.fichiers']));
     }
 
     public function destroy($id)
