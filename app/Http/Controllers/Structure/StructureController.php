@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Structure;
 use App\ApiRequest\Structure\StructureApiRequest;
 use App\Exceptions\NotAllowedException;
 use App\Models\Structure\Structure;
-use App\Services\Structure\AdminService;
 use App\Services\Structure\AffectationStructureService;
 use App\Services\StructureService;
 use App\Shared\Controllers\BaseController;
@@ -67,14 +66,8 @@ class StructureController extends BaseController
         $structure = $this->service->store($request->all());
 
 
+        $this->affectationStructureService->addUserToStructureAsAdmin($structure->id, Auth::id());
 
-        // On definit le nouveau membre comme moderateur
-        $this->adminService->store([
-            'user' => Auth::id(),
-            'structure' => $structure->id,
-            'type' => 2,
-            'inscription' => Auth::id()
-        ]);
 
         return $structure;
     }
