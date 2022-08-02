@@ -231,6 +231,26 @@ class MpMarcheController extends LaravelController
 
     public function getTableauxPartenaire()
     {
+        $nombre = DB::table('mp_marche')->count();
+        $prix = DB::table('mp_marche')->sum('cout');
+        $chart_type_marche =  DB::table('mp_marche')
+        ->selectRaw('
+            round(((count(mp_marche.id)/('.$nombre .'))*100),2) as pourcentage_marche,
+            round(((COALESCE(sum(mp_marche.cout),0)/('.$prix .'))*100),2) as pourcentage_cout,
+            mp_type_marche.libelle as type_marche
+        ')
+        ->join('mp_type_marche','mp_type_marche.id', '=', 'mp_marche.type_marche_id')
+        ->groupBy('mp_type_marche.id')->get();
+
+        $chart_procedure_marche =  DB::table('mp_marche')
+        ->selectRaw('
+            round(((count(mp_marche.id)/('.$nombre .'))*100),2) as pourcentage_marche,
+            round(((COALESCE(sum(mp_marche.cout),0)/('.$prix .'))*100),2) as pourcentage_cout,
+            mp_type_procedure.libelle as type_marche
+        ')
+        ->join('mp_type_procedure','mp_type_procedure.id', '=', 'mp_marche.type_procedure_id')
+        ->groupBy('mp_type_procedure.id')->get();
+
 
          $type = DB::table('cr_coordonnee')
         ->selectRaw('cr_coordonnee.id as id, cr_coordonnee.libelle as libelle, mp_type_marche.libelle as type_marche,count(mp_marche.id) as marche_count, COALESCE(sum(mp_marche.cout),0) as cout')
@@ -250,6 +270,8 @@ class MpMarcheController extends LaravelController
 
         return response()
             ->json([
+                'chart_type_marche' => $chart_type_marche,
+                'chart_procedure_marche' => $chart_procedure_marche,
                 'type' => $type,
                 'procedure' => $procedure
             ]);
@@ -257,9 +279,28 @@ class MpMarcheController extends LaravelController
 
     public function getTableauxFournisseur()
     {
+        $nombre = DB::table('mp_marche')->count();
+        $prix = DB::table('mp_marche')->sum('cout');
+        $chart_type_marche =  DB::table('mp_marche')
+        ->selectRaw('
+            round(((count(mp_marche.id)/('.$nombre .'))*100),2) as pourcentage_marche,
+            round(((COALESCE(sum(mp_marche.cout),0)/('.$prix .'))*100),2) as pourcentage_cout,
+            mp_type_marche.libelle as type_marche
+        ')
+        ->join('mp_type_marche','mp_type_marche.id', '=', 'mp_marche.type_marche_id')
+        ->groupBy('mp_type_marche.id')->get();
+
+        $chart_procedure_marche =  DB::table('mp_marche')
+        ->selectRaw('
+            round(((count(mp_marche.id)/('.$nombre .'))*100),2) as pourcentage_marche,
+            round(((COALESCE(sum(mp_marche.cout),0)/('.$prix .'))*100),2) as pourcentage_cout,
+            mp_type_procedure.libelle as type_marche
+        ')
+        ->join('mp_type_procedure','mp_type_procedure.id', '=', 'mp_marche.type_procedure_id')
+        ->groupBy('mp_type_procedure.id')->get();
 
          $type = DB::table('cr_coordonnee')
-        ->selectRaw('cr_coordonnee.id as id, cr_coordonnee.libelle as libelle, mp_type_marche.libelle as type_marche,count(mp_marche.id) as marche_count, COALESCE(sum(mp_marche.cout),0) as cout')
+        ->selectRaw('cr_coordonnee.id as id, cr_coordonnee.libelle as libelle, mp_type_marche.libelle as type_marche, count(mp_marche.id) as marche_count, COALESCE(sum(mp_marche.cout),0) as cout')
         ->join('mp_affectation_marche_fournisseur','mp_affectation_marche_fournisseur.coordonnee', '=', 'cr_coordonnee.id')
         ->join('mp_marche','mp_affectation_marche_fournisseur.marche', '=', 'mp_marche.id')
         ->join('mp_type_marche','mp_type_marche.id', '=', 'mp_marche.type_marche_id')
@@ -276,6 +317,8 @@ class MpMarcheController extends LaravelController
 
         return response()
             ->json([
+                'chart_type_marche' => $chart_type_marche,
+                'chart_procedure_marche' => $chart_procedure_marche,
                 'type' => $type,
                 'procedure' => $procedure
             ]);
