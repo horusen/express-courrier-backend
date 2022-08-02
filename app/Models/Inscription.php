@@ -104,10 +104,6 @@ class Inscription extends Eloquent
         return $this->belongsTo(\App\Models\Inscription::class, 'inscription');
     }
 
-    public function admins()
-    {
-        return $this->hasMany(\App\Models\Admin::class, 'user');
-    }
 
     public function affectation_structures()
     {

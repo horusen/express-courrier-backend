@@ -6,6 +6,7 @@ use App\Exceptions\NotAllowedException;
 use App\Models\Structure\AffectationStructure;
 use App\Services\BaseService;
 use App\Traits\Structure\AuthorisationTrait;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 
@@ -26,5 +27,16 @@ class AffectationStructureService extends BaseService
         }
 
         return $this->model::create($data + ['inscription' => Auth::id()]);
+    }
+
+    public function addUserToStructureAsAdmin($structure, $user)
+    {
+        return $this->model::create([
+            'structure' => $structure,
+            'role' => 2,
+            'user' => $user,
+            'activated_at' => Carbon::now(),
+            'inscription' => Auth::id()
+        ]);
     }
 }

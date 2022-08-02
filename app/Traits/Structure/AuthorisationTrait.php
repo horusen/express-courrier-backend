@@ -2,7 +2,6 @@
 
 namespace App\Traits\Structure;
 
-use App\Models\Structure\Admin;
 use App\Models\Structure\AffectationStructure;
 use App\Models\Structure\Structure;
 
@@ -24,12 +23,7 @@ trait AuthorisationTrait
         return isset($admin);
     }
 
-    // protected function isModerateur($user, $structure)
-    // {
-    //     $admin = Admin::where('user', $user)->where('structure', $structure)->first();
 
-    //     return isset($admin);
-    // }
 
 
 

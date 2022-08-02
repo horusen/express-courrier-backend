@@ -185,22 +185,26 @@ class MpMarcheController extends LaravelController
         ]);
     }
 
-
     public function setAffectation(Request $request)
     {
         $item_id = $request->id;
+        $attached = [];
+        $detached = [];
         $result = null;
+
         DB::beginTransaction();
 
         try {
 
             $item = MpMarche::find($item_id);
 
-            foreach ($request->affectation as $key => $value) {
-                $pivotData = array_fill(0, count($value), ['inscription_id' => Auth::id()]);
+            foreach($request->affectation as $key=>$value)
+            {
+                $pivotData = array_fill(0, count($value), ['inscription_id'=> 1]);
                 $syncData  = array_combine($value, $pivotData);
-                $item->{$key}()->sync([]);
-                $item->{$key}()->sync($syncData);
+                $result = $item->{$key}()->sync($syncData);
+                $detached = $result['detached'];
+                $attached = $result['attached'];
             }
 
             DB::commit();
@@ -211,7 +215,10 @@ class MpMarcheController extends LaravelController
         }
 
         return response()->json([
-            'message' => 'Affectation mis à jour'
+            'message' => 'Affectation mis à jour',
+            'attached' => $attached,
+            'detached' => $detached,
+            'result' => $result
         ]);
     }
 
@@ -220,5 +227,100 @@ class MpMarcheController extends LaravelController
 
         return response()
             ->json(['data' => 'need to update it']);
+    }
+
+    public function getTableauxPartenaire()
+    {
+        $nombre = DB::table('mp_marche')->count();
+        $prix = DB::table('mp_marche')->sum('cout');
+        $chart_type_marche =  DB::table('mp_marche')
+        ->selectRaw('
+            round(((count(mp_marche.id)/('.$nombre .'))*100),2) as pourcentage_marche,
+            round(((COALESCE(sum(mp_marche.cout),0)/('.$prix .'))*100),2) as pourcentage_cout,
+            mp_type_marche.libelle as type_marche
+        ')
+        ->join('mp_type_marche','mp_type_marche.id', '=', 'mp_marche.type_marche_id')
+        ->groupBy('mp_type_marche.id')->get();
+
+        $chart_procedure_marche =  DB::table('mp_marche')
+        ->selectRaw('
+            round(((count(mp_marche.id)/('.$nombre .'))*100),2) as pourcentage_marche,
+            round(((COALESCE(sum(mp_marche.cout),0)/('.$prix .'))*100),2) as pourcentage_cout,
+            mp_type_procedure.libelle as type_marche
+        ')
+        ->join('mp_type_procedure','mp_type_procedure.id', '=', 'mp_marche.type_procedure_id')
+        ->groupBy('mp_type_procedure.id')->get();
+
+
+         $type = DB::table('cr_coordonnee')
+        ->selectRaw('cr_coordonnee.id as id, cr_coordonnee.libelle as libelle, mp_type_marche.libelle as type_marche,count(mp_marche.id) as marche_count, COALESCE(sum(mp_marche.cout),0) as cout')
+        ->join('mp_affectation_marche_partenaire','mp_affectation_marche_partenaire.coordonnee', '=', 'cr_coordonnee.id')
+        ->join('mp_marche','mp_affectation_marche_partenaire.marche', '=', 'mp_marche.id')
+        ->join('mp_type_marche','mp_type_marche.id', '=', 'mp_marche.type_marche_id')
+        // ->leftjoin('mp_type_procedure','mp_type_procedure.id', '=', 'mp_marche.type_procedure_id')
+        ->groupBy('cr_coordonnee.id', 'mp_type_marche.libelle')->orderBy('cr_coordonnee.libelle')->orderBy('mp_type_marche.libelle')->get();
+
+        $procedure = DB::table('cr_coordonnee')
+        ->selectRaw('cr_coordonnee.id as id, cr_coordonnee.libelle as libelle, mp_type_procedure.libelle as type_marche,count(mp_marche.id) as marche_count, COALESCE(sum(mp_marche.cout),0) as cout')
+        ->join('mp_affectation_marche_partenaire','mp_affectation_marche_partenaire.coordonnee', '=', 'cr_coordonnee.id')
+        ->join('mp_marche','mp_affectation_marche_partenaire.marche', '=', 'mp_marche.id')
+        // ->leftjoin('mp_type_marche','mp_type_marche.id', '=', 'mp_marche.type_marche_id')
+        ->join('mp_type_procedure','mp_type_procedure.id', '=', 'mp_marche.type_procedure_id')
+        ->groupBy('cr_coordonnee.id', 'mp_type_procedure.libelle')->orderBy('cr_coordonnee.libelle')->orderBy('mp_type_procedure.libelle')->get();
+
+        return response()
+            ->json([
+                'chart_type_marche' => $chart_type_marche,
+                'chart_procedure_marche' => $chart_procedure_marche,
+                'type' => $type,
+                'procedure' => $procedure
+            ]);
+    }
+
+    public function getTableauxFournisseur()
+    {
+        $nombre = DB::table('mp_marche')->count();
+        $prix = DB::table('mp_marche')->sum('cout');
+        $chart_type_marche =  DB::table('mp_marche')
+        ->selectRaw('
+            round(((count(mp_marche.id)/('.$nombre .'))*100),2) as pourcentage_marche,
+            round(((COALESCE(sum(mp_marche.cout),0)/('.$prix .'))*100),2) as pourcentage_cout,
+            mp_type_marche.libelle as type_marche
+        ')
+        ->join('mp_type_marche','mp_type_marche.id', '=', 'mp_marche.type_marche_id')
+        ->groupBy('mp_type_marche.id')->get();
+
+        $chart_procedure_marche =  DB::table('mp_marche')
+        ->selectRaw('
+            round(((count(mp_marche.id)/('.$nombre .'))*100),2) as pourcentage_marche,
+            round(((COALESCE(sum(mp_marche.cout),0)/('.$prix .'))*100),2) as pourcentage_cout,
+            mp_type_procedure.libelle as type_marche
+        ')
+        ->join('mp_type_procedure','mp_type_procedure.id', '=', 'mp_marche.type_procedure_id')
+        ->groupBy('mp_type_procedure.id')->get();
+
+         $type = DB::table('cr_coordonnee')
+        ->selectRaw('cr_coordonnee.id as id, cr_coordonnee.libelle as libelle, mp_type_marche.libelle as type_marche, count(mp_marche.id) as marche_count, COALESCE(sum(mp_marche.cout),0) as cout')
+        ->join('mp_affectation_marche_fournisseur','mp_affectation_marche_fournisseur.coordonnee', '=', 'cr_coordonnee.id')
+        ->join('mp_marche','mp_affectation_marche_fournisseur.marche', '=', 'mp_marche.id')
+        ->join('mp_type_marche','mp_type_marche.id', '=', 'mp_marche.type_marche_id')
+        // ->leftjoin('mp_type_procedure','mp_type_procedure.id', '=', 'mp_marche.type_procedure_id')
+        ->groupBy('cr_coordonnee.id', 'mp_type_marche.libelle')->orderBy('cr_coordonnee.libelle')->orderBy('mp_type_marche.libelle')->get();
+
+        $procedure = DB::table('cr_coordonnee')
+        ->selectRaw('cr_coordonnee.id as id, cr_coordonnee.libelle as libelle, mp_type_procedure.libelle as type_marche,count(mp_marche.id) as marche_count, COALESCE(sum(mp_marche.cout),0) as cout')
+        ->join('mp_affectation_marche_fournisseur','mp_affectation_marche_fournisseur.coordonnee', '=', 'cr_coordonnee.id')
+        ->join('mp_marche','mp_affectation_marche_fournisseur.marche', '=', 'mp_marche.id')
+        // ->leftjoin('mp_type_marche','mp_type_marche.id', '=', 'mp_marche.type_marche_id')
+        ->join('mp_type_procedure','mp_type_procedure.id', '=', 'mp_marche.type_procedure_id')
+        ->groupBy('cr_coordonnee.id', 'mp_type_procedure.libelle')->orderBy('cr_coordonnee.libelle')->orderBy('mp_type_procedure.libelle')->get();
+
+        return response()
+            ->json([
+                'chart_type_marche' => $chart_type_marche,
+                'chart_procedure_marche' => $chart_procedure_marche,
+                'type' => $type,
+                'procedure' => $procedure
+            ]);
     }
 }

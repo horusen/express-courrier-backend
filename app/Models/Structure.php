@@ -69,7 +69,7 @@ class Structure extends Eloquent
     public function getDossiersAttribute()
     {
         $id = $this->attributes['id'];
-        return Dossier::whereHas('ged_element.structures', function($query) use ($id) {
+        return Dossier::whereHas('ged_element.structures', function ($query) use ($id) {
             $query->where('structures.id', $id);
         })->with('dossiers')->get();
     }
@@ -89,10 +89,7 @@ class Structure extends Eloquent
         return $this->belongsTo(\App\Models\TypeStructure::class, 'type');
     }
 
-    public function admins()
-    {
-        return $this->hasMany(\App\Models\Admin::class, 'structure');
-    }
+
 
     public function affectation_structures()
     {

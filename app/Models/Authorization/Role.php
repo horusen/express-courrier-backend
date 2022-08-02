@@ -45,6 +45,8 @@ class Role extends Model
 
     protected $appends = ['nombre_utilisateurs'];
 
+    protected $hidden = ['users'];
+
     public function users()
     {
         return $this->belongsToMany(Inscription::class, AffectationStructure::class, 'role', 'user');

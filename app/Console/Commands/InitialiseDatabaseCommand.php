@@ -39,7 +39,7 @@ class InitialiseDatabaseCommand extends Command
     public function handle()
     {
         $this->call('migrate:fresh');
-        $this->call('migrate', ['--path' => 'database/migrations/admin']);
+        // $this->call('migrate', ['--path' => 'database/migrations/admin']);
         $this->call('migrate', ['--path' => 'database/migrations/courrier']);
         $this->call('migrate', ['--path' => 'database/migrations/document']);
         $this->call('db:seed');
