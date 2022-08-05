@@ -164,4 +164,51 @@ abstract class LaravelController extends Controller
             'filter_groups' => $filter_groups
         ];
     }
+
+
+    protected function parseArrayOptions($options = null)
+    {
+        if ($options === null) {
+            $options = [
+                'includes' => [],
+                'sort' => [],
+                'limit' => null,
+                'page' => null,
+                'mode' => 'embed',
+                'filter_groups' => [],
+                'paginate' => null
+            ];
+        }
+
+        $this->defaults = array_merge([
+            'includes' => [],
+            'sort' => [],
+            'limit' => null,
+            'page' => null,
+            'mode' => 'embed',
+            'filter_groups' => [],
+            'paginate' => null
+        ], $this->defaults);
+
+        $includes = $this->parseIncludes(isset($options['includes']) ? $options['includes'] : $this->defaults['includes']);
+        $sort = $this->parseSort(isset($options['sort']) ? $options['sort'] : $this->defaults['sort']);
+        $limit = isset($options['limit']) ? $options['limit'] : $this->defaults['limit'];
+        $page = isset($options['page']) ? $options['page'] : $this->defaults['page'];
+        $paginate = isset($options['paginate']) ? $options['paginate'] : $this->defaults['paginate'];
+        $filter_groups = $this->parseFilterGroups(isset($options['filter_groups']) ? $options['filter_groups'] : $this->defaults['filter_groups']);
+
+        if ($page !== null && ($limit === null && $paginate === null)) {
+            throw new InvalidArgumentException('Cannot use page option without limit option');
+        }
+
+        return [
+            'includes' => $includes['includes'],
+            'modes' => $includes['modes'],
+            'sort' => $sort,
+            'limit' => $limit,
+            'page' => $page,
+            'paginate' => $paginate,
+            'filter_groups' => $filter_groups
+        ];
+    }
 }

@@ -134,6 +134,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('marche-public')->group(function () {
         Route::get('marches/table-fournisseurs', 'MarchePublic\MpMarcheController@getTableauxFournisseur');
         Route::get('marches/table-partenaires', 'MarchePublic\MpMarcheController@getTableauxPartenaire');
+        Route::get('marches/analyses', 'MarchePublic\MpMarcheController@getMarcheAnalyse');
+        Route::post('marches/analyses-datas', 'MarchePublic\MpMarcheController@getAnalyse');
+
         Route::post('marche-etapes/change-position', 'MarchePublic\MpMarcheEtapeController@changePosition')->Middleware("ability:ADMIN:ADMIN,courrier-entrant:ECRITURE");
         Route::post('type-procedure-etapes/change-position', 'MarchePublic\MpTypeProcedureEtapeController@changePosition')->Middleware("ability:ADMIN:ADMIN,courrier-entrant:ECRITURE");
 

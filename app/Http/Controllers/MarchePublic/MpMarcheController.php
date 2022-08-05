@@ -17,6 +17,179 @@ class MpMarcheController extends LaravelController
 {
     use EloquentBuilderTrait;
 
+    /* Start Analyse Function */
+
+    public function getAnalyse(Request $request)
+    {
+        $parsedData = array();
+        foreach ($request->all() as $param) {
+            // Parse the resource options given by GET parameters
+            $resourceOptions = $this->parseArrayOptions($param['query']);
+
+            $query = MpMarche::query();
+            $this->applyResourceOptions($query, $resourceOptions);
+
+            $items = $query->get();
+            array_push($parsedData ,
+                array("libelle" => $param['libelle'], "couleur" => $param['couleur'], "type" => $param['type'], "data" => $items)
+            );
+        }
+        // return response()
+        // ->json($parsedData);
+        // Create JSON response of parsed data
+        return $this->response($parsedData);
+    }
+
+    public function sortGrpAnneeNbmarche(myBuilder $query,  $value) {
+        if ($value) {
+            $query->selectRaw('year(created_at) libelle, year(created_at) grouped_column, count(*) data')
+                ->groupBy('grouped_column')
+                ->orderBy('grouped_column', 'asc');
+            }
+    }
+    public function sortGrpAnneeBudget(myBuilder $query,  $value) {
+        if ($value) {
+            $query->selectRaw('year(created_at) libelle, year(created_at) grouped_column, COALESCE(sum(mp_marche.cout),0) data')
+                ->groupBy('grouped_column')
+                ->orderBy('grouped_column', 'asc');
+            }
+    }
+
+    public function sortGrpAnneeNbfournisseur(myBuilder $query,  $value) {
+        if ($value) {
+            $query->selectRaw('year(mp_marche.created_at) libelle, year(mp_marche.created_at) grouped_column,  COUNT( distinct coordonnee) data')
+                ->join('mp_affectation_marche_fournisseur','mp_affectation_marche_fournisseur.marche', '=', 'mp_marche.id')
+                ->groupBy('grouped_column')
+                ->orderBy('grouped_column', 'asc');
+            }
+    }
+
+    public function sortGrpAnneeNbpartenaire(myBuilder $query,  $value) {
+        if ($value) {
+            $query->selectRaw('year(mp_marche.created_at) libelle, year(mp_marche.created_at) grouped_column,  COUNT( distinct coordonnee) data')
+                ->join('mp_affectation_marche_partenaire','mp_affectation_marche_partenaire.marche', '=', 'mp_marche.id')
+                ->groupBy('grouped_column')
+                ->orderBy('grouped_column', 'asc');
+            }
+    }
+
+    public function sortGrpMoisNbmarche(myBuilder $query,  $value) {
+        if ($value) {
+            $query->selectRaw("CONCAT(month(created_at),'/',year(created_at)) libelle, CONCAT(month(created_at),'/',year(created_at)) grouped_column, count(*) data")
+                ->groupBy('grouped_column')
+                ->orderBy('grouped_column', 'asc');
+            }
+    }
+    public function sortGrpMoisBudget(myBuilder $query,  $value) {
+        if ($value) {
+            $query->selectRaw("CONCAT(month(created_at),'/',year(created_at)) libelle, CONCAT(month(created_at),'/',year(created_at)) grouped_column, COALESCE(sum(mp_marche.cout),0) data")
+                ->groupBy('grouped_column')
+                ->orderBy('grouped_column', 'asc');
+            }
+    }
+
+    public function sortGrpMoisNbfournisseur(myBuilder $query,  $value) {
+        if ($value) {
+            $query->selectRaw("CONCAT(month(created_at),'/',year(created_at)) libelle, CONCAT(month(created_at),'/',year(created_at)) grouped_column,  COUNT( distinct coordonnee) data")
+                ->join('mp_affectation_marche_fournisseur','mp_affectation_marche_fournisseur.marche', '=', 'mp_marche.id')
+                ->groupBy('grouped_column')
+                ->orderBy('grouped_column', 'asc');
+            }
+    }
+
+    public function sortGrpMoisNbpartenaire(myBuilder $query,  $value) {
+        if ($value) {
+            $query->selectRaw("CONCAT(month(created_at),'/',year(created_at)) libelle, CONCAT(month(created_at),'/',year(created_at)) grouped_column,  COUNT( distinct coordonnee) data")
+                ->join('mp_affectation_marche_partenaire','mp_affectation_marche_partenaire.marche', '=', 'mp_marche.id')
+                ->groupBy('grouped_column')
+                ->orderBy('grouped_column', 'asc');
+            }
+    }
+
+
+
+    public function sortGrpTypeNbmarche(myBuilder $query,  $value) {
+        if ($value) {
+            $query->selectRaw("mp_type_marche.libelle libelle, mp_type_marche.libelle grouped_column, count(*) data")
+            ->join('mp_type_marche', 'mp_type_marche.id', '=', 'mp_marche.type_marche_id')
+            ->groupBy('grouped_column')
+                ->orderBy('grouped_column', 'asc');
+            }
+    }
+    public function sortGrpTypeBudget(myBuilder $query,  $value) {
+        if ($value) {
+            $query->selectRaw("mp_type_marche.libelle libelle, mp_type_marche.libelle grouped_column, COALESCE(sum(mp_marche.cout),0) data")
+            ->join('mp_type_marche', 'mp_type_marche.id', '=', 'mp_marche.type_marche_id')
+
+            ->groupBy('grouped_column')
+                ->orderBy('grouped_column', 'asc');
+            }
+    }
+
+    public function sortGrpTypeNbfournisseur(myBuilder $query,  $value) {
+        if ($value) {
+            $query->selectRaw("mp_type_marche.libelle libelle, mp_type_marche.libelle grouped_column,  COUNT( distinct coordonnee) data")
+            ->join('mp_type_marche', 'mp_type_marche.id', '=', 'mp_marche.type_marche_id')
+
+            ->join('mp_affectation_marche_fournisseur','mp_affectation_marche_fournisseur.marche', '=', 'mp_marche.id')
+                ->groupBy('grouped_column')
+                ->orderBy('grouped_column', 'asc');
+            }
+    }
+
+    public function sortGrpTypeNbpartenaire(myBuilder $query,  $value) {
+        if ($value) {
+            $query->selectRaw("mp_type_marche.libelle libelle, mp_type_marche.libelle grouped_column,  COUNT( distinct coordonnee) data")
+            ->join('mp_type_marche', 'mp_type_marche.id', '=', 'mp_marche.type_marche_id')
+
+            ->join('mp_affectation_marche_partenaire','mp_affectation_marche_partenaire.marche', '=', 'mp_marche.id')
+                ->groupBy('grouped_column')
+                ->orderBy('grouped_column', 'asc');
+            }
+    }
+
+     public function sortGrpProcedureNbmarche(myBuilder $query,  $value) {
+        if ($value) {
+            $query->selectRaw("mp_type_procedure.libelle libelle, mp_type_procedure.libelle grouped_column, count(*) data")
+            ->join('mp_type_procedure', 'mp_type_procedure.id', '=', 'mp_marche.type_procedure_id')
+            ->groupBy('grouped_column')
+                ->orderBy('grouped_column', 'asc');
+            }
+    }
+    public function sortGrpProcedureBudget(myBuilder $query,  $value) {
+        if ($value) {
+            $query->selectRaw("mp_type_procedure.libelle libelle, mp_type_procedure.libelle grouped_column, COALESCE(sum(mp_marche.cout),0) data")
+            ->join('mp_type_procedure', 'mp_type_procedure.id', '=', 'mp_marche.type_procedure_id')
+
+            ->groupBy('grouped_column')
+                ->orderBy('grouped_column', 'asc');
+            }
+    }
+
+    public function sortGrpProcedureNbfournisseur(myBuilder $query,  $value) {
+        if ($value) {
+            $query->selectRaw("mp_type_procedure.libelle libelle, mp_type_procedure.libelle grouped_column,  COUNT( distinct coordonnee) data")
+            ->join('mp_type_procedure', 'mp_type_procedure.id', '=', 'mp_marche.type_procedure_id')
+
+            ->join('mp_affectation_marche_fournisseur','mp_affectation_marche_fournisseur.marche', '=', 'mp_marche.id')
+                ->groupBy('grouped_column')
+                ->orderBy('grouped_column', 'asc');
+            }
+    }
+
+    public function sortGrpProcedureNbpartenaire(myBuilder $query,  $value) {
+        if ($value) {
+            $query->selectRaw("mp_type_procedure.libelle libelle, mp_type_procedure.libelle grouped_column,  COUNT( distinct coordonnee) data")
+            ->join('mp_type_procedure', 'mp_type_procedure.id', '=', 'mp_marche.type_procedure_id')
+
+            ->join('mp_affectation_marche_partenaire','mp_affectation_marche_partenaire.marche', '=', 'mp_marche.id')
+                ->groupBy('grouped_column')
+                ->orderBy('grouped_column', 'asc');
+            }
+    }
+
+    /* End Analyse Function */
+
     public function getAll(Request $request)
     {
 
@@ -75,6 +248,24 @@ class MpMarcheController extends LaravelController
         if ($value) {
             $ids = explode(",", $value);
             $query->whereIn('type_marche_id',$ids);
+        }
+    }
+
+    public function filterFournisseursId(myBuilder $query, $method, $clauseOperator, $value)
+    {
+        if($value) {
+            $query->whereHas('fournisseurs', function($query) use ($value) {
+                $query->where('cr_coordonnee.id', $value);
+            });
+        }
+    }
+
+    public function filterPartenaireId(myBuilder $query, $method, $clauseOperator, $value)
+    {
+        if($value) {
+            $query->whereHas('partenaires', function($query) use ($value) {
+                $query->where('cr_coordonnee.id', $value);
+            });
         }
     }
 
@@ -231,25 +422,25 @@ class MpMarcheController extends LaravelController
 
     public function getTableauxPartenaire()
     {
-        $nombre = DB::table('mp_marche')->count();
-        $prix = DB::table('mp_marche')->sum('cout');
-        $chart_type_marche =  DB::table('mp_marche')
-        ->selectRaw('
-            round(((count(mp_marche.id)/('.$nombre .'))*100),2) as pourcentage_marche,
-            round(((COALESCE(sum(mp_marche.cout),0)/('.$prix .'))*100),2) as pourcentage_cout,
-            mp_type_marche.libelle as type_marche
-        ')
-        ->join('mp_type_marche','mp_type_marche.id', '=', 'mp_marche.type_marche_id')
-        ->groupBy('mp_type_marche.id')->get();
+        // $nombre = DB::table('mp_marche')->count();
+        // $prix = DB::table('mp_marche')->sum('cout');
+        // $chart_type_marche =  DB::table('mp_marche')
+        // ->selectRaw('
+        //     round(((count(mp_marche.id)/('.$nombre .'))*100),2) as pourcentage_marche,
+        //     round(((COALESCE(sum(mp_marche.cout),0)/('.$prix .'))*100),2) as pourcentage_cout,
+        //     mp_type_marche.libelle as type_marche
+        // ')
+        // ->join('mp_type_marche','mp_type_marche.id', '=', 'mp_marche.type_marche_id')
+        // ->groupBy('mp_type_marche.id')->get();
 
-        $chart_procedure_marche =  DB::table('mp_marche')
-        ->selectRaw('
-            round(((count(mp_marche.id)/('.$nombre .'))*100),2) as pourcentage_marche,
-            round(((COALESCE(sum(mp_marche.cout),0)/('.$prix .'))*100),2) as pourcentage_cout,
-            mp_type_procedure.libelle as type_marche
-        ')
-        ->join('mp_type_procedure','mp_type_procedure.id', '=', 'mp_marche.type_procedure_id')
-        ->groupBy('mp_type_procedure.id')->get();
+        // $chart_procedure_marche =  DB::table('mp_marche')
+        // ->selectRaw('
+        //     round(((count(mp_marche.id)/('.$nombre .'))*100),2) as pourcentage_marche,
+        //     round(((COALESCE(sum(mp_marche.cout),0)/('.$prix .'))*100),2) as pourcentage_cout,
+        //     mp_type_procedure.libelle as type_marche
+        // ')
+        // ->join('mp_type_procedure','mp_type_procedure.id', '=', 'mp_marche.type_procedure_id')
+        // ->groupBy('mp_type_procedure.id')->get();
 
 
          $type = DB::table('cr_coordonnee')
@@ -270,15 +461,14 @@ class MpMarcheController extends LaravelController
 
         return response()
             ->json([
-                'chart_type_marche' => $chart_type_marche,
-                'chart_procedure_marche' => $chart_procedure_marche,
+                // 'chart_type_marche' => $chart_type_marche,
+                // 'chart_procedure_marche' => $chart_procedure_marche,
                 'type' => $type,
                 'procedure' => $procedure
             ]);
     }
 
-    public function getTableauxFournisseur()
-    {
+    public function getMarcheAnalyse() {
         $nombre = DB::table('mp_marche')->count();
         $prix = DB::table('mp_marche')->sum('cout');
         $chart_type_marche =  DB::table('mp_marche')
@@ -298,6 +488,49 @@ class MpMarcheController extends LaravelController
         ')
         ->join('mp_type_procedure','mp_type_procedure.id', '=', 'mp_marche.type_procedure_id')
         ->groupBy('mp_type_procedure.id')->get();
+    $histogramme_count = DB::table('mp_marche')->selectRaw("
+        count(id) AS data,
+        DATE_FORMAT(created_at, '%Y-%m') AS new_date
+    ")
+    ->groupBy('new_date')
+    ->get();
+
+    $histogramme_prix = DB::table('mp_marche')->selectRaw("
+        COALESCE(sum(mp_marche.cout),0) AS data,
+        DATE_FORMAT(created_at, '%Y-%m') AS new_date
+    ")
+    ->groupBy('new_date')
+    ->get();
+
+    return response()
+            ->json([
+                'chart_type_marche' => $chart_type_marche,
+                'chart_procedure_marche' => $chart_procedure_marche,
+                'histogramme_prix' => $histogramme_prix,
+                'histogramme_count' => $histogramme_count
+            ]);
+    }
+    public function getTableauxFournisseur()
+    {
+        // $nombre = DB::table('mp_marche')->count();
+        // $prix = DB::table('mp_marche')->sum('cout');
+        // $chart_type_marche =  DB::table('mp_marche')
+        // ->selectRaw('
+        //     round(((count(mp_marche.id)/('.$nombre .'))*100),2) as pourcentage_marche,
+        //     round(((COALESCE(sum(mp_marche.cout),0)/('.$prix .'))*100),2) as pourcentage_cout,
+        //     mp_type_marche.libelle as type_marche
+        // ')
+        // ->join('mp_type_marche','mp_type_marche.id', '=', 'mp_marche.type_marche_id')
+        // ->groupBy('mp_type_marche.id')->get();
+
+        // $chart_procedure_marche =  DB::table('mp_marche')
+        // ->selectRaw('
+        //     round(((count(mp_marche.id)/('.$nombre .'))*100),2) as pourcentage_marche,
+        //     round(((COALESCE(sum(mp_marche.cout),0)/('.$prix .'))*100),2) as pourcentage_cout,
+        //     mp_type_procedure.libelle as type_marche
+        // ')
+        // ->join('mp_type_procedure','mp_type_procedure.id', '=', 'mp_marche.type_procedure_id')
+        // ->groupBy('mp_type_procedure.id')->get();
 
          $type = DB::table('cr_coordonnee')
         ->selectRaw('cr_coordonnee.id as id, cr_coordonnee.libelle as libelle, mp_type_marche.libelle as type_marche, count(mp_marche.id) as marche_count, COALESCE(sum(mp_marche.cout),0) as cout')
@@ -317,8 +550,8 @@ class MpMarcheController extends LaravelController
 
         return response()
             ->json([
-                'chart_type_marche' => $chart_type_marche,
-                'chart_procedure_marche' => $chart_procedure_marche,
+                // 'chart_type_marche' => $chart_type_marche,
+                // 'chart_procedure_marche' => $chart_procedure_marche,
                 'type' => $type,
                 'procedure' => $procedure
             ]);
