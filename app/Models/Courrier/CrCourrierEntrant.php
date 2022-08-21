@@ -64,14 +64,14 @@ class CrCourrierEntrant extends Eloquent
         'cr_courrier',
     ];
     public function getExpediteurExterneAttribute(){
-		if($this->attributes['expediteur_type']=='App\Models\Courrier\CrCoordonnee'){
+		if($this->expediteur_type && $this->attributes['expediteur_type']=='App\Models\Courrier\CrCoordonnee'){
 			return $this->expediteur;
 		}
 		return null;
 	}
 
     public function getExpediteurInterneAttribute(){
-		if($this->attributes['expediteur_type']=='App\Models\Structure'){
+		if($this->expediteur_type && $this->attributes['expediteur_type']=='App\Models\Structure'){
 			return $this->expediteur;
 		}
 		return null;

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Courrier;
 
-use App\Events\CourrierTraiterEvent;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Builder as myBuilder;
 use App\Http\Shared\Optimus\Bruno\EloquentBuilderTrait;
@@ -12,8 +11,6 @@ use App\Models\Courrier\CrCourrier;
 use App\Models\Courrier\CrCourrierEntrant;
 use App\Models\Courrier\CrCourrierEtape;
 use App\Models\Structure;
-use App\Models\Notification;
-use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -21,6 +18,89 @@ use Illuminate\Support\Str;
 class CrCourrierEntrantController extends LaravelController
 {
     use EloquentBuilderTrait;
+
+    /* Start Analyse Function */
+
+    public function getAnalyse(Request $request)
+    {
+        $parsedData = array();
+        foreach ($request->all() as $param) {
+            // Parse the resource options given by GET parameters
+            $resourceOptions = $this->parseArrayOptions($param['query']);
+
+            $query = CrCourrierEntrant::query();
+            $this->applyResourceOptions($query, $resourceOptions);
+
+            $items = $query->get();
+            array_push($parsedData ,
+                array("libelle" => $param['libelle'], "couleur" => $param['couleur'], "type" => $param['type'], "data" => $items)
+            );
+        }
+        // return response()
+        // ->json($parsedData);
+        // Create JSON response of parsed data
+        return $this->response($parsedData);
+    }
+
+    public function sortGrpAnneeNbcourrier(myBuilder $query,  $value) {
+        if ($value) {
+            $query->selectRaw('year(created_at) libelle, year(created_at) grouped_column, count(*) data')
+                ->groupBy('grouped_column')
+                ->orderBy('grouped_column', 'asc');
+            }
+    }
+
+    public function sortGrpMoisNbcourrier(myBuilder $query,  $value) {
+        if ($value) {
+            $query->selectRaw("CONCAT(month(created_at),'/',year(created_at)) libelle, CONCAT(month(created_at),'/',year(created_at)) grouped_column, count(*) data")
+                ->groupBy('grouped_column')
+                ->orderBy('grouped_column', 'asc');
+            }
+    }
+
+
+    public function sortGrpTypeNbcourrier(myBuilder $query,  $value) {
+        if ($value) {
+            $query->selectRaw("cr_type.libelle libelle, cr_type.libelle grouped_column, count(*) data")
+            ->join('cr_courrier', 'cr_courrier.id', '=', 'cr_courrier_entrant.courrier_id')
+            ->join('cr_type', 'cr_type.id', '=', 'cr_courrier.type_id')
+            ->groupBy('grouped_column')
+                ->orderBy('grouped_column', 'asc');
+            }
+    }
+
+    public function sortGrpNatureNbcourrier(myBuilder $query,  $value) {
+        if ($value) {
+            $query->selectRaw("cr_nature.libelle libelle, cr_nature.libelle grouped_column, count(*) data")
+            ->join('cr_courrier', 'cr_courrier.id', '=', 'cr_courrier_entrant.courrier_id')
+            ->join('cr_nature', 'cr_nature.id', '=', 'cr_courrier.nature_id')
+            ->groupBy('grouped_column')
+                ->orderBy('grouped_column', 'asc');
+            }
+    }
+
+    public function sortGrpUrgenceNbcourrier(myBuilder $query,  $value) {
+        if ($value) {
+            $query->selectRaw("cr_urgence.libelle libelle, cr_urgence.libelle grouped_column, count(*) data")
+            ->join('cr_courrier', 'cr_courrier.id', '=', 'cr_courrier_entrant.courrier_id')
+            ->join('cr_urgence', 'cr_urgence.id', '=', 'cr_courrier.urgence_id')
+            ->groupBy('grouped_column')
+                ->orderBy('grouped_column', 'asc');
+            }
+    }
+
+    public function sortGrpStatutNbcourrier(myBuilder $query,  $value) {
+        if ($value) {
+            $query->selectRaw("cr_statut.libelle libelle, cr_statut.libelle grouped_column, count(*) data")
+            ->join('cr_courrier', 'cr_courrier.id', '=', 'cr_courrier_entrant.courrier_id')
+            ->join('cr_statut', 'cr_statut.id', '=', 'cr_courrier.statut_id')
+            ->groupBy('grouped_column')
+                ->orderBy('grouped_column', 'asc');
+            }
+    }
+
+
+    /* End Analyse Function */
 
     public function getAll(Request $request)
     {

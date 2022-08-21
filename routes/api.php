@@ -96,6 +96,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::prefix('courrier')->group(function () {
 
+        Route::post('courrier-entrants/analyses-datas', 'Courrier\CrCourrierEntrantController@getAnalyse');
+
 
         Route::customResource('actions', 'Courrier\CrActionController', ['except' => ['getAll']])->Middleware("ability:ADMIN:ADMIN,courrier-entrant:ECRITURE");
         Route::customResource('affectation-courriers', 'Courrier\CrAffectationCourrierController', ['except' => ['getAll']])->Middleware("ability:ADMIN:ADMIN,courrier-entrant:ECRITURE");
