@@ -169,6 +169,15 @@ class CrCourrierSortantController extends LaravelController
         }
     }
 
+    public function filterDossierId(myBuilder $query, $method, $clauseOperator, $value)
+    {
+        if($value) {
+            $query->whereHas('cr_courrier', function($query) use ($value) {
+                $query->where('dossier_id', $value);
+            });
+        }
+    }
+
     public function filterTypeId(myBuilder $query, $method, $clauseOperator, $value)
     {
         if($value) {
