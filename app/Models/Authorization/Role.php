@@ -27,7 +27,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Role extends Model
 {
-    use ApiRequestConsumer;
+    use ApiRequestConsumer, \Illuminate\Database\Eloquent\SoftDeletes;
     protected $table = 'roles';
 
     protected $casts = [

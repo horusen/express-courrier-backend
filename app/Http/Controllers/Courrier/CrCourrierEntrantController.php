@@ -132,6 +132,28 @@ class CrCourrierEntrantController extends LaravelController
         }
     }
 
+    public function filterIsIns2(myBuilder $query, $method, $clauseOperator, $value, $in)
+    {
+        $count = Structure::where('id',1)->whereHas('_employes', function($query2) {
+            $query2->where('inscription.id',  Auth::id());
+        })->count();
+
+        if ($value && !$count) {
+            $query->where('inscription_id', Auth::id());
+            $query->orWhere(function($query) {
+                $query->whereHas('cr_courrier.structure._employes', function($query)  {
+                    $query->where('inscription.id',Auth::id());
+                });
+            });
+            $query->orWhere(function($query) {
+                $query->whereHas('cr_courrier.cr_reaffected_inscriptions', function($query){
+                    $query->where('inscription.id',Auth::id());
+                    $query->where('confirmation', '=', 1);
+                });
+            });
+        }
+    }
+
     public function filterIsAffected(myBuilder $query, $method, $clauseOperator, $value)
     {
         if($value) {

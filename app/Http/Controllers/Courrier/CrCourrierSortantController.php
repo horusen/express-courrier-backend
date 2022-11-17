@@ -15,6 +15,8 @@ use App\Models\Courrier\CrDestinataire;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use App\Models\Structure;
+
 
 class CrCourrierSortantController extends LaravelController
 {
@@ -130,6 +132,28 @@ class CrCourrierSortantController extends LaravelController
     {
         if($value) {
             $query->whereHas('cr_courrier.cr_reaffectations');
+        }
+    }
+
+    public function filterIsIns2(myBuilder $query, $method, $clauseOperator, $value, $in)
+    {
+        $count = Structure::where('id',1)->whereHas('_employes', function($query2) {
+            $query2->where('inscription.id',  Auth::id());
+        })->count();
+
+        if ($value && !$count) {
+            $query->where('inscription_id', Auth::id());
+            $query->orWhere(function($query) {
+                $query->whereHas('cr_courrier.structure._employes', function($query)  {
+                    $query->where('inscription.id',Auth::id());
+                });
+            });
+            $query->orWhere(function($query) {
+                $query->whereHas('cr_courrier.cr_reaffected_inscriptions', function($query){
+                    $query->where('inscription.id',Auth::id());
+                    $query->where('confirmation', '=', 1);
+                });
+            });
         }
     }
 

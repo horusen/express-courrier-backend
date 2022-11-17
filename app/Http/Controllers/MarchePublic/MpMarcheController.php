@@ -215,7 +215,23 @@ class MpMarcheController extends LaravelController
     public function filterIsIns(myBuilder $query, $method, $clauseOperator, $value, $in)
     {
         if ($value) {
+            // $query->where('inscription_id', Auth::id());
+        }
+    }
+
+    public function filterIsIns2(myBuilder $query, $method, $clauseOperator, $value, $in)
+    {
+        $count = Structure::where('id',1)->whereHas('_employes', function($query2) {
+            $query2->where('inscription.id',  Auth::id());
+        })->count();
+
+        if ($value && !$count) {
             $query->where('inscription_id', Auth::id());
+            $query->orWhere(function($query) {
+                $query->whereHas('structure._employes', function($query)  {
+                    $query->where('inscription.id',Auth::id());
+                });
+            });
         }
     }
 
@@ -248,6 +264,18 @@ class MpMarcheController extends LaravelController
         if ($value) {
             $ids = explode(",", $value);
             $query->whereIn('type_marche_id',$ids);
+        }
+    }
+
+    public function filterCoordonneeId(myBuilder $query, $method, $clauseOperator, $value)
+    {
+        if($value) {
+            $query->whereHas('partenaires', function($query) use ($value) {
+                $query->where('cr_coordonnee.id', $value);
+            });
+            $query->orWhereHas('fournisseurs', function($query) use ($value) {
+                $query->where('cr_coordonnee.id', $value);
+            });
         }
     }
 
