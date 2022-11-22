@@ -58,7 +58,7 @@ class CrMail extends Eloquent
 
     public function getIsUserMailAttribute()
 	{
-		if(Auth::check() && $this->attributes['inscription'] === Auth::id())
+		if(Auth::check() && $this->attributes['inscription'] == Auth::id())
 		{
 			return true;
 		}

@@ -116,7 +116,7 @@ class CrCourrier extends Eloquent
 
     public function getIsUserAttribute()
 	{
-		if(Auth::check() && $this->attributes['inscription_id'] === Auth::id())
+		if(Auth::check() && $this->attributes['inscription_id'] == Auth::id())
 		{
 			return true;
 		}

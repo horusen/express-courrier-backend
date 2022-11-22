@@ -113,11 +113,13 @@ $item->load(['cr_courrier', 'suivi_par_inscription']);
         }
 
         $message = '';
+        
         if($item->confirmation) {
            $message = 'Le courrier <b>'.$item->cr_courrier->libelle.'</b>  a été tranféré à '.$item->suivi_par_inscription->prenom.' '.$item->suivi_par_inscription->nom;
         } else {
            $message = 'Le transfet du courrier <b>'.$item->cr_courrier->libelle.'</b>  à '.$item->suivi_par_inscription->prenom.' '.$item->suivi_par_inscription->nom.' a été annuler';
         }
+
         Notification::create([
             'message' => $message,
             'element' => 'courrier transferer',

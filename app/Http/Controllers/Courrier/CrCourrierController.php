@@ -113,6 +113,7 @@ class CrCourrierController extends LaravelController
             } else if($item->cr_courrier_sortants()->count()) {
                 $link = 'courrier/sortant/'.$item->cr_courrier_sortants()->first()->id;
             }
+            
             Notification::create([
                 'message' => 'Le traitement du courrier <b>'.$item->libelle.'</b> est terminé',
                 'element' => 'courrier traiter',

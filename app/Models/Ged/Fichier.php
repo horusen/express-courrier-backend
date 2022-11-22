@@ -56,7 +56,7 @@ class Fichier extends Eloquent
             return;
         }
 
-        if ((!$this->ged_element->attributes['bloquer']) || Auth::check() && $this->attributes['inscription_id'] === Auth::id()) {
+        if ((!$this->ged_element->attributes['bloquer']) || Auth::check() && $this->attributes['inscription_id'] == Auth::id()) {
             $permitted = true;
         }
         if (!$permitted) $this->setHidden($this->classified);
@@ -76,7 +76,7 @@ class Fichier extends Eloquent
 
     public function getIsUserAttribute()
 	{
-		if(Auth::check() && $this->attributes['inscription_id'] === Auth::id())
+		if(Auth::check() && $this->attributes['inscription_id'] == Auth::id())
 		{
 			return true;
 		}
