@@ -90,6 +90,16 @@ class CrSuiviController extends LaravelController
         ->json(['msg' => 'Suppression effectué']);
     }
 
+    public function restore($id)
+    {
+        $restoreDataId = CrSuivi::withTrashed()->findOrFail($id);
+        if($restoreDataId && $restoreDataId->trashed()){
+           $restoreDataId->restore();
+        }
+        return response()
+        ->json($restoreDataId);
+    }
+
     public function attachAffectation(Request $request)
     {
 

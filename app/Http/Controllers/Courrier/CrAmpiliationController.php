@@ -88,6 +88,18 @@ class CrAmpiliationController extends LaravelController
         ->json(['msg' => 'Suppression effectué']);
     }
 
+    public function restore($id)
+    {
+        $restoreDataId = CrAmpiliation::withTrashed()->findOrFail($id);
+        if($restoreDataId && $restoreDataId->trashed()){
+           $restoreDataId->restore();
+           $message = $restoreDataId;
+        }
+        return response()
+        ->json($restoreDataId);
+    }
+
+
     public function attachAffectation(Request $request)
     {
 

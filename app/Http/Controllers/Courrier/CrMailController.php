@@ -202,6 +202,19 @@ class CrMailController extends LaravelController
         ->json(['msg' => 'Suppression effectué']);
     }
 
+    public function restore($id)
+    {
+        $restoreDataId = CrMail::withTrashed()->findOrFail($id);
+        if($restoreDataId && $restoreDataId->trashed()){
+           $restoreDataId->restore();
+        }
+        return response()
+        ->json($restoreDataId->load(['destinataire_personnes',
+        'destinataire_structures',
+        'fichiers',
+        'tags']));
+    }
+
     public function markasread($id)
     {
         $item = CrMail::findOrFail($id);

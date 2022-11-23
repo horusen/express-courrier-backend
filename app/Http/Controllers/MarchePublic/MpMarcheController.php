@@ -377,6 +377,16 @@ class MpMarcheController extends LaravelController
             ->json(['msg' => 'Suppression effectué']);
     }
 
+    public function restore($id)
+    {
+        $restoreDataId = MpMarche::withTrashed()->findOrFail($id);
+        if($restoreDataId && $restoreDataId->trashed()){
+           $restoreDataId->restore();
+        }
+        return response()
+        ->json($restoreDataId->load(['mp_type_marche', 'partenaires',  'fournisseurs','structure', 'mp_type_procedure.mp_type_procedure', 'mp_marche_etapes.fichiers']));
+    }
+
     public function attachAffectation(Request $request)
     {
 

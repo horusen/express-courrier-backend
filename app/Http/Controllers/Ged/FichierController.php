@@ -269,6 +269,16 @@ class FichierController extends LaravelController
         ->json(['msg' => 'Suppression effectué']);
     }
 
+    public function restore($id)
+    {
+        $restoreDataId = Fichier::withTrashed()->findOrFail($id);
+        if($restoreDataId && $restoreDataId->trashed()){
+           $restoreDataId->restore();
+        }
+        return response()
+        ->json($restoreDataId->load(['fichier_type', 'inscription', 'ged_element']));
+    }
+
     public function checkPassword(Request $request, $id) {
         $item = Fichier::findOrFail($id)->makeVisible(['password']);
         if(Hash::check($request->password, $item->ged_element->password)) {

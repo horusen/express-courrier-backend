@@ -89,6 +89,17 @@ class GedConservationRuleController extends LaravelController
         ->json(['msg' => 'Suppression effectué']);
     }
 
+    public function restore($id)
+    {
+        $restoreDataId = GedConservationRule::withTrashed()->findOrFail($id);
+        if($restoreDataId && $restoreDataId->trashed()){
+           $restoreDataId->restore();
+        }
+        return response()
+        ->json($restoreDataId);
+    }
+
+
     public function attachAffectation(Request $request)
     {
 

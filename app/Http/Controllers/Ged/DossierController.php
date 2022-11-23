@@ -187,6 +187,16 @@ class DossierController extends LaravelController
         ->json(['msg' => 'Suppression effectué']);
     }
 
+    public function restore($id)
+    {
+        $restoreDataId = Dossier::withTrashed()->findOrFail($id);
+        if($restoreDataId && $restoreDataId->trashed()){
+           $restoreDataId->restore();
+        }
+        return response()
+        ->json($restoreDataId->load('ged_element'));
+    }
+
     public function checkPassword(Request $request, $id) {
         $item = Dossier::findOrFail($id)->makeVisible(['password']);
         if(Hash::check($request->password, $item->ged_element->password)) {

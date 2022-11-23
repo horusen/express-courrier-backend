@@ -91,6 +91,16 @@ class CrDossierController extends LaravelController
         ->json(['msg' => 'Suppression effectué']);
     }
 
+    public function restore($id)
+    {
+        $restoreDataId = CrDossier::withTrashed()->findOrFail($id);
+        if($restoreDataId && $restoreDataId->trashed()){
+           $restoreDataId->restore();
+        }
+        return response()
+        ->json($restoreDataId->load(['cr_courriers','responsable_inscription']));
+    }
+
     public function attachAffectation(Request $request)
     {
 

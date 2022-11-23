@@ -131,6 +131,17 @@ class CrNatureController extends LaravelController
         ->json($item->load('cr_form_fields'));
     }
 
+    public function restore($id)
+    {
+        $restoreDataId = CrNature::withTrashed()->findOrFail($id);
+        if($restoreDataId && $restoreDataId->trashed()){
+           $restoreDataId->restore();
+        }
+        return response()
+        ->json($restoreDataId->load('cr_form_fields'));
+    }
+
+
     public function destroy($id)
     {
         $item = CrNature::findOrFail($id);

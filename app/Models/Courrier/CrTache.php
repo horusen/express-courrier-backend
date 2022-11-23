@@ -38,7 +38,6 @@ class CrTache extends Eloquent
 
 	protected $casts = [
 		'inscription_id' => 'int',
-		'courrier_id' => 'int'
 	];
 
     protected $dates = [
@@ -49,7 +48,6 @@ class CrTache extends Eloquent
 		'libelle',
 		'description',
 		'inscription_id',
-        'courrier_id',
         'statut_color',
         'statut_icon',
         'statut',
@@ -68,15 +66,15 @@ class CrTache extends Eloquent
 		return $this->belongsTo(\App\Models\Inscription::class, 'inscription_id');
 	}
 
-    public function courrier()
-	{
-		return $this->belongsTo(\App\Models\Courrier\CrCourrier::class, 'courrier_id');
-	}
-
     public function responsables()
 	{
         return $this->belongsToMany(\App\Models\Inscription::class, 'cr_affectation_tache_personne', 'tache', 'personne');
 	}
+
+	public function courriers()
+	{
+        return $this->belongsToMany(\App\Models\Courrier\CrCourrier::class, 'cr_affectation_tache_courrier', 'tache', 'courrier');
+    }
 
     public function structures()
 	{

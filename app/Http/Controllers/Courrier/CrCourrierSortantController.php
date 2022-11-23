@@ -438,6 +438,19 @@ class CrCourrierSortantController extends LaravelController
         return response()
         ->json(['msg' => 'Suppression effectué']);
     }
+    
+    public function restore($id)
+    {
+        $restoreDataId = CrCourrierSortant::withTrashed()->findOrFail($id);
+        if($restoreDataId && $restoreDataId->trashed()){
+           $restoreDataId->restore();
+        }
+        return response()
+        ->json($restoreDataId->load(['cr_courrier',
+        'cr_destinataires',
+        'cr_ampiliations',
+        'cr_courrier.cr_cloture']));
+    }
 
     public function attachAffectation(Request $request)
     {

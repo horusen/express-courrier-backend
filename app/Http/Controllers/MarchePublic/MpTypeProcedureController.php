@@ -80,6 +80,17 @@ class MpTypeProcedureController extends LaravelController
         ->json($item);
     }
 
+    public function restore($id)
+    {
+        $restoreDataId = MpTypeProcedure::withTrashed()->findOrFail($id);
+        if($restoreDataId && $restoreDataId->trashed()){
+           $restoreDataId->restore();
+        }
+        return response()
+        ->json($restoreDataId);
+    }
+
+
     public function update(Request $request, $id)
     {
 

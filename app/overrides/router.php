@@ -9,7 +9,7 @@ class Router extends BaseRouter
     // You can call it however you want. These are the params you need to pass the original resource() method.
     public function customResource($name, $controller, array $options = [])
     {
-        $only = ['show', 'store', 'update', 'destroy', 'getAll', 'setAffectation', 'getAffectation', 'attachAffectation', 'detachAffectation'];
+        $only = ['show', 'store', 'update', 'destroy', 'restore','getAll', 'setAffectation', 'getAffectation', 'attachAffectation', 'detachAffectation'];
 
         if (isset($options['except'])) {
             $only = array_diff($only, (array) $options['except']);
@@ -19,6 +19,7 @@ class Router extends BaseRouter
         $this->post($name.'/all', $controller.'@getAll')->name($name.'.all');
         $this->post($name.'/affecter', $controller.'@setAffectation')->name($name.'.setAffectation');
         $this->get($name.'/affecter/{item}', $controller.'@getAffectation')->name($name.'.getAffectation');
+        $this->get($name.'/restore/{id}', $controller.'@restore')->name($name.'.restore');
         $this->post($name.'/attach-affectation', $controller.'@attachAffectation')->name($name.'.attachAffectation');
         $this->post($name.'/detach-affectation', $controller.'@detachAffectation')->name($name.'.detachAffectation');
         

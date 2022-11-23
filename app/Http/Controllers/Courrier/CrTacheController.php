@@ -65,6 +65,15 @@ class CrTacheController extends LaravelController
         }
     }
 
+    public function filterCourrierId(myBuilder $query, $method, $clauseOperator, $value, $in)
+    {
+        if ($value) {
+            $query->whereHas('courriers', function($query) use ($value){
+                $query->where('cr_courrier.id', $value);
+             });
+        }
+    }
+
     public function store(Request $request)
     {
 
@@ -75,11 +84,15 @@ class CrTacheController extends LaravelController
             'libelle' => $request->libelle,
             'description' => $request->description,
             'date_limit' => $request->date_limit,
-            'courrier_id' => $request->courrier_id,
         ]);
 
+        if($request->exists('courrier_id'))
+        {
+            $item->courriers()->attach([$request->courrier_id => ['inscription_id'=> Auth::id()]]);
+        }
+
         return response()
-        ->json($item->load(['responsables', 'structures', 'courrier']));
+        ->json($item->load(['responsables', 'structures']));
     }
 
     public function update(Request $request, $id)
@@ -92,7 +105,7 @@ class CrTacheController extends LaravelController
         $item->fill($data)->save();
 
         return response()
-        ->json($item->load(['responsables', 'structures', 'courrier']));
+        ->json($item->load(['responsables', 'structures']));
     }
 
     public function destroy($id)
@@ -103,6 +116,16 @@ class CrTacheController extends LaravelController
 
         return response()
         ->json(['msg' => 'Suppression effectué']);
+    }
+
+    public function restore($id)
+    {
+        $restoreDataId = CrTache::withTrashed()->findOrFail($id);
+        if($restoreDataId && $restoreDataId->trashed()){
+           $restoreDataId->restore();
+        }
+        return response()
+        ->json($restoreDataId->load(['responsables', 'structures']));
     }
 
     public function attachAffectation(Request $request)

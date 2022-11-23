@@ -394,6 +394,19 @@ class CrCourrierEntrantController extends LaravelController
         ->json(['msg' => 'Suppression effectué']);
     }
 
+    public function restore($id)
+    {
+        $restoreDataId = CrCourrierEntrant::withTrashed()->findOrFail($id);
+        if($restoreDataId && $restoreDataId->trashed()){
+           $restoreDataId->restore();
+        }
+        return response()
+        ->json($restoreDataId->load([
+            'cr_provenance',
+            'cr_courrier',
+        ]));
+    }
+
     public function attachAffectation(Request $request)
     {
 

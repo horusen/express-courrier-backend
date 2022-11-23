@@ -149,6 +149,20 @@ $item->load(['cr_courrier', 'suivi_par_inscription']);
         ->json(['msg' => 'Suppression effectué']);
     }
 
+    public function restore($id)
+    {
+        $restoreDataId = CrReaffectation::withTrashed()->findOrFail($id);
+        if($restoreDataId && $restoreDataId->trashed()){
+           $restoreDataId->restore();
+        }
+        return response()
+        ->json($restoreDataId->load([
+            'inscription',
+        'suivi_par_inscription',
+        'structure'
+        ]));
+    }
+
     public function attachAffectation(Request $request)
     {
 
