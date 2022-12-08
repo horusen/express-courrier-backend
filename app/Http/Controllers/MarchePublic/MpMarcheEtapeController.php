@@ -77,7 +77,7 @@ class MpMarcheEtapeController extends LaravelController
         $item->fill($data)->save();
 
         return response()
-        ->json($item);
+        ->json($item->load('fichiers'));
     }
 
 
@@ -117,7 +117,7 @@ class MpMarcheEtapeController extends LaravelController
            $restoreDataId->restore();
         }
         return response()
-        ->json($restoreDataId);
+        ->json($restoreDataId->load('fichiers'));
     }
 
     public function attachAffectation(Request $request)

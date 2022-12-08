@@ -47,7 +47,7 @@ class CrCourrierSortantController extends LaravelController
 
     public function sortGrpAnneeNbcourrier(myBuilder $query,  $value) {
         if ($value) {
-            $query->selectRaw('year(created_at) libelle, year(created_at) grouped_column, count(*) data')
+            $query->selectRaw('year(date_envoie) libelle, year(date_envoie) grouped_column, count(*) data')
                 ->groupBy('grouped_column')
                 ->orderBy('grouped_column', 'asc');
             }
@@ -55,9 +55,9 @@ class CrCourrierSortantController extends LaravelController
 
     public function sortGrpMoisNbcourrier(myBuilder $query,  $value) {
         if ($value) {
-            $query->selectRaw("CONCAT(month(created_at),'/',year(created_at)) libelle, CONCAT(month(created_at),'/',year(created_at)) grouped_column, count(*) data")
+            $query->selectRaw("CONCAT(month(date_envoie),'/',year(date_envoie)) libelle, CONCAT(month(date_envoie),'/',year(date_envoie)) grouped_column, count(*) data")
                 ->groupBy('grouped_column')
-                ->orderBy('grouped_column', 'asc');
+                ->orderBy('date_envoie', 'asc');
             }
     }
 
@@ -250,6 +250,21 @@ class CrCourrierSortantController extends LaravelController
             });
         }
     }
+
+    public function filterAnnee(myBuilder $query, $method, $clauseOperator, $value, $in)
+    {
+        if ($value) {
+            $query->whereRaw('year(date_envoie) = ?', $value);
+        }
+    }
+    
+    public function filterMois(myBuilder $query, $method, $clauseOperator, $value, $in)
+    {
+        if ($value) {
+            $query->whereRaw('month(date_envoie) = ?', $value);
+        }
+    }
+
 
     public function store(Request $request)
     {

@@ -55,13 +55,12 @@ class InscriptionService extends BaseService
             $inscription->update(['photo' => $imagePath]);
         }
 
-        try {
-            $inscription->sendEmailVerificationNotification();
-        } catch (Exception $e) {
-            $inscription->forceDelete();
-            throw new Swift_TransportException($e);
-        }
-
+        // try {
+        //     $inscription->sendEmailVerificationNotification();
+        // } catch (Exception $e) {
+        //     $inscription->forceDelete();
+        //     throw new Swift_TransportException($e);
+        // }
 
         return $inscription;
     }

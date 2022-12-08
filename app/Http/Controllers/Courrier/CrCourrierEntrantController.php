@@ -44,7 +44,7 @@ class CrCourrierEntrantController extends LaravelController
 
     public function sortGrpAnneeNbcourrier(myBuilder $query,  $value) {
         if ($value) {
-            $query->selectRaw('year(created_at) libelle, year(created_at) grouped_column, count(*) data')
+            $query->selectRaw('year(date_arrive) libelle, year(date_arrive) grouped_column, count(*) data')
                 ->groupBy('grouped_column')
                 ->orderBy('grouped_column', 'asc');
             }
@@ -52,9 +52,9 @@ class CrCourrierEntrantController extends LaravelController
 
     public function sortGrpMoisNbcourrier(myBuilder $query,  $value) {
         if ($value) {
-            $query->selectRaw("CONCAT(month(created_at),'/',year(created_at)) libelle, CONCAT(month(created_at),'/',year(created_at)) grouped_column, count(*) data")
+            $query->selectRaw("CONCAT(month(date_arrive),'/',year(date_arrive)) libelle, CONCAT(month(date_arrive),'/',year(date_arrive)) grouped_column, count(*) data")
                 ->groupBy('grouped_column')
-                ->orderBy('grouped_column', 'asc');
+                ->orderBy('date_arrive', 'asc');
             }
     }
 
@@ -274,6 +274,20 @@ class CrCourrierEntrantController extends LaravelController
             $query->whereHasMorph('expediteur', [CrCoordonnee::class], function($query) use ($value){
                 $query->where('cr_coordonnee.id', $value );
             });
+        }
+    }
+
+    public function filterAnnee(myBuilder $query, $method, $clauseOperator, $value, $in)
+    {
+        if ($value) {
+            $query->whereRaw('year(date_arrive) = ?', $value);
+        }
+    }
+    
+    public function filterMois(myBuilder $query, $method, $clauseOperator, $value, $in)
+    {
+        if ($value) {
+            $query->whereRaw('month(date_arrive) = ?', $value);
         }
     }
 

@@ -77,14 +77,14 @@ class MpMarcheController extends LaravelController
         if ($value) {
             $query->selectRaw("CONCAT(month(created_at),'/',year(created_at)) libelle, CONCAT(month(created_at),'/',year(created_at)) grouped_column, count(*) data")
                 ->groupBy('grouped_column')
-                ->orderBy('grouped_column', 'asc');
+                ->orderBy('created_at', 'asc');
             }
     }
     public function sortGrpMoisBudget(myBuilder $query,  $value) {
         if ($value) {
             $query->selectRaw("CONCAT(month(created_at),'/',year(created_at)) libelle, CONCAT(month(created_at),'/',year(created_at)) grouped_column, COALESCE(sum(mp_marche.cout),0) data")
                 ->groupBy('grouped_column')
-                ->orderBy('grouped_column', 'asc');
+                ->orderBy('created_at', 'asc');
             }
     }
 
@@ -93,7 +93,7 @@ class MpMarcheController extends LaravelController
             $query->selectRaw("CONCAT(month(created_at),'/',year(created_at)) libelle, CONCAT(month(created_at),'/',year(created_at)) grouped_column,  COUNT( distinct coordonnee) data")
                 ->join('mp_affectation_marche_fournisseur','mp_affectation_marche_fournisseur.marche', '=', 'mp_marche.id')
                 ->groupBy('grouped_column')
-                ->orderBy('grouped_column', 'asc');
+                ->orderBy('created_at', 'asc');
             }
     }
 
@@ -102,7 +102,7 @@ class MpMarcheController extends LaravelController
             $query->selectRaw("CONCAT(month(created_at),'/',year(created_at)) libelle, CONCAT(month(created_at),'/',year(created_at)) grouped_column,  COUNT( distinct coordonnee) data")
                 ->join('mp_affectation_marche_partenaire','mp_affectation_marche_partenaire.marche', '=', 'mp_marche.id')
                 ->groupBy('grouped_column')
-                ->orderBy('grouped_column', 'asc');
+                ->orderBy('created_at', 'asc');
             }
     }
 
@@ -294,6 +294,20 @@ class MpMarcheController extends LaravelController
             $query->whereHas('partenaires', function($query) use ($value) {
                 $query->where('cr_coordonnee.id', $value);
             });
+        }
+    }
+
+    public function filterAnnee(myBuilder $query, $method, $clauseOperator, $value, $in)
+    {
+        if ($value) {
+            $query->whereRaw('year(created_at) = ?', $value);
+        }
+    }
+    
+    public function filterMois(myBuilder $query, $method, $clauseOperator, $value, $in)
+    {
+        if ($value) {
+            $query->whereRaw('month(created_at) = ?', $value);
         }
     }
 
