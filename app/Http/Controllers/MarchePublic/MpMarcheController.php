@@ -218,6 +218,15 @@ class MpMarcheController extends LaravelController
             // $query->where('inscription_id', Auth::id());
         }
     }
+    
+     public function filterInscriptionsId(myBuilder $query, $method, $clauseOperator, $value)
+    {
+        if ($value) {
+            $ids = explode(",", $value);
+            $query->whereIn('inscription_id', $ids);
+        }
+    }
+
 
     public function filterIsIns2(myBuilder $query, $method, $clauseOperator, $value, $in)
     {
@@ -278,12 +287,22 @@ class MpMarcheController extends LaravelController
             });
         }
     }
-
-    public function filterFournisseursId(myBuilder $query, $method, $clauseOperator, $value)
+    
+     public function filterFournisseurId(myBuilder $query, $method, $clauseOperator, $value)
     {
         if($value) {
             $query->whereHas('fournisseurs', function($query) use ($value) {
                 $query->where('cr_coordonnee.id', $value);
+            });
+        }
+    }
+
+    public function filterFournisseursId(myBuilder $query, $method, $clauseOperator, $value)
+    {
+        if($value) {
+            $ids = explode(",", $value);
+            $query->whereHas('fournisseurs', function($query) use ($ids) {
+                $query->whereIn('cr_coordonnee.id', $ids);
             });
         }
     }
@@ -296,7 +315,17 @@ class MpMarcheController extends LaravelController
             });
         }
     }
-
+    
+    public function filterPartenairesId(myBuilder $query, $method, $clauseOperator, $value)
+    {
+        if($value) {
+            $ids = explode(",", $value);
+            $query->whereHas('partenaires', function($query) use ($ids) {
+                $query->whereIn('cr_coordonnee.id', $ids);
+            });
+        }
+    }
+    
     public function filterAnnee(myBuilder $query, $method, $clauseOperator, $value, $in)
     {
         if ($value) {
@@ -304,10 +333,30 @@ class MpMarcheController extends LaravelController
         }
     }
     
+    public function filterAnnees(myBuilder $query, $method, $clauseOperator, $value)
+    {
+        if ($value) {
+             $args = explode(",", $value);
+             $placeholders = implode(",", array_fill(0, count($args), '?'));
+             $query->whereRaw("year(created_at) IN (".$placeholders.")", $args);
+        }
+    }
+    
+    
     public function filterMois(myBuilder $query, $method, $clauseOperator, $value, $in)
     {
         if ($value) {
             $query->whereRaw('month(created_at) = ?', $value);
+        }
+    }
+    
+    
+    public function filterMultipleMois(myBuilder $query, $method, $clauseOperator, $value, $in)
+    {
+        if ($value) {
+            $args = explode(",", $value);
+            $placeholders = implode(",", array_fill(0, count($args), '?'));
+            $query->whereRaw("month(created_at) IN (".$placeholders.")", $args);
         }
     }
 

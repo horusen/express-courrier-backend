@@ -98,7 +98,38 @@ class CrCourrierEntrantController extends LaravelController
                 ->orderBy('grouped_column', 'asc');
             }
     }
-
+    
+     public function filterAnnee(myBuilder $query, $method, $clauseOperator, $value, $in)
+    {
+        if ($value) {
+            $query->whereRaw('year(date_arrive) = ?', $value);
+        }
+    }
+    
+     public function filterAnnees(myBuilder $query, $method, $clauseOperator, $value)
+    {
+        if ($value) {
+             $args = explode(",", $value);
+             $placeholders = implode(",", array_fill(0, count($args), '?'));
+             $query->whereRaw("year(date_arrive) IN (".$placeholders.")", $args);
+        }
+    }
+    
+    public function filterMois(myBuilder $query, $method, $clauseOperator, $value, $in)
+    {
+        if ($value) {
+            $query->whereRaw('month(date_arrive) = ?', $value);
+        }
+    }
+    
+    public function filterMultipleMois(myBuilder $query, $method, $clauseOperator, $value, $in)
+    {
+        if ($value) {
+            $args = explode(",", $value);
+            $placeholders = implode(",", array_fill(0, count($args), '?'));
+            $query->whereRaw("month(date_arrive) IN (".$placeholders.")", $args);
+        }
+    }
 
     /* End Analyse Function */
 
@@ -187,12 +218,32 @@ class CrCourrierEntrantController extends LaravelController
             });
         }
     }
+    
+     public function filterSuiviParsId(myBuilder $query, $method, $clauseOperator, $value)
+    {
+        if ($value) {
+            $ids = explode(",", $value);
+             $query->whereHas('cr_courrier', function($query) use ($ids) {
+                $query->whereIn('suivi_par', $ids);
+            });
+        }
+    }
 
     public function filterDossierId(myBuilder $query, $method, $clauseOperator, $value)
     {
         if($value) {
             $query->whereHas('cr_courrier', function($query) use ($value) {
                 $query->where('dossier_id', $value);
+            });
+        }
+    }
+    
+    public function filterDossiersId(myBuilder $query, $method, $clauseOperator, $value)
+    {
+        if ($value) {
+            $ids = explode(",", $value);
+             $query->whereHas('cr_courrier', function($query) use ($ids) {
+                $query->whereIn('dossier_id', $ids);
             });
         }
     }
@@ -205,6 +256,16 @@ class CrCourrierEntrantController extends LaravelController
             });
         }
     }
+    
+     public function filterStructuresId(myBuilder $query, $method, $clauseOperator, $value)
+    {
+        if ($value) {
+            $ids = explode(",", $value);
+             $query->whereHas('cr_courrier', function($query) use ($ids) {
+                $query->whereIn('structure_id', $ids);
+            });
+        }
+    }
 
     public function filterTypeId(myBuilder $query, $method, $clauseOperator, $value)
     {
@@ -214,6 +275,17 @@ class CrCourrierEntrantController extends LaravelController
             });
         }
     }
+    
+    public function filterTypesId(myBuilder $query, $method, $clauseOperator, $value)
+    {
+        if ($value) {
+            $ids = explode(",", $value);
+             $query->whereHas('cr_courrier', function($query) use ($ids) {
+                $query->whereIn('type_id', $ids);
+            });
+        }
+    }
+
 
     public function filterUrgenceId(myBuilder $query, $method, $clauseOperator, $value)
     {
@@ -223,12 +295,33 @@ class CrCourrierEntrantController extends LaravelController
             });
         }
     }
+    
+     public function filterUrgencesId(myBuilder $query, $method, $clauseOperator, $value)
+    {
+        if ($value) {
+            $ids = explode(",", $value);
+             $query->whereHas('cr_courrier', function($query) use ($ids) {
+                $query->whereIn('urgence_id', $ids);
+            });
+        }
+    }
+
 
     public function filterNatureId(myBuilder $query, $method, $clauseOperator, $value)
     {
         if($value) {
             $query->whereHas('cr_courrier', function($query) use ($value) {
                 $query->where('nature_id', $value);
+            });
+        }
+    }
+    
+    public function filterNaturesId(myBuilder $query, $method, $clauseOperator, $value)
+    {
+        if ($value) {
+            $ids = explode(",", $value);
+             $query->whereHas('cr_courrier', function($query) use ($ids) {
+                $query->whereIn('nature_id', $ids);
             });
         }
     }
@@ -267,6 +360,17 @@ class CrCourrierEntrantController extends LaravelController
             });
         }
     }
+    
+    public function filterExpediteurInternesId(myBuilder $query, $method, $clauseOperator, $value)
+    {
+        if($value) {
+            $ids = explode(",", $value);
+            $query->whereHasMorph('expediteur', [Structure::class], function($query) use ($ids){
+                $query->whereIn('structures.id', $ids );
+            });
+        }
+    }
+
 
     public function filterExpediteurExterneId(myBuilder $query, $method, $clauseOperator, $value)
     {
@@ -276,18 +380,14 @@ class CrCourrierEntrantController extends LaravelController
             });
         }
     }
-
-    public function filterAnnee(myBuilder $query, $method, $clauseOperator, $value, $in)
-    {
-        if ($value) {
-            $query->whereRaw('year(date_arrive) = ?', $value);
-        }
-    }
     
-    public function filterMois(myBuilder $query, $method, $clauseOperator, $value, $in)
+    public function filterExpediteurExternesId(myBuilder $query, $method, $clauseOperator, $value)
     {
-        if ($value) {
-            $query->whereRaw('month(date_arrive) = ?', $value);
+        if($value) {
+            $ids = explode(",", $value);
+            $query->whereHasMorph('expediteur', [CrCoordonnee::class], function($query) use ($ids){
+                $query->whereIn('cr_coordonnee.id', $ids );
+            });
         }
     }
 
