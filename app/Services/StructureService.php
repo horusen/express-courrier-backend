@@ -11,6 +11,7 @@ use App\Traits\Structure\AuthorisationTrait;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Structure as StructureWDossier;
+use Illuminate\Support\Facades\Storage;
 
 class StructureService extends BaseService
 {
@@ -41,17 +42,15 @@ class StructureService extends BaseService
             throw new ActionNotAllowedException();
         }
 
-
         $structure = $this->model::create($data + ['inscription' => Auth::id()]);
 
-        if (Arr::has($data, 'image')) {
+        if (Arr::has($data, 'image') && ($data['image'] instanceof \SplFileInfo)) {
             $file = $data['image'];
             $structure->update(['image' => $file->storeAs('structure/' . $structure->id . '/image', $file->getClientOriginalName(), 'public')]);
         }
 
         return $structure->refresh();
     }
-
 
     public function getSousStructures(Structure $structure, StructureApiRequest $request)
     {

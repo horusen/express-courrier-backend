@@ -73,7 +73,7 @@ class CrTache extends Eloquent
 
 	public function courriers()
 	{
-        return $this->belongsToMany(\App\Models\Courrier\CrCourrier::class, 'cr_affectation_tache_courrier', 'tache', 'courrier');
+        return $this->belongsToMany(\App\Models\Dash\CrCourrier::class, 'cr_affectation_tache_courrier', 'tache', 'courrier');
     }
 
     public function structures()

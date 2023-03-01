@@ -25,11 +25,19 @@ class CourrierdashController extends Controller
 
     public function getsum()
     {
-        DB::table('cr_courrier')->whereNull('cloture_id')->count();
-        $total=DB::table('cr_courrier')->count();
-        $entrant=DB::table('cr_courrier_entrant')->join('cr_provenance', 'cr_courrier_entrant.provenance', '=', 'cr_provenance.id')->where('cr_provenance.externe',1)->count();
-        $sortant=DB::table('cr_courrier_sortant')->count();
-        $interne=DB::table('cr_courrier_entrant')->join('cr_provenance', 'cr_courrier_entrant.provenance', '=', 'cr_provenance.id')->where('cr_provenance.externe',0)->count();
+        // DB::table('cr_courrier')->whereNull('cloture_id')->count();
+        $total=DB::table('cr_courrier')
+        ->where('cr_courrier.deleted_at','=',NULL)
+        ->count();
+        $entrant=DB::table('cr_courrier_entrant')->join('cr_provenance', 'cr_courrier_entrant.provenance', '=', 'cr_provenance.id')->where('cr_provenance.externe',1)
+        ->where('cr_courrier_entrant.deleted_at','=',NULL)
+        ->count();
+        $sortant=DB::table('cr_courrier_sortant')
+        ->where('cr_courrier_sortant.deleted_at','=',NULL)
+        ->count();
+        $interne=DB::table('cr_courrier_entrant')->join('cr_provenance', 'cr_courrier_entrant.provenance', '=', 'cr_provenance.id')->where('cr_provenance.externe',0)
+        ->where('cr_courrier_entrant.deleted_at','=',NULL)
+        ->count();
         $lastentrant=DB::table('cr_courrier_entrant')
         ->select('cr_courrier.libelle as libelle', 'cr_courrier_entrant.created_at as created_at', 'structures.cigle as cigle','structures.libelle as structure', 'cr_courrier_entrant.id as id', 'type_structures.libelle as type_structure')
         ->leftjoin('cr_provenance', 'cr_courrier_entrant.provenance', '=', 'cr_provenance.id')
@@ -37,12 +45,16 @@ class CourrierdashController extends Controller
         ->leftjoin('structures','structures.id', '=', 'cr_courrier.structure_id')
         ->leftjoin('type_structures','structures.type', '=', 'type_structures.id')
         ->where('cr_provenance.externe',1)
+        ->where('cr_courrier.deleted_at','=',NULL)
+        ->where('cr_courrier_entrant.deleted_at','=',NULL)
         ->Orderby('cr_courrier_entrant.id','desc')->limit(5)->get();
         $lastsortant=DB::table('cr_courrier_sortant')
         ->select('cr_courrier.libelle as libelle', 'cr_courrier_sortant.created_at as created_at','structures.cigle as cigle','structures.libelle as structure', 'cr_courrier_sortant.id as id', 'type_structures.libelle as type_structure')
         ->leftjoin('cr_courrier','cr_courrier_sortant.courrier_id', '=', 'cr_courrier.id')
         ->leftjoin('structures','structures.id', '=', 'cr_courrier.structure_id')
         ->leftjoin('type_structures','structures.type', '=', 'type_structures.id')
+        ->where('cr_courrier.deleted_at','=',NULL)
+        ->where('cr_courrier_sortant.deleted_at','=',NULL)
         ->Orderby('cr_courrier_sortant.id','desc')->limit(5)->get();
         $lastinterne=DB::table('cr_courrier_entrant')
         ->select('cr_courrier.libelle as libelle', 'cr_courrier_entrant.created_at as created_at', 'structures.cigle as cigle','structures.libelle as structure', 'cr_courrier_entrant.id as id', 'type_structures.libelle as type_structure')
@@ -51,15 +63,25 @@ class CourrierdashController extends Controller
         ->leftjoin('structures','structures.id', '=', 'cr_courrier.structure_id')
         ->leftjoin('type_structures','structures.type', '=', 'type_structures.id')
         ->where('cr_provenance.externe',0)
+        ->where('cr_courrier.deleted_at','=',NULL)
+        ->where('cr_courrier_entrant.deleted_at','=',NULL)
         ->Orderby('cr_courrier_entrant.id','desc')->limit(5)->get();
         $fichier=DB::table('fichier')->count();
-        $traite=DB::table('cr_courrier')->whereNotNull('cloture_id')->count();
-        $nontraite=DB::table('cr_courrier')->whereNull('cloture_id')->count();
-        $entraitement=DB::table('cr_courrier')->whereNull('cloture_id')->count();
+        $traite=DB::table('cr_courrier')->whereNotNull('cloture_id')
+        ->where('cr_courrier.deleted_at','=',NULL)
+        ->count();
+        $nontraite=DB::table('cr_courrier')->whereNull('cloture_id')
+        ->where('cr_courrier.deleted_at','=',NULL)
+        ->count();
+        $entraitement=DB::table('cr_courrier')->whereNull('cloture_id')
+        ->where('cr_courrier.deleted_at','=',NULL)
+        ->count();
         $structure=DB::table('structures')->get();
 
         $structure->map(function($item)  {
-            $cr =  DB::table('cr_courrier')->where('structure_id', $item->id)->get();
+            $cr =  DB::table('cr_courrier')->where('structure_id', $item->id)
+            ->where('cr_courrier.deleted_at','=',NULL)
+            ->get();
             $item->cr_courriers = $cr;
         });
 

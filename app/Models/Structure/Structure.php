@@ -15,7 +15,7 @@ class Structure extends Model
     protected $table = 'structures';
     protected $guarded = [];
     // protected $hidden = ['parent_id'];
-    protected $with = ['type:id,libelle', 'parent'];
+    protected $with = ['type:id,libelle', 'parent', 'structure_parent'];
 
     protected $appends = ['has_sous_structures', 'responsable'];
 
@@ -25,6 +25,11 @@ class Structure extends Model
     }
 
     public function parent()
+    {
+        return $this->belongsTo(Structure::class, 'parent_id');
+    }
+
+     public function structure_parent()
     {
         return $this->belongsTo(Structure::class, 'parent_id');
     }

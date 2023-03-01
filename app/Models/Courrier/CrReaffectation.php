@@ -56,12 +56,36 @@ class CrReaffectation extends Eloquent
     protected $with = [
         'inscription',
         'suivi_par_inscription',
-        'structure'
+        'structure',
+        'cr_courrier'
     ];
+
+    //Make it available in the json response
+	protected $appends = ['is_user', 'link'];
+
+	public function getIsUserAttribute()
+	{
+		if(Auth::check() && $this->attributes['suivi_par'] == Auth::id())
+		{
+			return true;
+		}
+		return false;
+	}
+
+    public function getLinkAttribute()
+    {
+        $link ="";
+        if($this->cr_courrier->cr_courrier_entrants()->count()) {
+            $link = '/courrier/entrant/'.$this->cr_courrier->cr_courrier_entrants()->first()->id.'#affectation';
+        } else if($this->cr_courrier->cr_courrier_sortants()->count()) {
+            $link = '/courrier/sortant/'.$this->cr_courrier->cr_courrier_sortants()->first()->id.'#affectation';
+        }
+        return $link;
+    }
 
     public function cr_courrier()
     {
-        return $this->belongsTo(\App\Models\Courrier\CrCourrier::class, 'courrier_id');
+        return $this->belongsTo(\App\Models\Dash\CrCourrier::class, 'courrier_id');
     }
 
     public function inscription()
