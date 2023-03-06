@@ -59,6 +59,7 @@ class CrCourrierController extends LaravelController
 
         $item = CrCourrier::create([
             'inscription_id' => Auth::id(),
+            'numero' => $request->numero,
             'libelle' => $request->libelle,
             'objet' => $request->objet,
             'date_redaction' => $request->date_redaction,

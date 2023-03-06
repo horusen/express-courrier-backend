@@ -80,6 +80,7 @@ class CrCourrier extends Eloquent
     ];
 
     protected $fillable = [
+        'numero',
         'libelle',
         'objet',
         'date_redaction',

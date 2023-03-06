@@ -42,6 +42,12 @@ class CrCourrierEntrantController extends LaravelController
         return $this->response($parsedData);
     }
 
+    public function sortGrpValeurNbcourrier(myBuilder $query,  $value) {
+        if ($value) {
+            $query->selectRaw('"Nombre de courriers" as libelle,  count(*) data');
+            }
+    }
+
     public function sortGrpAnneeNbcourrier(myBuilder $query,  $value) {
         if ($value) {
             $query->selectRaw('year(date_arrive) libelle, year(date_arrive) grouped_column, count(*) data')
@@ -109,7 +115,21 @@ class CrCourrierEntrantController extends LaravelController
      public function filterAnnees(myBuilder $query, $method, $clauseOperator, $value)
     {
         if ($value) {
-             $args = explode(",", $value);
+            $args = explode(",", $value);
+            $additional = array();
+            $args = array_filter(
+                $args, function($element) use (&$additional) {
+                    if(strpos($element,'~') !== false) {
+                        $rangedElement = explode("~", $element);
+                        foreach(range($rangedElement[0], $rangedElement[array_key_last($rangedElement)]) as $number) {
+                            $additional[] = $number;
+                        }
+                        return false;
+                    }
+                    return true;
+                }
+             );
+             $args = array_unique(array_merge($args,$additional));
              $placeholders = implode(",", array_fill(0, count($args), '?'));
              $query->whereRaw("year(date_arrive) IN (".$placeholders.")", $args);
         }
@@ -204,7 +224,8 @@ class CrCourrierEntrantController extends LaravelController
     {
         if($value) {
             $query->whereHas('cr_courrier', function($query) use ($value) {
-                $query->where(DB::raw('lower(cr_courrier.libelle)'), 'like', "%" .Str::lower($value). "%");
+                $query->where(DB::raw('lower(cr_courrier.numero)'), 'like', "%" .Str::lower($value). "%");
+                $query->orWhere(DB::raw('lower(cr_courrier.libelle)'), 'like', "%" .Str::lower($value). "%");
                 $query->orWhere(DB::raw('lower(cr_courrier.objet)'), 'like', "%" .Str::lower($value). "%");
             });
         }
@@ -403,6 +424,7 @@ class CrCourrierEntrantController extends LaravelController
                 'date_redaction' => $request->date_redaction,
                 'commentaire' => $request->commentaire,
                 'date_cloture' => $request->date_cloture,
+                'numero' => $request->numero,
                 'date_limit' => $request->date_limit,
                 'valider' => $request->valider,
                 'type_id' => $request->type_id,

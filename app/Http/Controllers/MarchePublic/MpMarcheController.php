@@ -39,6 +39,33 @@ class MpMarcheController extends LaravelController
         // Create JSON response of parsed data
         return $this->response($parsedData);
     }
+    
+    public function sortGrpValeurNbmarche(myBuilder $query,  $value) {
+        if ($value) {
+            $query->selectRaw('"Nombre de marchés" as libelle,  count(*) data');
+            }
+    }
+
+    public function sortGrpValeurBudget(myBuilder $query,  $value) {
+        if ($value) {
+            $query->selectRaw('"Budget" as libelle,   COALESCE(sum(mp_marche.cout),0) data');
+            }
+    }
+    
+    public function sortGrpValeurNbfournisseur(myBuilder $query,  $value) {
+        if ($value) {
+            $query->selectRaw('"Nombre de fournisseurs" as libelle,  COUNT( distinct coordonnee) data')
+                ->join('mp_affectation_marche_fournisseur','mp_affectation_marche_fournisseur.marche', '=', 'mp_marche.id');
+            }
+    }
+
+    public function sortGrpValeurNbpartenaire(myBuilder $query,  $value) {
+        if ($value) {
+            $query->selectRaw('"Nombre de partenaires" as libelle, COUNT( distinct coordonnee) data')
+                ->join('mp_affectation_marche_partenaire','mp_affectation_marche_partenaire.marche', '=', 'mp_marche.id');
+            }
+    }
+
 
     public function sortGrpAnneeNbmarche(myBuilder $query,  $value) {
         if ($value) {
@@ -336,13 +363,26 @@ class MpMarcheController extends LaravelController
     public function filterAnnees(myBuilder $query, $method, $clauseOperator, $value)
     {
         if ($value) {
-             $args = explode(",", $value);
+            $args = explode(",", $value);
+            $additional = array();
+            $args = array_filter(
+                $args, function($element) use (&$additional) {
+                    if(strpos($element,'~') !== false) {
+                        $rangedElement = explode("~", $element);
+                        foreach(range($rangedElement[0], $rangedElement[array_key_last($rangedElement)]) as $number) {
+                            $additional[] = $number;
+                        }
+                        return false;
+                    }
+                    return true;
+                }
+             );
+             $args = array_unique(array_merge($args,$additional));
              $placeholders = implode(",", array_fill(0, count($args), '?'));
              $query->whereRaw("year(created_at) IN (".$placeholders.")", $args);
         }
     }
-    
-    
+
     public function filterMois(myBuilder $query, $method, $clauseOperator, $value, $in)
     {
         if ($value) {
