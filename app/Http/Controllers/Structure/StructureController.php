@@ -13,6 +13,7 @@ use App\Traits\Structure\StructureTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Structure as StructureWDossier;
+use Illuminate\Support\Facades\Storage;
 
 class StructureController extends BaseController
 {
@@ -119,6 +120,19 @@ class StructureController extends BaseController
         }
 
         $structure->update($request->except('image'));
+
+         // TOFO
+         if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $imagePath = $file->storeAs('structure/' . $structure->id . '/image', $file->getClientOriginalName(), 'public');
+            $structure->update(['image' => $imagePath]);
+
+            // Delete previous image
+            if (Storage::exists($structure->image)) {
+                Storage::delete($structure->image);
+            }
+        }
+
         return $structure->refresh();
     }
 

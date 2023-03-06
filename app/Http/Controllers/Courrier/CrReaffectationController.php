@@ -47,6 +47,14 @@ class CrReaffectationController extends LaravelController
     }
 
 
+    public function filterIsForIns(myBuilder $query, $method, $clauseOperator, $value, $in)
+    {
+        if ($value) {
+            $query->where('suivi_par', Auth::id());
+        }
+    }
+
+
     public function filterSearchString(myBuilder $query, $method, $clauseOperator, $value)
     {
         if($value) {
@@ -113,7 +121,7 @@ $item->load(['cr_courrier', 'suivi_par_inscription']);
         }
 
         $message = '';
-        
+
         if($item->confirmation) {
            $message = 'Le courrier <b>'.$item->cr_courrier->libelle.'</b>  a été tranféré à '.$item->suivi_par_inscription->prenom.' '.$item->suivi_par_inscription->nom;
         } else {
