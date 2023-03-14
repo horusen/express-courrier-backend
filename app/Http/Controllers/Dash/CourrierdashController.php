@@ -27,7 +27,11 @@ class CourrierdashController extends Controller
     {
         // DB::table('cr_courrier')->whereNull('cloture_id')->count();
         $total=DB::table('cr_courrier')
+        ->leftjoin('cr_courrier_entrant','cr_courrier_entrant.courrier_id', '=', 'cr_courrier.id')
+        ->leftjoin('cr_courrier_sortant','cr_courrier_sortant.courrier_id', '=', 'cr_courrier.id')
         ->where('cr_courrier.deleted_at','=',NULL)
+        ->where('cr_courrier_entrant.deleted_at','=',NULL)
+        ->where('cr_courrier_sortant.deleted_at','=',NULL)
         ->count();
         $entrant=DB::table('cr_courrier_entrant')->join('cr_provenance', 'cr_courrier_entrant.provenance', '=', 'cr_provenance.id')->where('cr_provenance.externe',1)
         ->where('cr_courrier_entrant.deleted_at','=',NULL)
@@ -35,7 +39,11 @@ class CourrierdashController extends Controller
         $sortant=DB::table('cr_courrier_sortant')
         ->where('cr_courrier_sortant.deleted_at','=',NULL)
         ->count();
-        $interne=DB::table('cr_courrier_entrant')->join('cr_provenance', 'cr_courrier_entrant.provenance', '=', 'cr_provenance.id')->where('cr_provenance.externe',0)
+        $interne=DB::table('cr_courrier_entrant')->join('cr_provenance', 'cr_courrier_entrant.provenance', '=', 'cr_provenance.id')
+        ->where(function($query){
+        $query->whereNull('cr_provenance.externe')
+            ->orWhere('cr_provenance.externe',0);
+        })
         ->where('cr_courrier_entrant.deleted_at','=',NULL)
         ->count();
         $lastentrant=DB::table('cr_courrier_entrant')
@@ -62,19 +70,34 @@ class CourrierdashController extends Controller
         ->leftjoin('cr_courrier','cr_courrier_entrant.courrier_id', '=', 'cr_courrier.id')
         ->leftjoin('structures','structures.id', '=', 'cr_courrier.structure_id')
         ->leftjoin('type_structures','structures.type', '=', 'type_structures.id')
-        ->where('cr_provenance.externe',0)
+        ->where(function($query){
+        $query->whereNull('cr_provenance.externe')
+            ->orWhere('cr_provenance.externe',0);
+        })
         ->where('cr_courrier.deleted_at','=',NULL)
         ->where('cr_courrier_entrant.deleted_at','=',NULL)
         ->Orderby('cr_courrier_entrant.id','desc')->limit(5)->get();
         $fichier=DB::table('fichier')->count();
         $traite=DB::table('cr_courrier')->whereNotNull('cloture_id')
+        ->leftjoin('cr_courrier_entrant','cr_courrier_entrant.courrier_id', '=', 'cr_courrier.id')
+        ->leftjoin('cr_courrier_sortant','cr_courrier_sortant.courrier_id', '=', 'cr_courrier.id')
         ->where('cr_courrier.deleted_at','=',NULL)
+        ->where('cr_courrier_entrant.deleted_at','=',NULL)
+        ->where('cr_courrier_sortant.deleted_at','=',NULL)
         ->count();
         $nontraite=DB::table('cr_courrier')->whereNull('cloture_id')
+        ->leftjoin('cr_courrier_entrant','cr_courrier_entrant.courrier_id', '=', 'cr_courrier.id')
+        ->leftjoin('cr_courrier_sortant','cr_courrier_sortant.courrier_id', '=', 'cr_courrier.id')
         ->where('cr_courrier.deleted_at','=',NULL)
+        ->where('cr_courrier_entrant.deleted_at','=',NULL)
+        ->where('cr_courrier_sortant.deleted_at','=',NULL)
         ->count();
         $entraitement=DB::table('cr_courrier')->whereNull('cloture_id')
+        ->leftjoin('cr_courrier_entrant','cr_courrier_entrant.courrier_id', '=', 'cr_courrier.id')
+        ->leftjoin('cr_courrier_sortant','cr_courrier_sortant.courrier_id', '=', 'cr_courrier.id')
         ->where('cr_courrier.deleted_at','=',NULL)
+        ->where('cr_courrier_entrant.deleted_at','=',NULL)
+        ->where('cr_courrier_sortant.deleted_at','=',NULL)
         ->count();
         $structure=DB::table('structures')->get();
 
@@ -210,7 +233,8 @@ class CourrierdashController extends Controller
         })->whereMonth('created_at',$month)->get();
         $sortant=CrCourrierSortant::whereMonth('created_at',$month)->get();
         $interne=CrCourrierEntrant::whereHas('cr_provenance', function ($query) {
-            $query->where('cr_provenance.externe',0);
+            $query->whereNull('cr_provenance.externe')
+            ->orWhere('cr_provenance.externe',0);
         })->whereMonth('created_at',$month)->get();
 
         return response()->json([
